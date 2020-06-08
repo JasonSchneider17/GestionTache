@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace GestionTache
 {
-    public class Priority
+    public class ListOfTasks
     {
         private string name;
-        private int degreePriority;
+        private List<Task> tasks;
 
 
-        public Priority()
+        public ListOfTasks()
         {
 
-
         }
+
 
         public string Name
         {
@@ -24,11 +24,10 @@ namespace GestionTache
             set { this.name = value; }
         }
 
-
-        public int DegreePriority
+        public List<Task> Tasks
         {
-            get { return this.degreePriority; }
-            set { this.degreePriority = value; }
+            get { return this.tasks; }
+            set { this.tasks = value; }
         }
     }
 }

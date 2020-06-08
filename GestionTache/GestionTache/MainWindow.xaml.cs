@@ -23,6 +23,14 @@ namespace GestionTache
         public MainWindow()
         {
             InitializeComponent();
+
+            List<Task> tasks = new List<Task>();
+
+            tasks.Add(new Task("test1", "No comment", true));
+            tasks.Add(new Task("test2", "No comment", false));
+
+            DisplayListTask.ItemsSource = tasks;
+
         }
     }
 }

@@ -8,15 +8,28 @@ namespace GestionTache
 {
    public class Task
     {
-        private string name;
-        private string comment;
-        private Priority priority;
+        private string name;        //name of the task
+        private string comment;     //comment of the task
+        private Priority priority;  //priority task
+        private bool state;         //state task
 
-
-        public Task()
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="comment"></param>
+        /// <param name="state"></param>
+        public Task(string name,string comment, bool state)
         {
-
+            this.name = name;
+            this.comment = comment;
+            this.state = state;
         }
+
+
+
+
+        //getter setter
 
         public string Name
         {
@@ -36,6 +49,11 @@ namespace GestionTache
             set { this.priority = value; }
         }
 
+        public bool State
+        {
+            get { return this.state; }
+            set { this.state = value; }
+        }
 
     }
 }
