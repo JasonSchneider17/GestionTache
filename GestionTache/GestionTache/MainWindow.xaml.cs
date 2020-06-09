@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,6 +27,7 @@ namespace GestionTache
         public MainWindow()
         {
             InitializeComponent();
+            SetLanguageDictionary();
 
             List<Task> tasks = new List<Task>();
 
@@ -43,13 +45,38 @@ namespace GestionTache
             }
 
 
-            /*databaseHandler.TaskDAO.Add(new Task("truc", "adwad", true));
-            databaseHandler.TaskDAO.Add(new Task("truc2", "adwad", true));*/
 
             tasks = databaseHandler.TaskDAO.getAllTask();
             DisplayListTask.ItemsSource = tasks;
 
 
+
+
+        }
+
+        private void SetLanguageDictionary()
+        {
+            ResourceDictionary dict = new ResourceDictionary();
+            switch (Thread.CurrentThread.CurrentCulture.ToString())
+            {
+                /*case "en-US":
+                    dict.Source = new Uri("..\\..\\Language\\StringResourcesEN.xaml", UriKind.Relative);
+                    break;*/
+                case "fr-CH":
+                    dict.Source = new Uri("..\\..\\Language\\StringResourcesFR.xaml", UriKind.Relative);
+                    break;
+                default:
+                    dict.Source = new Uri("..\\..\\Language\\StringResourcesFR.xaml", UriKind.Relative);
+                    break;
+            }
+            this.Resources.MergedDictionaries.Add(dict);
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+            databaseHandler.TaskDAO.Add(new Task("truc", "adwad", true));
+            databaseHandler.TaskDAO.Add(new Task("truc2", "adwad", true));
         }
     }
 }
