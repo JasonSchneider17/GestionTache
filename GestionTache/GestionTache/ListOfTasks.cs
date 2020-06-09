@@ -12,9 +12,9 @@ namespace GestionTache
         private List<Task> tasks;
 
 
-        public ListOfTasks()
+        public ListOfTasks(string name)
         {
-
+            this.name = name;
         }
 
 

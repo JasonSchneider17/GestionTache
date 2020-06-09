@@ -11,12 +11,14 @@ namespace GestionTache
     {
         private Database databaseObject;
         private TaskDAO taskDAO;
+        private ListDAO listDAO;
 
 
         public static readonly String TASK_KEY= "id_task";
         public static readonly String TASK_NAME = "name_task";
         public static readonly String TASK_COMMENT = "comment_task";
         public static readonly String TASK_STATE = "state_task";
+        public static readonly String TASK_ID_LIST = "id_list";
 
         public static readonly String TASK_TABLE_NAME = "Task";
         public static readonly String TASK_TABLE_CREATE =
@@ -24,12 +26,31 @@ namespace GestionTache
                         TASK_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         TASK_NAME + " TEXT, " +
                         TASK_COMMENT + " TEXT, " +
-                        TASK_STATE + " INTEGER )";
+                        TASK_STATE + " INTEGER,"+
+                         TASK_ID_LIST+ " INTEGER ) ";
         public static readonly String TASK_TABLE_DROP = "DROP TABLE IF EXISTS " + TASK_TABLE_NAME + ";";
+
+
+        public static readonly String LIST_KEY = "id_list";
+        public static readonly String LIST_NAME = "name_list";
+        public static readonly String LIST_TABLE_NAME = "List";
+        public static readonly String LIST_TABLE_CREATE =
+                "CREATE TABLE " + LIST_TABLE_NAME + " (" +
+                        LIST_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        LIST_NAME + " TEXT )";
+        public static readonly String LIST_TABLE_DROP = "DROP TABLE IF EXISTS " + LIST_TABLE_NAME + ";";
+
+
+
+
+
+
+
 
 
         public DatabaseHandler(Database database)
         {
+           
             this.databaseObject = database;
             DAOCreator();
 
@@ -38,13 +59,27 @@ namespace GestionTache
         public void DAOCreator()
         {
             taskDAO = new TaskDAO(databaseObject);
+            listDAO = new ListDAO(databaseObject);
+           
         }
 
         public void CreateTables()
         {
             databaseObject.OpenConnection();
             SQLiteCommand myCommand = new SQLiteCommand(TASK_TABLE_CREATE, databaseObject.myConnection);
+            SQLiteCommand myCommand2 = new SQLiteCommand(LIST_TABLE_CREATE, databaseObject.myConnection);
             myCommand.ExecuteNonQuery();
+            myCommand2.ExecuteNonQuery();
+            databaseObject.CloseConnection();
+        }
+
+        public void RemoveTables()
+        {
+            databaseObject.OpenConnection();
+            SQLiteCommand myCommand = new SQLiteCommand(TASK_TABLE_DROP, databaseObject.myConnection);
+            SQLiteCommand myCommand2 = new SQLiteCommand(LIST_TABLE_DROP, databaseObject.myConnection);
+            myCommand.ExecuteNonQuery();
+            myCommand2.ExecuteNonQuery();
             databaseObject.CloseConnection();
         }
 

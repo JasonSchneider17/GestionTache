@@ -16,6 +16,7 @@ namespace GestionTache
         public static readonly String TASK_NAME = "name_task";
         public static readonly String TASK_COMMENT = "comment_task";
         public static readonly String TASK_STATE = "state_task";
+        public static readonly String TASK_ID_LIST = "id_list";
 
         public static readonly String TASK_TABLE_NAME = "Task";
         public static readonly String TASK_TABLE_CREATE =
@@ -23,7 +24,8 @@ namespace GestionTache
                         TASK_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         TASK_NAME + " TEXT, " +
                         TASK_COMMENT + " TEXT, " +
-                        TASK_STATE + " INTEGER )";
+                        TASK_STATE + " INTEGER," +
+                         TASK_ID_LIST + "INTEGER   ) ";
         public static readonly String TASK_TABLE_DROP = "DROP TABLE IF EXISTS " + TASK_TABLE_NAME + ";";
 
 

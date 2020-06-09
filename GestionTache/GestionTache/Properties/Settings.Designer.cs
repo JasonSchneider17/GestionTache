@@ -22,5 +22,29 @@ namespace GestionTache.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int DatabaseVersionNew {
+            get {
+                return ((int)(this["DatabaseVersionNew"]));
+            }
+            set {
+                this["DatabaseVersionNew"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int DatabaseVersionOld {
+            get {
+                return ((int)(this["DatabaseVersionOld"]));
+            }
+            set {
+                this["DatabaseVersionOld"] = value;
+            }
+        }
     }
 }

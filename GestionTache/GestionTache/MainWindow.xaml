@@ -18,26 +18,53 @@
 
         <DockPanel Grid.Row="0">
             <Menu DockPanel.Dock="Top" >
-                <MenuItem Header="Tâche" Click="MenuItem_Click" />
+                <MenuItem Header="Liste">
+                    <MenuItem x:Name="menuItem_addListOfTask" Header="Ajouter une liste"/>
+                    
+                </MenuItem>
+                <MenuItem Header="Tâche" >
+                    <MenuItem Header="Ajouter une Tâche"/>
+                </MenuItem>
+
+                    
+
             </Menu>
         </DockPanel>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="150"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
             <ListBox x:Name="listBox_listOfTasks" Grid.Column="0">
+               <!-- <ListBoxItem>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="60"/>
+                        </Grid.RowDefinitions>
+
+                        <Image Source="Image/list.png" Height="25"  VerticalAlignment="Center" Margin="2,0,2,0"/>
+                        <TextBlock Grid.Column="1"  Text="test" FontSize="22" VerticalAlignment="Center" Margin="10,0,2,0" />
+                    </Grid>
+                </ListBoxItem>-->
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid Margin="0,2">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="25"/>
                                 <ColumnDefinition Width="1*"/>
                             </Grid.ColumnDefinitions>
-                 
-                            <TextBlock Grid.Column="1"  Text="{Binding Name}"/>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+
+                            <Image Source="Image/list.png" Height="25"  VerticalAlignment="Center" Margin="2,0,2,0"/>
+                            <TextBlock Grid.Column="1"  Text="test" FontSize="22" VerticalAlignment="Center" Margin="10,0,2,0" />
                         </Grid>
 
 
@@ -49,11 +76,14 @@
 
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="100"/>
                 </Grid.RowDefinitions>
 
-                <ListBox x:Name="DisplayListTask" Grid.Row="0" >
+                <TextBlock Text="Title list" Height="40" Grid.Row="0" FontWeight="Bold" FontSize="25" Margin="5,0,0,0" VerticalAlignment="Center" />
+
+                <ListBox x:Name="DisplayListTask" Grid.Row="1" BorderThickness="1" >
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>

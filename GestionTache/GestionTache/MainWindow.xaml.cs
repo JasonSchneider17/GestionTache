@@ -35,7 +35,7 @@ namespace GestionTache
             tasks.Add(new Task("test2", "No comment", false));
 
             DisplayListTask.ItemsSource = tasks;*/
-
+            //database
             databaseObject = new Database();
             databaseHandler = new DatabaseHandler(databaseObject);
 
@@ -44,10 +44,25 @@ namespace GestionTache
                 databaseHandler.CreateTables();
             }
 
+            Properties.Settings.Default.DatabaseVersionNew = 3;
+
+            if (Properties.Settings.Default.DatabaseVersionNew > Properties.Settings.Default.DatabaseVersionOld)
+            {
+                databaseHandler.RemoveTables();
+                databaseHandler.CreateTables();
+                Properties.Settings.Default.DatabaseVersionOld = Properties.Settings.Default.DatabaseVersionNew;
+                Properties.Settings.Default.Save();
+            }
+
+            //end conf database
 
 
             tasks = databaseHandler.TaskDAO.getAllTask();
             DisplayListTask.ItemsSource = tasks;
+
+            List<ListOfTasks> lists = new List<ListOfTasks>();
+            lists.Add(new ListOfTasks("Test"));
+            listBox_listOfTasks.ItemsSource = lists;
 
 
 
@@ -72,11 +87,13 @@ namespace GestionTache
             this.Resources.MergedDictionaries.Add(dict);
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+       /* private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
 
             databaseHandler.TaskDAO.Add(new Task("truc", "adwad", true));
             databaseHandler.TaskDAO.Add(new Task("truc2", "adwad", true));
-        }
+        }*/
+
+
     }
 }

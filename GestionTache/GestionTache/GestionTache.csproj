@@ -93,14 +93,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Database.cs" />
-    <Compile Include="DatabaseHandler.cs" />
+    <Compile Include="DataBase\Database.cs" />
+    <Compile Include="DataBase\DatabaseHandler.cs" />
+    <Compile Include="DataBase\ListDAO.cs" />
     <Compile Include="ListOfTasks.cs" />
     <Compile Include="Priority.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Task.cs" />
-    <Compile Include="TaskDAO.cs" />
+    <Compile Include="DataBase\TaskDAO.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -156,6 +157,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\list.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterResolveReferences">
