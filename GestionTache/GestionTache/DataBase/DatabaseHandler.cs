@@ -47,7 +47,10 @@ namespace GestionTache
 
 
 
-
+        /// <summary>
+        /// constructeur
+        /// </summary>
+        /// <param name="database"></param>
         public DatabaseHandler(Database database)
         {
            
@@ -56,6 +59,9 @@ namespace GestionTache
 
         }
 
+        /// <summary>
+        /// Crée les DAO permettant d'interagir avec les tables
+        /// </summary>
         public void DAOCreator()
         {
             taskDAO = new TaskDAO(databaseObject);
@@ -63,6 +69,9 @@ namespace GestionTache
            
         }
 
+        /// <summary>
+        /// Crée les tâbles de la base de données
+        /// </summary>
         public void CreateTables()
         {
             databaseObject.OpenConnection();
@@ -73,6 +82,9 @@ namespace GestionTache
             databaseObject.CloseConnection();
         }
 
+        /// <summary>
+        /// supprime les tables de la base de données
+        /// </summary>
         public void RemoveTables()
         {
             databaseObject.OpenConnection();
@@ -83,10 +95,18 @@ namespace GestionTache
             databaseObject.CloseConnection();
         }
 
+
+        //getter setter
+
         public TaskDAO TaskDAO
         {
             get { return this.taskDAO; }
             // set { _myProperty = value; }
+        }
+
+        public ListDAO ListDAO
+        {
+            get { return this.listDAO; }
         }
 
 

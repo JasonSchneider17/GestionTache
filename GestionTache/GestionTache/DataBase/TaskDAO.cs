@@ -9,7 +9,7 @@ namespace GestionTache
 {
     public class TaskDAO
     {
-        private Database database;
+        private Database database;  //base de données
 
 
         public static readonly String TASK_KEY = "id_task";
@@ -29,13 +29,21 @@ namespace GestionTache
         public static readonly String TASK_TABLE_DROP = "DROP TABLE IF EXISTS " + TASK_TABLE_NAME + ";";
 
 
-
+        /// <summary>
+        /// constructeur
+        /// </summary>
+        /// <param name="database"></param>
         public TaskDAO(Database database)
         {
             this.database = database;
         }
 
 
+
+        /// <summary>
+        /// ajout d'une tâche sur la base de donnée
+        /// </summary>
+        /// <param name="task"></param>
         public void Add(Task task)
         {
             string query = String.Format("INSERT INTO {0} ( {1} , {2} , {3} ) VALUES (@name,@comment,@state)",TASK_TABLE_NAME, TASK_NAME,TASK_COMMENT,TASK_STATE);
@@ -50,6 +58,10 @@ namespace GestionTache
         }
 
 
+        /// <summary>
+        /// Btient toutes les tâche sur la base de donnée
+        /// </summary>
+        /// <returns></returns>
         public List<Task> getAllTask()
         {
 

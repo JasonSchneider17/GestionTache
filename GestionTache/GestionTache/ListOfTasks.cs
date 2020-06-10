@@ -10,11 +10,18 @@ namespace GestionTache
     {
         private string name;
         private List<Task> tasks;
+        private int id;
 
 
         public ListOfTasks(string name)
         {
             this.name = name;
+        }
+
+        public ListOfTasks(string name,int id)
+        {
+            this.name = name;
+            this.id = id;
         }
 
 
@@ -28,6 +35,12 @@ namespace GestionTache
         {
             get { return this.tasks; }
             set { this.tasks = value; }
+        }
+
+        public int ID
+        {
+            get { return this.id; }
+            set { this.id = value; }
         }
     }
 }

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace GestionTache
 {
-    class ListDAO
+    public class ListDAO
     {
-        private Database database;
+        private Database database; //base de données
 
 
         public static readonly String LIST_KEY = "id_list";
@@ -22,11 +22,19 @@ namespace GestionTache
         public static readonly String LIST_TABLE_DROP = "DROP TABLE IF EXISTS " + LIST_TABLE_NAME + ";";
 
 
+        /// <summary>
+        /// constructeur
+        /// </summary>
+        /// <param name="database"></param>
         public ListDAO(Database database)
         {
             this.database = database;
         }
 
+        /// <summary>
+        /// Ajout d'une liste sur la base de donnée
+        /// </summary>
+        /// <param name="list"></param>
         public void Add(ListOfTasks list)
         {
             string query = String.Format("INSERT INTO {0} ( {1} ) VALUES (@name)", LIST_TABLE_NAME, LIST_NAME);
@@ -39,6 +47,10 @@ namespace GestionTache
             database.CloseConnection();
         }
 
+        /// <summary>
+        /// obtient toutes les liste présentent sur la base de donnée
+        /// </summary>
+        /// <returns></returns>
         public List<ListOfTasks> getAllList()
         {
 
@@ -52,7 +64,7 @@ namespace GestionTache
                 while (result.Read())
                 {
                     //listClient.Add(result[CLIENT_NAME].ToString());
-                    lists.Add(new ListOfTasks(result[LIST_NAME].ToString()));
+                    lists.Add(new ListOfTasks(result[LIST_NAME].ToString(),Int32.Parse(result[LIST_KEY].ToString())));
                 }
             }
             database.CloseConnection();
