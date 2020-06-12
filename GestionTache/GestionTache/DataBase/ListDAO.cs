@@ -12,16 +12,6 @@ namespace GestionTache
         private Database database; //base de données
 
 
-        public static readonly String LIST_KEY = "id_list";
-        public static readonly String LIST_NAME = "name_list";
-        public static readonly String LIST_TABLE_NAME = "List";
-        public static readonly String LIST_TABLE_CREATE =
-                "CREATE TABLE " + LIST_TABLE_NAME + " (" +
-                        LIST_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        LIST_NAME + " TEXT, )";
-        public static readonly String LIST_TABLE_DROP = "DROP TABLE IF EXISTS " + LIST_TABLE_NAME + ";";
-
-
         /// <summary>
         /// constructeur
         /// </summary>
@@ -37,7 +27,7 @@ namespace GestionTache
         /// <param name="list"></param>
         public void Add(ListOfTasks list)
         {
-            string query = String.Format("INSERT INTO {0} ( {1} ) VALUES (@name)", LIST_TABLE_NAME, LIST_NAME);
+            string query = String.Format("INSERT INTO {0} ( {1} ) VALUES (@name)", DatabaseBuild.LIST_TABLE_NAME, DatabaseBuild.LIST_NAME);
 
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
             database.OpenConnection();
@@ -54,7 +44,7 @@ namespace GestionTache
         public List<ListOfTasks> getAllList()
         {
 
-            string query = "SELECT * FROM " + LIST_TABLE_NAME;
+            string query = "SELECT * FROM " + DatabaseBuild.LIST_TABLE_NAME;
             List<ListOfTasks> lists= new List<ListOfTasks>();
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
             database.OpenConnection();
@@ -64,7 +54,7 @@ namespace GestionTache
                 while (result.Read())
                 {
                     //listClient.Add(result[CLIENT_NAME].ToString());
-                    lists.Add(new ListOfTasks(result[LIST_NAME].ToString(),Int32.Parse(result[LIST_KEY].ToString())));
+                    lists.Add(new ListOfTasks(result[DatabaseBuild.LIST_NAME].ToString(),Int32.Parse(result[DatabaseBuild.LIST_KEY].ToString())));
                 }
             }
             database.CloseConnection();

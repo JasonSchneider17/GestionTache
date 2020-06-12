@@ -12,9 +12,10 @@ namespace GestionTache
         private Database databaseObject;
         private TaskDAO taskDAO;
         private ListDAO listDAO;
+        private PriorityDAO priorityDAO;
 
 
-        public static readonly String TASK_KEY= "id_task";
+        /*public static readonly String TASK_KEY= "id_task";
         public static readonly String TASK_NAME = "name_task";
         public static readonly String TASK_COMMENT = "comment_task";
         public static readonly String TASK_STATE = "state_task";
@@ -41,6 +42,19 @@ namespace GestionTache
         public static readonly String LIST_TABLE_DROP = "DROP TABLE IF EXISTS " + LIST_TABLE_NAME + ";";
 
 
+        public static readonly String PRIORITY_KEY = "id_priority";
+        public static readonly String PRIORITY_NAME = "name_priority";
+        public static readonly String PRIORITY_DEGREE = "degree_priority";
+        public static readonly String PRIORITY_TABLE_NAME = "Priority";
+        public static readonly String PRIORITY_TABLE_CREATE =
+                "CREATE TABLE " + PRIORITY_TABLE_NAME + " (" +
+                        PRIORITY_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        PRIORITY_NAME + " TEXT, "+
+                        PRIORITY_DEGREE+" INTEGER )";
+        public static readonly String PRIORITY_TABLE_DROP = "DROP TABLE IF EXISTS " + PRIORITY_TABLE_NAME + ";";*/
+
+
+
 
 
 
@@ -56,6 +70,7 @@ namespace GestionTache
            
             this.databaseObject = database;
             DAOCreator();
+           
 
         }
 
@@ -66,6 +81,8 @@ namespace GestionTache
         {
             taskDAO = new TaskDAO(databaseObject);
             listDAO = new ListDAO(databaseObject);
+            priorityDAO = new PriorityDAO(databaseObject);
+           
            
         }
 
@@ -75,10 +92,12 @@ namespace GestionTache
         public void CreateTables()
         {
             databaseObject.OpenConnection();
-            SQLiteCommand myCommand = new SQLiteCommand(TASK_TABLE_CREATE, databaseObject.myConnection);
-            SQLiteCommand myCommand2 = new SQLiteCommand(LIST_TABLE_CREATE, databaseObject.myConnection);
+            SQLiteCommand myCommand = new SQLiteCommand(DatabaseBuild.TASK_TABLE_CREATE, databaseObject.myConnection);
+            SQLiteCommand myCommand2 = new SQLiteCommand(DatabaseBuild.LIST_TABLE_CREATE, databaseObject.myConnection);
+            SQLiteCommand myCommand3 = new SQLiteCommand(DatabaseBuild.PRIORITY_TABLE_CREATE, databaseObject.myConnection);
             myCommand.ExecuteNonQuery();
             myCommand2.ExecuteNonQuery();
+            myCommand3.ExecuteNonQuery();
             databaseObject.CloseConnection();
         }
 
@@ -88,10 +107,12 @@ namespace GestionTache
         public void RemoveTables()
         {
             databaseObject.OpenConnection();
-            SQLiteCommand myCommand = new SQLiteCommand(TASK_TABLE_DROP, databaseObject.myConnection);
-            SQLiteCommand myCommand2 = new SQLiteCommand(LIST_TABLE_DROP, databaseObject.myConnection);
+            SQLiteCommand myCommand = new SQLiteCommand(DatabaseBuild.TASK_TABLE_DROP, databaseObject.myConnection);
+            SQLiteCommand myCommand2 = new SQLiteCommand(DatabaseBuild.LIST_TABLE_DROP, databaseObject.myConnection);
+            SQLiteCommand myCommand3 = new SQLiteCommand(DatabaseBuild.PRIORITY_TABLE_DROP, databaseObject.myConnection);
             myCommand.ExecuteNonQuery();
             myCommand2.ExecuteNonQuery();
+            myCommand3.ExecuteNonQuery();
             databaseObject.CloseConnection();
         }
 

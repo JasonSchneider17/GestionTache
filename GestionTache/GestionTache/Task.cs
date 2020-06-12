@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace GestionTache
         private string comment;     //comment of the task
         private Priority priority;  //priority task
         private bool state;         //state task
+        private int listID;         //id de la liste affilié à la tache
 
         /// <summary>
         /// constructor
@@ -24,6 +26,13 @@ namespace GestionTache
             this.name = name;
             this.comment = comment;
             this.state = state;
+        }
+        public Task(string name, string comment, bool state,int listID)
+        {
+            this.name = name;
+            this.comment = comment;
+            this.state = state;
+            this.listID = listID;
         }
 
 
@@ -55,5 +64,10 @@ namespace GestionTache
             set { this.state = value; }
         }
 
+        public int ListID
+        {
+            get { return this.listID; }
+            set { this.listID = value; }
+        }
     }
 }

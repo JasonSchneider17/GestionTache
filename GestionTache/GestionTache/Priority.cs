@@ -10,6 +10,7 @@ namespace GestionTache
     {
         private string name;
         private int degreePriority;
+        private int idPriority;
 
 
         public Priority()

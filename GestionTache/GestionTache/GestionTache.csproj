@@ -93,11 +93,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DatabaseBuild.cs" />
     <Compile Include="DataBase\Database.cs" />
     <Compile Include="DataBase\DatabaseHandler.cs" />
     <Compile Include="DataBase\ListDAO.cs" />
     <Compile Include="ListOfTasks.cs" />
     <Compile Include="Priority.cs" />
+    <Compile Include="DataBase\PriorityDAO.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Task.cs" />

@@ -12,23 +12,6 @@ namespace GestionTache
         private Database database;  //base de données
 
 
-        public static readonly String TASK_KEY = "id_task";
-        public static readonly String TASK_NAME = "name_task";
-        public static readonly String TASK_COMMENT = "comment_task";
-        public static readonly String TASK_STATE = "state_task";
-        public static readonly String TASK_ID_LIST = "id_list";
-
-        public static readonly String TASK_TABLE_NAME = "Task";
-        public static readonly String TASK_TABLE_CREATE =
-                "CREATE TABLE " + TASK_TABLE_NAME + " (" +
-                        TASK_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        TASK_NAME + " TEXT, " +
-                        TASK_COMMENT + " TEXT, " +
-                        TASK_STATE + " INTEGER," +
-                         TASK_ID_LIST + "INTEGER   ) ";
-        public static readonly String TASK_TABLE_DROP = "DROP TABLE IF EXISTS " + TASK_TABLE_NAME + ";";
-
-
         /// <summary>
         /// constructeur
         /// </summary>
@@ -46,13 +29,18 @@ namespace GestionTache
         /// <param name="task"></param>
         public void Add(Task task)
         {
-            string query = String.Format("INSERT INTO {0} ( {1} , {2} , {3} ) VALUES (@name,@comment,@state)",TASK_TABLE_NAME, TASK_NAME,TASK_COMMENT,TASK_STATE);
+            string query = String.Format("INSERT INTO {0} ( {1} , {2} , {3}, {4} ) VALUES (@name,@comment,@state,@listID)", 
+                DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_NAME, DatabaseBuild.TASK_COMMENT, 
+                DatabaseBuild.TASK_STATE, DatabaseBuild.TASK_ID_LIST);
 
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
             database.OpenConnection();
             myCommand.Parameters.AddWithValue("@name", task.Name);
             myCommand.Parameters.AddWithValue("@comment", task.Comment);
-            myCommand.Parameters.AddWithValue("@state", 1);
+            myCommand.Parameters.AddWithValue("@state", task.State);
+            myCommand.Parameters.AddWithValue("@listID", task.ListID);
+
+
             myCommand.ExecuteNonQuery();
             database.CloseConnection();
         }
@@ -65,7 +53,7 @@ namespace GestionTache
         public List<Task> getAllTask()
         {
 
-            string query = "SELECT * FROM "+TASK_TABLE_NAME;
+            string query = "SELECT * FROM "+ DatabaseBuild.TASK_TABLE_NAME;
             List<Task> listTask = new List<Task>();
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
             database.OpenConnection();
@@ -75,7 +63,7 @@ namespace GestionTache
                 while (result.Read())
                 {
                     //listClient.Add(result[CLIENT_NAME].ToString());
-                    listTask.Add(new Task(result[TASK_NAME].ToString(),"test comment",true));
+                    listTask.Add(new Task(result[DatabaseBuild.TASK_NAME].ToString(),"test comment",true));
                 }
             }
             database.CloseConnection();
@@ -83,6 +71,35 @@ namespace GestionTache
 
 
             return listTask;
+        }
+
+
+
+        public List<Task> getAllTaskByListID(int listID)
+        {
+            string query = string.Format( "SELECT * FROM {0} WHERE {1} = {2} ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_ID_LIST,listID);
+            List<Task> listTask = new List<Task>();
+            SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+            database.OpenConnection();
+            SQLiteDataReader result = myCommand.ExecuteReader();
+            if (result.HasRows)
+            {
+                while (result.Read())
+                {
+                    string name = result[DatabaseBuild.TASK_NAME].ToString();
+                    string comment = result[DatabaseBuild.TASK_COMMENT].ToString();
+                    bool state= int.Parse(result[DatabaseBuild.TASK_STATE].ToString()) == 1;
+                    int idList = int.Parse(result[DatabaseBuild.TASK_ID_LIST].ToString());
+
+                    listTask.Add(new Task(name, comment, state,idList));
+                }
+            }
+            database.CloseConnection();
+
+
+
+            return listTask;
+
         }
 
 
