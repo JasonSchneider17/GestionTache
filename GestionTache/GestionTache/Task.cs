@@ -14,6 +14,8 @@ namespace GestionTache
         private Priority priority;  //priority task
         private bool state;         //state task
         private int listID;         //id de la liste affilié à la tache
+        private int idTask;
+        private List<Priority> prioritiesDisplay;
 
         /// <summary>
         /// constructor
@@ -33,6 +35,32 @@ namespace GestionTache
             this.comment = comment;
             this.state = state;
             this.listID = listID;
+        }
+        public Task(string name, string comment, bool state, int listID,List<Priority> priorities)
+        {
+            this.name = name;
+            this.comment = comment;
+            this.state = state;
+            this.listID = listID;
+            this.prioritiesDisplay = priorities;
+        }
+        public Task(string name, string comment, bool state,int idTask, int listID, List<Priority> priorities,int idPriority)
+        {
+            this.name = name;
+            this.comment = comment;
+            this.state = state;
+            this.idTask = idTask;
+            this.listID = listID;
+            this.prioritiesDisplay = priorities;
+            
+            foreach(Priority priority in prioritiesDisplay)
+            {
+                if (priority.IDPriority == idPriority)
+                {
+                    this.priority = priority;
+                }
+            }
+
         }
 
 
@@ -68,6 +96,18 @@ namespace GestionTache
         {
             get { return this.listID; }
             set { this.listID = value; }
+        }
+
+        public List<Priority> PrioritiesDisplay
+        {
+            get { return this.prioritiesDisplay; }
+            set { this.prioritiesDisplay = value; }
+        }
+
+        public int IDTask
+        {
+            get { return this.idTask; }
+            set { this.idTask = value; }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -28,8 +29,6 @@ namespace GestionTache
         bool listIsEdited = false;          //indique si on est en mode d'edition de tâche
         ListOfTasks selectedList;           //liste sélectionner par l'utilisateur
 
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -37,7 +36,7 @@ namespace GestionTache
 
             List<Task> tasks = new List<Task>();
 
-            
+
             //database
             databaseObject = new Database();
             databaseHandler = new DatabaseHandler(databaseObject);
@@ -45,6 +44,7 @@ namespace GestionTache
             if (databaseObject.FileCreated)
             {
                 databaseHandler.CreateTables();
+                databaseHandler.PriorityDAO.AddDefaultPriority();
             }
 
             //regarde la version de la base donné et réinitilise pour la mettre à jour
@@ -56,13 +56,18 @@ namespace GestionTache
                 databaseHandler.CreateTables();
                 Properties.Settings.Default.DatabaseVersionOld = Properties.Settings.Default.DatabaseVersionNew;
                 Properties.Settings.Default.Save();
+                databaseHandler.PriorityDAO.AddDefaultPriority();
             }
+
+
             //end database conf
 
             //charge toute les liste présent sur la base de donnée
             lists = databaseHandler.ListDAO.getAllList();
             //attribue la liste à la listbox
             listBox_listOfTasks.ItemsSource = lists;
+
+
 
 
 
@@ -103,9 +108,11 @@ namespace GestionTache
             listBox_listOfTasks.Items.Refresh();
 
             listBox_listOfTasks.SelectedItem = listBox_listOfTasks.Items[listBox_listOfTasks.Items.Count - 1];
+            listBox_listOfTasks.ScrollIntoView(listBox_listOfTasks.SelectedItem);
             listBox_listOfTasks.UpdateLayout();
 
-            ListBoxItem listBoxItem = (ListBoxItem)listBox_listOfTasks.ItemContainerGenerator.ContainerFromItem(listBox_listOfTasks.SelectedItem);
+
+            ListBoxItem listBoxItem = (ListBoxItem)listBox_listOfTasks.ItemContainerGenerator.ContainerFromIndex(listBox_listOfTasks.Items.Count - 1);
 
             TextBox target = getTextBoxFromLisboxItem("txtBoxNameList", listBoxItem);
             TextBlock textblockList = getTextBlockFromLisboxItem("txtBlockNameList", listBoxItem);
@@ -113,7 +120,7 @@ namespace GestionTache
             target.Visibility = Visibility.Visible;
             target.Focus();
             target.SelectAll();
-            
+
 
 
 
@@ -127,14 +134,19 @@ namespace GestionTache
         /// <param name="e"></param>
         private void Button_AddTask_Click(object sender, RoutedEventArgs e)
         {
-            selectedList.Tasks.Add(new Task("test", "comment", false,selectedList.ID));
+            List<Priority> listpriority = databaseHandler.PriorityDAO.getAllPriority();
+            Task newTask = new Task("test", "comment", false,0, selectedList.ID, listpriority, listpriority[0].IDPriority);
+            databaseHandler.TaskDAO.Add(newTask);
+            newTask.IDTask = databaseHandler.TaskDAO.getLastAddedTaskID();
+             selectedList.Tasks.Add(newTask);
             ListBox_Tasks.Items.Refresh();
 
             ListBox_Tasks.SelectedItem = ListBox_Tasks.Items[ListBox_Tasks.Items.Count - 1];
+            ListBox_Tasks.ScrollIntoView(ListBox_Tasks.SelectedItem);
             ListBox_Tasks.UpdateLayout();
 
             ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromItem(ListBox_Tasks.SelectedItem);
-
+            ComboBox combo = GetComboBoxFromTaskBoxItem("cmbBoxTaskPriority", listBoxItem);
             TextBox target = getTextBoxFromLisboxItem("txtboxNameTask", listBoxItem);
             TextBlock textblockList = getTextBlockFromLisboxItem("txtblockNameTask", listBoxItem);
             textblockList.Visibility = Visibility.Hidden;
@@ -145,7 +157,7 @@ namespace GestionTache
 
         }
 
-  
+
 
         /// <summary>
         /// si le focus de la textbox pour le nom de la liste est quitter ajoute cette liste dans la base de données
@@ -161,24 +173,26 @@ namespace GestionTache
             textblockList.Visibility = Visibility.Visible;
             target.Visibility = Visibility.Hidden;
 
-            databaseHandler.ListDAO.Add(lists[lists.Count-1]);
+            databaseHandler.ListDAO.Add(lists[lists.Count - 1]);
             listIsEdited = false;
-         
+
+            //ListNameEndEdition();
+
 
         }
 
         private void txtboxNameTask_LostFocus(object sender, RoutedEventArgs e)
         {
-            /*ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromItem(ListBox_Tasks.SelectedItem);
+            ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromItem(ListBox_Tasks.SelectedItem);
 
             TextBox target = getTextBoxFromLisboxItem("txtboxNameTask", listBoxItem);
             TextBlock textblockTask = getTextBlockFromLisboxItem("txtblockNameTask", listBoxItem);
             textblockTask.Visibility = Visibility.Visible;
             target.Visibility = Visibility.Hidden;
 
-            databaseHandler.TaskDAO.Add(selectedList.Tasks[selectedList.Tasks.Count - 1]);*/
+            //databaseHandler.TaskDAO.Add(selectedList.Tasks[selectedList.Tasks.Count - 1]);
 
-            ListNameEndEdition();
+
         }
 
 
@@ -188,7 +202,7 @@ namespace GestionTache
         /// <param name="nameTextBox"></param>
         /// <param name="item"></param>
         /// <returns></returns>
-        private TextBox getTextBoxFromLisboxItem(string nameTextBox,ListBoxItem item)
+        private TextBox getTextBoxFromLisboxItem(string nameTextBox, ListBoxItem item)
         {
             ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(item);
             DataTemplate dataTemplate = contentPresenter.ContentTemplate;
@@ -210,6 +224,13 @@ namespace GestionTache
             TextBlock target = (TextBlock)dataTemplate.FindName(nameTextBlock, contentPresenter);
 
             return target;
+        }
+
+        private ComboBox GetComboBoxFromTaskBoxItem(string nameComboBox, ListBoxItem item)
+        {
+            ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(item);
+            DataTemplate dataTemplate = contentPresenter.ContentTemplate;
+            return (ComboBox)dataTemplate.FindName(nameComboBox, contentPresenter);
         }
 
 
@@ -251,7 +272,7 @@ namespace GestionTache
 
                 txtBox_TitleList.Text = selectedList.Name;
 
-                selectedList.Tasks = databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID);
+                selectedList.Tasks = databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, databaseHandler.PriorityDAO.getAllPriority());
 
                 ListBox_Tasks.ItemsSource = selectedList.Tasks;
 
@@ -263,22 +284,56 @@ namespace GestionTache
 
         private void ListNameEndEdition()
         {
-            ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromItem(ListBox_Tasks.SelectedItem);
+            if (listIsEdited)
+            {
+                ListBoxItem listBoxItem = (ListBoxItem)listBox_listOfTasks.ItemContainerGenerator.ContainerFromItem(listBox_listOfTasks.SelectedItem);
 
-            TextBox target = getTextBoxFromLisboxItem("txtboxNameTask", listBoxItem);
-            TextBlock textblockTask = getTextBlockFromLisboxItem("txtblockNameTask", listBoxItem);
-            textblockTask.Visibility = Visibility.Visible;
-            target.Visibility = Visibility.Hidden;
+                TextBox target = getTextBoxFromLisboxItem("txtBoxNameList", listBoxItem);
+                TextBlock textblockList = getTextBlockFromLisboxItem("txtBlockNameList", listBoxItem);
+                textblockList.Visibility = Visibility.Visible;
+                target.Visibility = Visibility.Hidden;
 
-            databaseHandler.TaskDAO.Add(selectedList.Tasks[selectedList.Tasks.Count - 1]);
+                databaseHandler.ListDAO.Add(lists[lists.Count - 1]);
+                listIsEdited = false;
+            }
         }
 
         private void txtBoxNameList_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                ListNameEndEdition();
+                //ListNameEndEdition();
             }
+        }
+
+        private void cmbBoxTaskPriority_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            try {
+                Priority idPriority = (Priority)e.AddedItems[0];
+                _ = ListBox_Tasks.SelectedItem;
+
+                foreach (Task task in selectedList.Tasks)
+                {
+                    if (task.IDTask == idPriority.IDTaskAffiliated)
+                    {
+                        foreach (Priority priority in task.PrioritiesDisplay)
+                        {
+                            if (priority.IDPriority == idPriority.IDPriority)
+                            {
+                                task.Priority = priority;
+                                databaseHandler.TaskDAO.UpdateTaskPriorityId(task);
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch (IndexOutOfRangeException)
+            {
+
+            }
+
         }
     }
 }

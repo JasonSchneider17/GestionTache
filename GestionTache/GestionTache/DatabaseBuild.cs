@@ -8,11 +8,14 @@ namespace GestionTache
 {
     public static class DatabaseBuild
     {
+
+        //TABLE task 
         public const String TASK_KEY = "id_task";
         public const String TASK_NAME = "name_task";
         public const String TASK_COMMENT = "comment_task";
         public const String TASK_STATE = "state_task";
         public const String TASK_ID_LIST = "id_list";
+        public const String TASK_ID_PRIORITY = "id_priority";
 
         public const String TASK_TABLE_NAME = "Task";
         public const String TASK_TABLE_CREATE =
@@ -21,10 +24,12 @@ namespace GestionTache
                         TASK_NAME + " TEXT, " +
                         TASK_COMMENT + " TEXT, " +
                         TASK_STATE + " INTEGER," +
-                         TASK_ID_LIST + " INTEGER ) ";
+                         TASK_ID_LIST + " INTEGER, "+
+                         TASK_ID_PRIORITY+" INTEGER ) ";
         public const String TASK_TABLE_DROP = "DROP TABLE IF EXISTS " + TASK_TABLE_NAME + ";";
 
 
+        //table list
         public const String LIST_KEY = "id_list";
         public const String LIST_NAME = "name_list";
         public const String LIST_TABLE_NAME = "List";
@@ -34,7 +39,7 @@ namespace GestionTache
                         LIST_NAME + " TEXT )";
         public const String LIST_TABLE_DROP = "DROP TABLE IF EXISTS " + LIST_TABLE_NAME + ";";
 
-
+        //table priority
         public const String PRIORITY_KEY = "id_priority";
         public const String PRIORITY_NAME = "name_priority";
         public const String PRIORITY_DEGREE = "degree_priority";

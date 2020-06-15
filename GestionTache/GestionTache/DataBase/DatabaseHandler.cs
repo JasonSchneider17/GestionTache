@@ -130,6 +130,10 @@ namespace GestionTache
             get { return this.listDAO; }
         }
 
+        public PriorityDAO PriorityDAO
+        {
+            get { return this.priorityDAO; }
+        }
 
     }
 }

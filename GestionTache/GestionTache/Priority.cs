@@ -11,13 +11,29 @@ namespace GestionTache
         private string name;
         private int degreePriority;
         private int idPriority;
+        private int idTaskAffiliated;
 
 
-        public Priority()
+        public Priority(string name,int degreePriority)
         {
-
+            this.name = name;
+            this.degreePriority = degreePriority;
 
         }
+
+        public Priority(string name, int degreePriority,int idPriority)
+        {
+            this.name = name;
+            this.degreePriority = degreePriority;
+            this.idPriority = idPriority;
+
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0}", Name);
+        }
+
 
         public string Name
         {
@@ -30,6 +46,18 @@ namespace GestionTache
         {
             get { return this.degreePriority; }
             set { this.degreePriority = value; }
+        }
+
+        public int IDPriority
+        {
+            get { return this.idPriority; }
+            set { this.idPriority = value; }
+        }
+
+        public int IDTaskAffiliated
+        {
+            get { return this.idTaskAffiliated; }
+            set { this.idTaskAffiliated = value; }
         }
     }
 }
