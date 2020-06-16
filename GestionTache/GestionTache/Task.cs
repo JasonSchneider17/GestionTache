@@ -16,6 +16,7 @@ namespace GestionTache
         private int listID;         //id de la liste affilié à la tache
         private int idTask;
         private List<Priority> prioritiesDisplay;
+        private int idPriority;
 
         /// <summary>
         /// constructor
@@ -52,6 +53,7 @@ namespace GestionTache
             this.idTask = idTask;
             this.listID = listID;
             this.prioritiesDisplay = priorities;
+            this.idPriority = idPriority;
             
             foreach(Priority priority in prioritiesDisplay)
             {
@@ -82,7 +84,16 @@ namespace GestionTache
 
         public Priority Priority
         {
-            get { return this.priority; }
+            get { 
+            for(int i = 0; i < prioritiesDisplay.Count; i++)
+                {
+                    if (prioritiesDisplay[i].IDPriority == this.idPriority)
+                    {
+                        return prioritiesDisplay[i];
+                    }
+                }
+                return null;
+            }
             set { this.priority = value; }
         }
 
@@ -109,5 +120,12 @@ namespace GestionTache
             get { return this.idTask; }
             set { this.idTask = value; }
         }
+
+        public int IdPriority
+        {
+            get { return this.idPriority; }
+            set { this.idPriority=value;}
+        }
+
     }
 }

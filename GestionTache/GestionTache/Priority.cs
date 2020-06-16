@@ -11,7 +11,6 @@ namespace GestionTache
         private string name;
         private int degreePriority;
         private int idPriority;
-        private int idTaskAffiliated;
 
 
         public Priority(string name,int degreePriority)
@@ -54,10 +53,6 @@ namespace GestionTache
             set { this.idPriority = value; }
         }
 
-        public int IDTaskAffiliated
-        {
-            get { return this.idTaskAffiliated; }
-            set { this.idTaskAffiliated = value; }
-        }
+
     }
 }

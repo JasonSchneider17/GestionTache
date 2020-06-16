@@ -37,6 +37,19 @@ namespace GestionTache
             database.CloseConnection();
         }
 
+        public void UpdateListName(ListOfTasks list)
+        {
+            string query = String.Format("UPDATE {0} SET {1} = @nameList WHERE {2} = @listID ", DatabaseBuild.LIST_TABLE_NAME, DatabaseBuild.LIST_NAME, DatabaseBuild.LIST_KEY);
+            SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+            database.OpenConnection();
+            myCommand.Parameters.AddWithValue("@nameList", list.Name);
+            myCommand.Parameters.AddWithValue("@listID", list.ID);
+
+            myCommand.ExecuteNonQuery();
+            database.CloseConnection();
+        }
+
+
         /// <summary>
         /// obtient toutes les liste présentent sur la base de donnée
         /// </summary>
@@ -62,6 +75,24 @@ namespace GestionTache
 
 
             return lists;
+        }
+
+        public int getLastAddedListID()
+        {
+            string query = string.Format("SELECT * FROM {0} ORDER BY {1} DESC LIMIT 1", DatabaseBuild.LIST_TABLE_NAME, DatabaseBuild.LIST_KEY);
+            int id = -1;
+            SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+            database.OpenConnection();
+            SQLiteDataReader result = myCommand.ExecuteReader();
+            if (result.HasRows)
+            {
+                while (result.Read())
+                {
+                    id = int.Parse(result[DatabaseBuild.LIST_KEY].ToString());
+                }
+            }
+            database.CloseConnection();
+            return id;
         }
     }
 }

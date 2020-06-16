@@ -61,6 +61,19 @@ namespace GestionTache
         }
 
 
+        public void UpdateTaskName(Task task)
+        {
+            string query = String.Format("UPDATE {0} SET {1} = @nameTask WHERE {2} = @taskID ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_NAME, DatabaseBuild.TASK_KEY);
+            SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+            database.OpenConnection();
+            myCommand.Parameters.AddWithValue("nameTask", task.Name);
+            myCommand.Parameters.AddWithValue("@taskID", task.IDTask);
+
+            myCommand.ExecuteNonQuery();
+            database.CloseConnection();
+        }
+
+
         /// <summary>
         /// Btient toutes les tâche sur la base de donnée
         /// </summary>
@@ -110,7 +123,7 @@ namespace GestionTache
                     List<Priority> priorities1 = new List<Priority>();
                     foreach ( Priority priority in priorities)
                     {
-                        priority.IDTaskAffiliated = idTask;
+                       
                         priorities1.Add(priority);
                         
 
