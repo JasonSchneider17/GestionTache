@@ -11,14 +11,19 @@ namespace GestionTache
     {
         private Database database; //base de données
 
-       
+       /// <summary>
+       /// constructeur
+       /// </summary>
+       /// <param name="database"></param>
         public PriorityDAO(Database database)
         {
             this.database = database;
         }
 
 
-
+        /// <summary>
+        /// Ajout de priorité par défaut
+        /// </summary>
         public void AddDefaultPriority()
         {
             Priority priorityLOW = new Priority("LOW",1);
@@ -46,7 +51,7 @@ namespace GestionTache
         /// <summary>
         /// obtient toutes les priorité présentent sur la base de donnée
         /// </summary>
-        /// <returns></returns>
+        /// <returns>liste de priorité</returns>
         public List<Priority> getAllPriority()
         {
 

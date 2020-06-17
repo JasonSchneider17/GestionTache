@@ -8,21 +8,31 @@ namespace GestionTache
 {
     public class ListOfTasks
     {
-        private string name;
-        private List<Task> tasks;
-        private int id;
+        private string name;            //nom de la liste
+        private List<Task> tasks;       //liste de tâches
+        private int id;                 //ide de la liste sur la base de donnée
 
-
+        /// <summary>
+        /// constructeur
+        /// </summary>
+        /// <param name="name"></param>
         public ListOfTasks(string name)
         {
             this.name = name;
         }
 
+        /// <summary>
+        /// constructeur
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="id"></param>
         public ListOfTasks(string name,int id)
         {
             this.name = name;
             this.id = id;
         }
+
+        //getter setter
 
 
         public string Name

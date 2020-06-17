@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionTache"
         mc:Ignorable="d"
-        Title="Gestionnaire de tâche" Height="500" Width="800" MinWidth="800" MinHeight="500">
+        Title="Gestionnaire de tâche" Height="600" Width="900" MinWidth="800" MinHeight="500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -17,12 +17,12 @@
         </Grid.ColumnDefinitions>
 
         <DockPanel Grid.Row="0">
-            <Menu DockPanel.Dock="Top" >
-                <MenuItem Header="Liste">
+            <Menu DockPanel.Dock="Top" VerticalAlignment="Stretch" >
+                <MenuItem Header="Liste" Height="25" VerticalAlignment="Stretch">
                     <MenuItem x:Name="menuItem_addListOfTask" Header="Ajouter une liste"/>
                     
                 </MenuItem>
-                <MenuItem Header="Tâche" >
+                <MenuItem Header="Tâche" Click="MenuItem_Click" >
                     <MenuItem Header="Ajouter une Tâche"/>
                 </MenuItem>
 
@@ -105,17 +105,29 @@
                 </Grid>
                 </Border>
 
-                <ListBox x:Name="ListBox_Tasks" Grid.Row="1" BorderThickness="0" Margin="5,10,0,0"  >
+                <ListBox x:Name="ListBox_Tasks" HorizontalContentAlignment="Stretch" Grid.Row="1" BorderThickness="0" Margin="5,10,0,0"  >
                     <ListBox.Background>
                         <SolidColorBrush Opacity="0"/>
                     </ListBox.Background>
+
+                    <ListBox.Resources>
+                        <Style x:Key="DeleteItemContextMenuStyle" TargetType="MenuItem">
+                            <EventSetter Event="Click" Handler="MenuItem_Click_Delete"/>
+                        </Style>
+                    </ListBox.Resources>
                     
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-                            <Setter Property="BorderThickness" Value="1" />
-                            <Setter Property="BorderBrush" Value="Black" />
                             <Setter Property="Margin" Value="0,2,0,2"/>
                             <Setter Property="Tag" Value="{Binding IDTask}"/>
+                            <EventSetter Event="Loaded" Handler="ListBoxItem_Loaded"/>
+                            <Setter Property="ContextMenu" >
+                                <Setter.Value>
+                                    <ContextMenu >
+                                        <MenuItem Header="Supprimer Tâche" Tag="{Binding IDTask}" Style="{StaticResource DeleteItemContextMenuStyle}" />
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
 
 
 
@@ -124,24 +136,26 @@
                     <ListBox.ItemTemplate>
                         
                         <DataTemplate>
-                          
-                            
-                            <Grid Height="50" >
+
+                            <Border x:Name="BorderGridItemTask" BorderBrush="Black" BorderThickness="1" CornerRadius="5" >
+                            <Grid x:Name="GridItemTask" Height="70" HorizontalAlignment="Stretch" Margin="5,0,5,0" >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="75"/>
                                 </Grid.ColumnDefinitions>
                                 
-                                <CheckBox Grid.Column="0"  IsChecked="{Binding State}" FontSize="25" VerticalAlignment="Center" >
+                                <CheckBox x:Name="CheckBox_TaskState" Grid.Column="0"  IsChecked="{Binding State}" FontSize="25" VerticalAlignment="Center" Checked="CheckBox_TaskState_Checked" Tag="{Binding IDTask}" Unchecked="CheckBox_TaskState_Unchecked" >
                                     <CheckBox.LayoutTransform>
                                         <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
                                     </CheckBox.LayoutTransform>
                                 </CheckBox>
+                                
                                 <TextBlock x:Name="txtblockNameTask"  Grid.Column="1" Text="{Binding Name}" Tag="{Binding IDTask}"
-                                           Visibility="Visible" VerticalAlignment="Center" Width="200" FontSize="15" Panel.ZIndex="0" />
+                                           Visibility="Visible" VerticalAlignment="Center"  FontSize="15" Panel.ZIndex="0" HorizontalAlignment="Stretch" />
                                 <TextBox x:Name="txtboxNameTask" Grid.Column="1" Text="{Binding Name}" Panel.ZIndex="1"
-                                      Visibility="Hidden" VerticalAlignment="Center" Width="200" FontSize="15"  LostFocus="txtboxNameTask_LostFocus" Tag="{Binding IDTask}" KeyDown="txtboxNameTask_KeyDown" />
+                                      Visibility="Hidden" VerticalAlignment="Center"  FontSize="15"  
+                                         LostFocus="txtboxNameTask_LostFocus" Tag="{Binding IDTask}" KeyDown="txtboxNameTask_KeyDown"  HorizontalAlignment="Stretch"/>
                                 <ComboBox x:Name="cmbBoxTaskPriority" ItemsSource="{Binding PrioritiesDisplay }" SelectedItem="{Binding Priority}" Grid.Column="2" 
                                           Height="25" VerticalAlignment="Center" IsSynchronizedWithCurrentItem="True" 
                                           SelectionChanged="cmbBoxTaskPriority_SelectionChanged" Tag="{Binding IDTask}" >
@@ -154,11 +168,19 @@
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
                             </Grid>
+                            </Border>
 
 
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+
+                <Border BorderBrush="Black" Grid.Row="2" BorderThickness="0,1,0,0">
+                    <Grid>
+                <TextBlock x:Name="Textblock_Comment"  Margin="10,5,10,5" TextWrapping="Wrap"  Text="wdajwaiwodjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjawjidoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooajowdiiiiiiiiiiiiiii"/>
+                <TextBox x:Name="TextBox_Comment"  Margin="10,5,10,5" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"  Text="wdajwaiwodjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjawjidoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooajowdiiiiiiiiiiiiiii"/>
+                    </Grid>
+                </Border>
 
 
 

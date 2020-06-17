@@ -9,19 +9,19 @@ namespace GestionTache
 {
    public class Task
     {
-        private string name;        //name of the task
-        private string comment;     //comment of the task
-        private Priority priority;  //priority task
-        private bool state;         //state task
-        private int listID;         //id de la liste affilié à la tache
-        private int idTask;
-        private List<Priority> prioritiesDisplay;
-        private int idPriority;
+        private string name;                        //name of the task
+        private string comment;                     //comment of the task
+        private Priority priority;                  //priority task
+        private bool state;                         //state task
+        private int listID;                         //id de la liste affilié à la tache
+        private int idTask;                         //id de la tâche sur la base de données
+        private List<Priority> prioritiesDisplay;   //Priorité pour l'affichage
+        private int idPriority;                     //id de la priorité affilié 
 
         /// <summary>
         /// constructor
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">nom de la </param>
         /// <param name="comment"></param>
         /// <param name="state"></param>
         public Task(string name,string comment, bool state)
@@ -84,7 +84,9 @@ namespace GestionTache
 
         public Priority Priority
         {
+            //obtient la priorité à partir de la liste de priorité pour que l'affichage des priorité de la combobox fonnctionne
             get { 
+
             for(int i = 0; i < prioritiesDisplay.Count; i++)
                 {
                     if (prioritiesDisplay[i].IDPriority == this.idPriority)

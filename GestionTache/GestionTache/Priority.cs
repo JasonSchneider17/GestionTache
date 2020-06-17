@@ -8,18 +8,27 @@ namespace GestionTache
 {
     public class Priority
     {
-        private string name;
-        private int degreePriority;
-        private int idPriority;
+        private string name;            //nom de la priorité
+        private int degreePriority;     //degrée indiquant le niveau de priorité
+        private int idPriority;         //id de la priorité sur la base de donné
 
-
+        /// <summary>
+        /// constructeur
+        /// </summary>
+        /// <param name="name">nom de la priorité</param>
+        /// <param name="degreePriority">degré de la priorité</param>
         public Priority(string name,int degreePriority)
         {
             this.name = name;
             this.degreePriority = degreePriority;
 
         }
-
+        /// <summary>
+        /// Constructeur
+        /// </summary>
+        /// <param name="name">nom de la priorité<</param>
+        /// <param name="degreePriority">degré de la priorité</param>
+        /// <param name="idPriority">id priorité</param>
         public Priority(string name, int degreePriority,int idPriority)
         {
             this.name = name;
@@ -34,6 +43,8 @@ namespace GestionTache
         }
 
 
+
+        //getter setter
         public string Name
         {
             get { return this.name; }

@@ -26,7 +26,7 @@ namespace GestionTache
         /// <summary>
         /// ajout d'une tâche sur la base de donnée
         /// </summary>
-        /// <param name="task"></param>
+        /// <param name="task">Tâche à ajouter</param>
         public void Add(Task task)
         {
             string query = String.Format("INSERT INTO {0} ( {1} , {2} , {3}, {4}, {5} ) VALUES (@name,@comment,@state,@listID, @priorityID)", 
@@ -47,7 +47,10 @@ namespace GestionTache
             database.CloseConnection();
         }
 
-
+        /// <summary>
+        /// Change la priorité de la tâche
+        /// </summary>
+        /// <param name="task">Tâche contenant la nouvelle prioritée</param>
         public void UpdateTaskPriorityId(Task task)
         {
             string query = String.Format("UPDATE {0} SET {1} = @priorityID WHERE {2} = @taskID ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_ID_PRIORITY,DatabaseBuild.TASK_KEY);
@@ -61,6 +64,10 @@ namespace GestionTache
         }
 
 
+        /// <summary>
+        /// Change le nom de la tâche
+        /// </summary>
+        /// <param name="task">Tâche contenant le nouveau nom</param>
         public void UpdateTaskName(Task task)
         {
             string query = String.Format("UPDATE {0} SET {1} = @nameTask WHERE {2} = @taskID ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_NAME, DatabaseBuild.TASK_KEY);
@@ -73,11 +80,42 @@ namespace GestionTache
             database.CloseConnection();
         }
 
+        /// <summary>
+        /// Change l'état de la tâche
+        /// </summary>
+        /// <param name="task">Tâche contenant le nouvel état</param>
+        public void UpdateTaskState(Task task)
+        {
+            string query = String.Format("UPDATE {0} SET {1} = @taskState WHERE {2} = @taskID ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_STATE, DatabaseBuild.TASK_KEY);
+            SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+            database.OpenConnection();
+
+
+            myCommand.Parameters.AddWithValue("@taskState", task.State);
+            myCommand.Parameters.AddWithValue("@taskID", task.IDTask);
+
+            myCommand.ExecuteNonQuery();
+            database.CloseConnection();
+        }
+        /// <summary>
+        /// Supprime la tâche
+        /// </summary>
+        /// <param name="task">Tâche à supprimer</param>
+        public void DeletedTask(Task task)
+        {
+            string query = String.Format("DELETE FROM {0} WHERE {1} = @taskID ", DatabaseBuild.TASK_TABLE_NAME,DatabaseBuild.TASK_KEY);
+            SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+            database.OpenConnection();
+            myCommand.Parameters.AddWithValue("@taskID", task.IDTask);
+            myCommand.ExecuteNonQuery();
+            database.CloseConnection();
+        }
+
 
         /// <summary>
-        /// Btient toutes les tâche sur la base de donnée
+        /// Obtient toutes les tâche sur la base de donnée
         /// </summary>
-        /// <returns></returns>
+        /// <returns> liste de tâche</returns>
         public List<Task> getAllTask()
         {
 
@@ -103,6 +141,13 @@ namespace GestionTache
 
 
 
+
+        /// <summary>
+        /// Obtient toute les tâche se lon l'id de la liste
+        /// </summary>
+        /// <param name="listID"> id de la liste </param>
+        /// <param name="priorities">priorité de la tâche (ne sert que pour l'affichage)</param>
+        /// <returns>liste de tâches</returns>
         public List<Task> getAllTaskByListID(int listID,List<Priority> priorities)
         {
             string query = string.Format( "SELECT * FROM {0} WHERE {1} = {2} ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_ID_LIST,listID);
@@ -139,7 +184,10 @@ namespace GestionTache
 
         }
 
-
+        /// <summary>
+        /// Obtient l'id de la tâche dernièrement ajouté
+        /// </summary>
+        /// <returns> id tâche</returns>
         public int getLastAddedTaskID()
         {
             string query = string.Format("SELECT * FROM {0} ORDER BY {1} DESC LIMIT 1", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_KEY);
@@ -157,6 +205,8 @@ namespace GestionTache
             database.CloseConnection();
             return id;
         }
+
+
 
 
 

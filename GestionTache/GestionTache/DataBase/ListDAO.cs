@@ -24,7 +24,7 @@ namespace GestionTache
         /// <summary>
         /// Ajout d'une liste sur la base de donnée
         /// </summary>
-        /// <param name="list"></param>
+        /// <param name="list">liste à ajouté</param>
         public void Add(ListOfTasks list)
         {
             string query = String.Format("INSERT INTO {0} ( {1} ) VALUES (@name)", DatabaseBuild.LIST_TABLE_NAME, DatabaseBuild.LIST_NAME);
@@ -37,6 +37,10 @@ namespace GestionTache
             database.CloseConnection();
         }
 
+        /// <summary>
+        /// Met à jour le nom de la lite sur la base de données
+        /// </summary>
+        /// <param name="list">liste à modifier</param>
         public void UpdateListName(ListOfTasks list)
         {
             string query = String.Format("UPDATE {0} SET {1} = @nameList WHERE {2} = @listID ", DatabaseBuild.LIST_TABLE_NAME, DatabaseBuild.LIST_NAME, DatabaseBuild.LIST_KEY);
@@ -53,7 +57,7 @@ namespace GestionTache
         /// <summary>
         /// obtient toutes les liste présentent sur la base de donnée
         /// </summary>
-        /// <returns></returns>
+        /// <returns> liste de liste</returns>
         public List<ListOfTasks> getAllList()
         {
 
@@ -77,6 +81,10 @@ namespace GestionTache
             return lists;
         }
 
+        /// <summary>
+        /// Obtient l'id de la liste récemment ajouté 
+        /// </summary>
+        /// <returns>id liste</returns>
         public int getLastAddedListID()
         {
             string query = string.Format("SELECT * FROM {0} ORDER BY {1} DESC LIMIT 1", DatabaseBuild.LIST_TABLE_NAME, DatabaseBuild.LIST_KEY);

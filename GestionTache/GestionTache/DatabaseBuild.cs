@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace GestionTache
 {
+
+    /// <summary>
+    /// Contient toute les informations de tables de la base de donné
+    /// </summary>
     public static class DatabaseBuild
     {
+
 
         //TABLE task 
         public const String TASK_KEY = "id_task";
