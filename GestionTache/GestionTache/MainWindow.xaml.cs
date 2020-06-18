@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +22,7 @@ namespace GestionTache
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window,INotifyPropertyChanged
     {
 
         Database databaseObject;            //base de données
@@ -28,6 +30,28 @@ namespace GestionTache
         List<ListOfTasks> lists;            //liste
         bool listIsEdited = false;          //indique si on est en mode d'edition de tâche
         ListOfTasks selectedList;           //liste sélectionner par l'utilisateur
+        string commentText;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+ 
+        protected virtual void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public string CommentText
+        {
+            get { return this.commentText; }
+            set { this.commentText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // Create the OnPropertyChanged method to raise the event
+        // The calling member's name will be used as the parameter.
+
+
 
         public MainWindow()
         {
@@ -67,9 +91,10 @@ namespace GestionTache
             //attribue la liste à la listbox
             listBox_listOfTasks.ItemsSource = lists;
 
+            CommentText = "truc binding de merder";
 
 
-
+            DataContext = this;
 
 
         }
@@ -460,7 +485,8 @@ namespace GestionTache
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-           // SetCrossOutTitle();
+            TextBox_Comment.Visibility = Visibility.Hidden;
+            
         }
 
         /// <summary>
@@ -556,7 +582,7 @@ namespace GestionTache
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = e.Source as MenuItem;
-            for(int i=0; i < ListBox_Tasks.Items.Count - 1; i++)
+            for(int i=0; i < ListBox_Tasks.Items.Count; i++)
             {
                 //supprime la tâche de la base de donnée
                 if (int.Parse( menuItem.Tag.ToString()) == selectedList.Tasks[i].IDTask)
@@ -571,5 +597,74 @@ namespace GestionTache
         }
 
 
+
+        private void ListBoxItem_Selected(object sender, RoutedEventArgs e)
+        {
+            ListBoxItem item = e.Source as ListBoxItem;
+            BorderComment.Visibility = Visibility.Visible;
+
+            foreach(Task task in selectedList.Tasks)
+            {
+                if(task.IDTask == int.Parse(item.Tag.ToString()))
+                {
+                    TextBox_Comment.Tag = task.IDTask.ToString();
+                   CommentText = task.Comment;
+                    
+                    break;
+                }
+            }
+
+
+        }
+
+
+
+        private void TextBox_Comment_KeyDown(object sender, KeyEventArgs e)
+        {
+
+            if (e.Key == Key.Escape)
+            {
+                Keyboard.ClearFocus();
+                foreach (Task task in selectedList.Tasks)
+                {
+                    if (task.IDTask == int.Parse(TextBox_Comment.Tag.ToString()))
+                    {
+
+                        if (task.Comment != CommentText)
+                        {
+                            task.Comment = CommentText;
+                            databaseHandler.TaskDAO.UpdateTaskComment(task);
+                        }
+
+
+                        break;
+                    }
+                }
+
+            }
+
+        }
+
+        private void SaveComment_Click(object sender, RoutedEventArgs e)
+        {
+            TextBox_Comment.Visibility = Visibility.Hidden;
+        }
+
+
+
+        private void TextBox_Comment_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            TextBox_Comment.Visibility = Visibility.Hidden;
+        }
+
+        private void Textblock_Comment_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
+            {
+                TextBox_Comment.Visibility = Visibility.Visible;
+                
+
+            }
+        }
     }
 }

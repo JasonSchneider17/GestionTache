@@ -87,7 +87,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="1*"/>
-                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="150"/>
                 </Grid.RowDefinitions>
 
 
@@ -121,6 +121,8 @@
                             <Setter Property="Margin" Value="0,2,0,2"/>
                             <Setter Property="Tag" Value="{Binding IDTask}"/>
                             <EventSetter Event="Loaded" Handler="ListBoxItem_Loaded"/>
+                            <EventSetter Event="Selected" Handler="ListBoxItem_Selected"/>
+
                             <Setter Property="ContextMenu" >
                                 <Setter.Value>
                                     <ContextMenu >
@@ -175,10 +177,20 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <Border BorderBrush="Black" Grid.Row="2" BorderThickness="0,1,0,0">
+                <Border x:Name="BorderComment" BorderBrush="Black" Grid.Row="2" BorderThickness="0,1,0,0" Visibility="Hidden">
                     <Grid>
-                <TextBlock x:Name="Textblock_Comment"  Margin="10,5,10,5" TextWrapping="Wrap"  Text="wdajwaiwodjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjawjidoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooajowdiiiiiiiiiiiiiii"/>
-                <TextBox x:Name="TextBox_Comment"  Margin="10,5,10,5" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"  Text="wdajwaiwodjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjawjidoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooajowdiiiiiiiiiiiiiii"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Content="Commentaire" FontWeight="Bold"/>
+                      
+
+                        <ScrollViewer Grid.Row="1">
+                        <TextBlock x:Name="Textblock_Comment"  Margin="10,5,10,5" TextWrapping="Wrap"  Text="{Binding Path=CommentText, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" MouseDown="Textblock_Comment_MouseDown" />
+                        </ScrollViewer>
+                        <TextBox x:Name="TextBox_Comment" Grid.Row="1" Visibility="Hidden" Panel.ZIndex="1"   Margin="10,5,10,5"  KeyDown="TextBox_Comment_KeyDown"  TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"  Text="{Binding Path=CommentText, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" BorderBrush="Black"  LostKeyboardFocus="TextBox_Comment_LostKeyboardFocus"  />
                     </Grid>
                 </Border>
 

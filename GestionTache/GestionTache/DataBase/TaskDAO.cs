@@ -97,6 +97,25 @@ namespace GestionTache
             myCommand.ExecuteNonQuery();
             database.CloseConnection();
         }
+
+        /// <summary>
+        /// Change le commentaire de la tâche
+        /// </summary>
+        /// <param name="task">Tâche contenant le nouveau commentaire</param>
+        public void UpdateTaskComment(Task task)
+        {
+            string query = String.Format("UPDATE {0} SET {1} = @taskComment WHERE {2} = @taskID ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_COMMENT, DatabaseBuild.TASK_KEY);
+            SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+            database.OpenConnection();
+
+
+            myCommand.Parameters.AddWithValue("@taskComment", task.Comment);
+            myCommand.Parameters.AddWithValue("@taskID", task.IDTask);
+
+            myCommand.ExecuteNonQuery();
+            database.CloseConnection();
+        }
+
         /// <summary>
         /// Supprime la tâche
         /// </summary>
