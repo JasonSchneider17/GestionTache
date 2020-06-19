@@ -130,6 +130,16 @@ namespace GestionTache
             database.CloseConnection();
         }
 
+        public void DeletedTaksByListID(int listID)
+        {
+            string query = String.Format("DELETE FROM {0} WHERE {1} = @listID ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_ID_LIST);
+            SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+            database.OpenConnection();
+            myCommand.Parameters.AddWithValue("@listID", listID);
+            myCommand.ExecuteNonQuery();
+            database.CloseConnection();
+        }
+
 
         /// <summary>
         /// Obtient toutes les tâche sur la base de donnée
@@ -223,6 +233,31 @@ namespace GestionTache
             }
             database.CloseConnection();
             return id;
+        }
+
+
+        public int CountTaskToDoByList(int idList)
+        {
+            string query = string.Format("SELECT COUNT(*) TotalTasks FROM {0} WHERE {1} = {2} AND {3} = 0 ",DatabaseBuild.TASK_TABLE_NAME,DatabaseBuild.TASK_ID_LIST,idList,DatabaseBuild.TASK_STATE);
+            int numberTask = -1;
+            SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+            database.OpenConnection();
+            SQLiteDataReader result = myCommand.ExecuteReader();
+
+           
+            if (result.HasRows)
+            {
+                while (result.Read())
+                {
+                    numberTask = int.Parse(result["TotalTasks"].ToString());
+                }
+            }
+
+            database.CloseConnection();
+
+            return numberTask;
+
+
         }
 
 

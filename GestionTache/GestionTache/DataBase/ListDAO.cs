@@ -54,6 +54,16 @@ namespace GestionTache
         }
 
 
+        public void DeleteList(ListOfTasks list)
+        {
+            string query = String.Format("DELETE FROM {0}  WHERE {1} = @listID ", DatabaseBuild.LIST_TABLE_NAME, DatabaseBuild.LIST_KEY);
+            SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+            database.OpenConnection();
+            myCommand.Parameters.AddWithValue("@listID", list.ID);
+            myCommand.ExecuteNonQuery();
+            database.CloseConnection();
+        }
+
         /// <summary>
         /// obtient toutes les liste présentent sur la base de donnée
         /// </summary>
@@ -61,7 +71,10 @@ namespace GestionTache
         public List<ListOfTasks> getAllList()
         {
 
-            string query = "SELECT * FROM " + DatabaseBuild.LIST_TABLE_NAME;
+            string query = string.Format("SELECT * FROM {0} ", DatabaseBuild.LIST_TABLE_NAME);
+            /*string query = string.Format("SELECT COUNT(*) TotalCount , {2}.{0} , {2}.{1} TotalCount,* FROM {2} JOIN {3} ON {2}.{4} = {3}.{5} "
+               ,DatabaseBuild.LIST_NAME,DatabaseBuild.LIST_KEY,DatabaseBuild.LIST_TABLE_NAME,DatabaseBuild.TASK_TABLE_NAME,DatabaseBuild.LIST_KEY,DatabaseBuild.TASK_ID_LIST);
+            */
             List<ListOfTasks> lists= new List<ListOfTasks>();
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
             database.OpenConnection();
@@ -71,6 +84,7 @@ namespace GestionTache
                 while (result.Read())
                 {
                     //listClient.Add(result[CLIENT_NAME].ToString());
+                    //Console.WriteLine(result["TotalCount"]);
                     lists.Add(new ListOfTasks(result[DatabaseBuild.LIST_NAME].ToString(),Int32.Parse(result[DatabaseBuild.LIST_KEY].ToString())));
                 }
             }
@@ -80,6 +94,8 @@ namespace GestionTache
 
             return lists;
         }
+
+        
 
         /// <summary>
         /// Obtient l'id de la liste récemment ajouté 

@@ -28,7 +28,7 @@ namespace GestionTache
         Database databaseObject;            //base de données
         DatabaseHandler databaseHandler;    //interagir avec base de données
         List<ListOfTasks> lists;            //liste
-        bool listIsEdited = false;          //indique si on est en mode d'edition de tâche
+        //bool listIsEdited = false;          //indique si on est en mode d'edition de tâche
         ListOfTasks selectedList;           //liste sélectionner par l'utilisateur
         string commentText;
 
@@ -88,6 +88,12 @@ namespace GestionTache
 
             //charge toute les liste présent sur la base de donnée
             lists = databaseHandler.ListDAO.getAllList();
+
+            foreach(ListOfTasks list in lists)
+            {
+                list.NumberTaskToDo = databaseHandler.TaskDAO.CountTaskToDoByList(list.ID);
+            }
+
             //attribue la liste à la listbox
             listBox_listOfTasks.ItemsSource = lists;
 
@@ -128,7 +134,7 @@ namespace GestionTache
         /// <param name="e"></param>
         private void Button_AddList_Click(object sender, RoutedEventArgs e)
         {
-            listIsEdited = true;
+            
 
             ListOfTasks list = new ListOfTasks("add");
             //ajoute la liste dans la base de donnée et récupère l'id attribué par la base de donnée à la liste ajouté
@@ -163,17 +169,20 @@ namespace GestionTache
             //ajoute la tâche dans la base de donnée et récupère l'id attribué par la base de donnée à la tâche ajouté
             Task newTask = new Task("test", "comment", false, 0, selectedList.ID, listpriority, listpriority[0].IDPriority);
             databaseHandler.TaskDAO.Add(newTask);
+            manipulateNumberTaskToDo(true, selectedList.ID);
+
+
             newTask.IDTask = databaseHandler.TaskDAO.getLastAddedTaskID();
             //ajoute la tâche à la liste de tâche actuellement affiché
             selectedList.Tasks.Add(newTask);
-            ListBox_Tasks.Items.Refresh();
+            ListBox_Tasks.Items.Refresh();  
 
             //selectionne le listboxitem ajouté et focus la vue dessus
             ListBox_Tasks.SelectedItem = ListBox_Tasks.Items[ListBox_Tasks.Items.Count - 1];
             ListBox_Tasks.ScrollIntoView(ListBox_Tasks.SelectedItem);
             ListBox_Tasks.UpdateLayout();
           
-            ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromItem(ListBox_Tasks.SelectedItem);
+            ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromIndex(ListBox_Tasks.Items.Count - 1);
            
             ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(listBoxItem);
             DataTemplate dataTemplate = contentPresenter.ContentTemplate;
@@ -276,18 +285,15 @@ namespace GestionTache
         }
 
 
-        /// <summary>
-        /// Affiche les tâches de la liste séléctionner
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void listBox_listOfTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+
+        private void ListBoxItem_Selected_1(object sender, RoutedEventArgs e)
         {
 
-            if (!listIsEdited)
-            {
+            
                 //récupère les infos de la liste séléctionner
-                ListBoxItem itemSelected = (ListBoxItem)listBox_listOfTasks.ItemContainerGenerator.ContainerFromItem(listBox_listOfTasks.SelectedItem);
+                //ListBoxItem itemSelected = (ListBoxItem)listBox_listOfTasks.ItemContainerGenerator.ContainerFromItem(listBox_listOfTasks.SelectedItem);
+                ListBoxItem itemSelected = e.Source as ListBoxItem;
                 selectedList = (ListOfTasks)itemSelected.DataContext;
                 //change le titre de l'affichage des tâches
                 txtBox_TitleList.Text = selectedList.Name;
@@ -295,11 +301,12 @@ namespace GestionTache
                 selectedList.Tasks = databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, databaseHandler.PriorityDAO.getAllPriority());
                 //source de donnée de la listbox de tâche
                 ListBox_Tasks.ItemsSource = selectedList.Tasks;
+                Button_AddTask.IsEnabled = true;
 
 
-               
 
-            }
+            
+
         }
 
         /// <summary>
@@ -308,8 +315,7 @@ namespace GestionTache
         /// <param name="textBox"> textbox édité</param>
         private void ListNameEndEdition(TextBox textBox)
         {
-            if (listIsEdited)
-            {
+
                 //masque la textbox pour n'afficher que le textblock
                 textBox.Visibility = Visibility.Hidden;
 
@@ -318,13 +324,14 @@ namespace GestionTache
                 {
                     if (list.ID == int.Parse(textBox.Tag.ToString()))
                     {
+                        list.Name = textBox.Text;
                         databaseHandler.ListDAO.UpdateListName(list);
+                        listBox_listOfTasks.Items.Refresh();
                         break;
                     }
                 }
-
-                listIsEdited = false;
-            }
+           
+            
         }
 
         /// <summary>
@@ -556,12 +563,17 @@ namespace GestionTache
                                 {
                                     //ajoute un barrage 
                                     target.TextDecorations = TextDecorations.Strikethrough;
+                                    manipulateNumberTaskToDo(false, task.ListID);
+
                                 }
                                 else
                                 {
                                     //enlève le barrage
                                     target.TextDecorations = null;
+                                    manipulateNumberTaskToDo(true, task.ListID);
+
                                 }
+                                
 
                                 break;
                             }
@@ -579,7 +591,7 @@ namespace GestionTache
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        private void MenuItem_Task_Click_Delete(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = e.Source as MenuItem;
             for(int i=0; i < ListBox_Tasks.Items.Count; i++)
@@ -587,8 +599,26 @@ namespace GestionTache
                 //supprime la tâche de la base de donnée
                 if (int.Parse( menuItem.Tag.ToString()) == selectedList.Tasks[i].IDTask)
                 {
-                    databaseHandler.TaskDAO.DeletedTask(selectedList.Tasks[i]);
-                    selectedList.Tasks.RemoveAt(i);
+                    
+
+                    if (!selectedList.Tasks[i].State)
+                    {
+                        MessageBoxResult dialog = MessageBox.Show("Cette tâche n'est pas encore réalisé voulez-vous vraiment la supprimer?", "Alerte suppresion tâche", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+
+                        if (dialog == MessageBoxResult.Yes)
+                        {
+                            manipulateNumberTaskToDo(false, selectedList.ID);
+                            databaseHandler.TaskDAO.DeletedTask(selectedList.Tasks[i]);
+                            selectedList.Tasks.RemoveAt(i);
+                        }
+                       
+                    }
+                    else
+                    {
+                        selectedList.Tasks.RemoveAt(i);
+                        databaseHandler.TaskDAO.DeletedTask(selectedList.Tasks[i]);
+                    }
+
                     ListBox_Tasks.Items.Refresh();
 
                     break;
@@ -596,6 +626,102 @@ namespace GestionTache
             }
         }
 
+        private void MenuItem_Task_Click_Update(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = e.Source as MenuItem;
+
+            foreach(Task task in selectedList.Tasks)
+            {
+                if (task.IDTask == int.Parse(menuItem.Tag.ToString()))
+                {
+                    if (!task.State)
+                    {
+                        ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromItem(ListBox_Tasks.SelectedItem);
+
+                        TextBox target = getTextBoxFromLisboxItem("txtboxNameTask", listBoxItem);
+                        target.Visibility = Visibility.Visible;
+                        target.Focus();
+                        break;
+                    }
+                }
+            }
+
+
+        }
+
+        private void List_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = e.Source as MenuItem;
+
+
+            for(int i = 0; i < lists.Count; i++)
+            {
+                if (int.Parse(menuItem.Tag.ToString()) == lists[i].ID)
+                {
+                    if (lists[i].Tasks.Count > 0)
+                    {
+                        MessageBoxResult dialog = MessageBox.Show("En supprimant cette liste les tâches lié seron aussi supprimer voulez-vous continuer?", "Alerte suppresion liste", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+
+                        if(dialog == MessageBoxResult.Yes)
+                        {
+                            databaseHandler.ListDAO.DeleteList(lists[i]);
+                            databaseHandler.TaskDAO.DeletedTaksByListID(lists[i].ID);
+                            txtBox_TitleList.Text = "";
+                            ListBox_Tasks.ItemsSource = null;
+                            ListBox_Tasks.Items.Refresh();
+
+                            lists.RemoveAt(i);
+                            Button_AddTask.IsEnabled = false;
+
+                        }
+                    }
+                    else
+                    {
+                        databaseHandler.ListDAO.DeleteList(lists[i]);
+                        txtBox_TitleList.Text = "";
+                        lists.RemoveAt(i);
+                        Button_AddTask.IsEnabled = false;
+                    }
+                    listBox_listOfTasks.Items.Refresh();
+                                      
+                    break;
+                }
+            }
+
+        }
+
+        private void List_Click_Update(object sender, RoutedEventArgs e)
+        {
+            ListBoxItem listBoxItem = (ListBoxItem)listBox_listOfTasks.ItemContainerGenerator.ContainerFromItem(listBox_listOfTasks.SelectedItem);
+
+            TextBox target = getTextBoxFromLisboxItem("txtBoxNameList", listBoxItem);
+            target.Visibility = Visibility.Visible;
+            target.Focus();
+
+        }
+
+
+            private void manipulateNumberTaskToDo(bool isAdding,int idList)
+        {
+            for(int i = 0; i < lists.Count; i++)
+            {
+                if (lists[i].ID == idList)
+                {
+                    if (isAdding)
+                    {
+                        lists[i].NumberTaskToDo++;
+                    }
+                    else
+                    {
+                        lists[i].NumberTaskToDo--;
+                    }
+                    
+                    listBox_listOfTasks.Items.Refresh();
+                    break;
+                }
+            }
+
+        }
 
 
         private void ListBoxItem_Selected(object sender, RoutedEventArgs e)
@@ -666,5 +792,7 @@ namespace GestionTache
 
             }
         }
+
+
     }
 }

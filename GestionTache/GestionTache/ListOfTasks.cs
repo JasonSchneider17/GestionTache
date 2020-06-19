@@ -11,6 +11,7 @@ namespace GestionTache
         private string name;            //nom de la liste
         private List<Task> tasks;       //liste de tâches
         private int id;                 //ide de la liste sur la base de donnée
+        private int numberTaskToDo;     //nombre de tache devant encore être réaliser
 
         /// <summary>
         /// constructeur
@@ -52,5 +53,13 @@ namespace GestionTache
             get { return this.id; }
             set { this.id = value; }
         }
+
+        public int NumberTaskToDo
+        {
+            get { return this.numberTaskToDo; }
+            set { this.numberTaskToDo = value; }
+        }
+
+
     }
 }
