@@ -177,7 +177,7 @@ namespace GestionTache
         /// <param name="listID"> id de la liste </param>
         /// <param name="priorities">priorité de la tâche (ne sert que pour l'affichage)</param>
         /// <returns>liste de tâches</returns>
-        public List<Task> getAllTaskByListID(int listID,List<Priority> priorities)
+        public List<Task> getAllTaskByListID(int listID,List<Priority> priorities,TypeSort sort)
         {
             string query = string.Format( "SELECT * FROM {0} WHERE {1} = {2} ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_ID_LIST,listID);
             List<Task> listTask = new List<Task>();
@@ -212,6 +212,10 @@ namespace GestionTache
             return listTask;
 
         }
+
+
+
+
 
         /// <summary>
         /// Obtient l'id de la tâche dernièrement ajouté

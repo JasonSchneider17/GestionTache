@@ -20,13 +20,13 @@
             <Menu DockPanel.Dock="Top" VerticalAlignment="Stretch" >
                 <MenuItem Header="Liste" Height="25" VerticalAlignment="Stretch">
                     <MenuItem x:Name="menuItem_addListOfTask" Header="Ajouter une liste"/>
-                    
+
                 </MenuItem>
                 <MenuItem Header="Tâche" Click="MenuItem_Click" >
                     <MenuItem Header="Ajouter une Tâche"/>
                 </MenuItem>
 
-                    
+
 
             </Menu>
         </DockPanel>
@@ -43,15 +43,17 @@
 
             <Border BorderThickness="0,0,1,0" BorderBrush="Black">
                 <Grid >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="1*" />
-                    
-                </Grid.RowDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="1*" />
 
-                <Button x:Name="Button_AddList"  Content="Ajouter liste" Margin="10" Click="Button_AddList_Click"/>
+                    </Grid.RowDefinitions>
+
+                    <Button x:Name="Button_AddList"   Margin="5" Click="Button_AddList_Click">
+                        <Image Source="Image/button_liste.png"/>
+                    </Button>
                     <ListBox x:Name="listBox_listOfTasks" HorizontalContentAlignment="Stretch"  Grid.Row="1" BorderThickness="0" >
-                        <!--SelectionChanged="listBox_listOfTasks_SelectionChanged"--> 
+                        <!--SelectionChanged="listBox_listOfTasks_SelectionChanged"-->
 
                         <ListBox.Resources>
                             <Style x:Key="DeleteListContextMenuStyle" TargetType="MenuItem">
@@ -61,7 +63,7 @@
                                 <EventSetter Event="Click" Handler="List_Click_Update"/>
                             </Style>
                         </ListBox.Resources>
-                    
+
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
                                 <Setter Property="Tag" Value="{Binding ID}"/>
@@ -76,34 +78,34 @@
                                 </Setter>
                             </Style>
                         </ListBox.ItemContainerStyle>
-                    
-                        <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid HorizontalAlignment="Stretch" Margin="0,2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="25"/>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="20"/>
-                                    </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="40"/>
-                                </Grid.RowDefinitions>
 
-                                <Image Source="Image/list.png" Height="20"  VerticalAlignment="Center" Margin="2,0,2,0"/>
-                                <TextBlock x:Name="txtBlockNameList" Grid.Column="1"  Text="{Binding Name}" Tag="{Binding ID}" Panel.ZIndex="0"
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid HorizontalAlignment="Stretch" Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="25"/>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="20"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="40"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Image Source="Image/list.png" Height="20"  VerticalAlignment="Center" Margin="2,0,2,0"/>
+                                    <TextBlock x:Name="txtBlockNameList" Grid.Column="1"  Text="{Binding Name}" Tag="{Binding ID}" Panel.ZIndex="0"
                                            FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,2,0" />
-                                <TextBox x:Name="txtBoxNameList"   Grid.Column="1"  Text="{Binding Name}" Tag="{Binding ID}" Panel.ZIndex="1"
+                                    <TextBox x:Name="txtBoxNameList"   Grid.Column="1"  Text="{Binding Name}" Tag="{Binding ID}" Panel.ZIndex="1"
                                          FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,2,0" Visibility="Hidden" LostFocus="txtBoxNameList_LostFocus" KeyDown="txtBoxNameList_KeyDown" />
                                     <Label  Content="{Binding NumberTaskToDo}" Grid.Column="2" FontSize="12" Foreground="Gray" VerticalAlignment="Center"  />
 
                                 </Grid>
 
 
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
 
-                </ListBox>
-            </Grid>
+                    </ListBox>
+                </Grid>
             </Border>
 
             <Grid Grid.Column="2" Margin="0,0,0,0">
@@ -115,17 +117,29 @@
 
 
                 <Border BorderBrush="Black" BorderThickness="0,0,0,1" >
-                <Grid Grid.Row="0" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="50"/>
-                    </Grid.ColumnDefinitions>
-                    
-                    <TextBlock x:Name="txtBox_TitleList"  Height="50" Padding="5"  FontWeight="Bold" FontSize="25"  VerticalAlignment="Center" />
-                    <Button x:Name="Button_AddTask" Grid.Column="1" Margin="5" IsEnabled="False" Content="+" Click="Button_AddTask_Click"/>
+                    <Grid Grid.Row="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
 
-                </Grid>
+                        <TextBlock x:Name="txtBox_TitleList"  Height="50" Padding="5"  FontWeight="Bold" FontSize="25"  VerticalAlignment="Center" />
+                        <Button x:Name="Button_AddTask" Grid.Column="1" Margin="5" IsEnabled="False" Content="+" Click="Button_AddTask_Click"/>
+                        <Button x:Name="Button_Visibility_Task" Grid.Column="2" Margin="5" Content="display" Click="Button_Visibility_Task_Click" />
+                        <ComboBox x:Name="cmbBoxSortTask" ItemsSource="{Binding Path=TypeSorts}"  Grid.Column="3" Margin="5" Height="25" SelectionChanged="cmbBoxSortTask_SelectionChanged" >
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+
+                    </Grid>
                 </Border>
 
                 <ListBox x:Name="ListBox_Tasks" HorizontalContentAlignment="Stretch" Grid.Row="1" BorderThickness="0" Margin="5,10,0,0"  >
@@ -141,13 +155,15 @@
                             <EventSetter Event="Click" Handler="MenuItem_Task_Click_Update"/>
                         </Style>
                     </ListBox.Resources>
-                    
+
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Margin" Value="0,2,0,2"/>
                             <Setter Property="Tag" Value="{Binding IDTask}"/>
                             <EventSetter Event="Loaded" Handler="ListBoxItem_Loaded"/>
                             <EventSetter Event="Selected" Handler="ListBoxItem_Selected"/>
+
+
 
                             <Setter Property="ContextMenu" >
                                 <Setter.Value>
@@ -158,45 +174,70 @@
                                 </Setter.Value>
                             </Setter>
 
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding State}" Value="true"/>
+                                        <Condition Binding="{Binding Path=IsTaskHiding , RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Value="true"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </MultiDataTrigger>
+
+                                
+                            </Style.Triggers>
+
 
 
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
-                        
+
                         <DataTemplate>
 
                             <Border x:Name="BorderGridItemTask" BorderBrush="Black" BorderThickness="1" CornerRadius="5" >
-                            <Grid x:Name="GridItemTask" Height="70" HorizontalAlignment="Stretch" Margin="5,0,5,0" >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="75"/>
-                                </Grid.ColumnDefinitions>
-                                
-                                <CheckBox x:Name="CheckBox_TaskState" Grid.Column="0"  IsChecked="{Binding State}" FontSize="25" VerticalAlignment="Center" Checked="CheckBox_TaskState_Checked" Tag="{Binding IDTask}" Unchecked="CheckBox_TaskState_Unchecked" >
-                                    <CheckBox.LayoutTransform>
-                                        <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
-                                    </CheckBox.LayoutTransform>
-                                </CheckBox>
-                                
-                                <TextBlock x:Name="txtblockNameTask"  Grid.Column="1" Text="{Binding Name}" Tag="{Binding IDTask}"
-                                           Visibility="Visible" VerticalAlignment="Center"  FontSize="15" Panel.ZIndex="0" HorizontalAlignment="Stretch" />
-                                <TextBox x:Name="txtboxNameTask" Grid.Column="1" Text="{Binding Name}" Panel.ZIndex="1"
+                                <Grid x:Name="GridItemTask" Height="70" HorizontalAlignment="Stretch" Margin="5,0,5,0" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="75"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox x:Name="CheckBox_TaskState" Grid.Column="0"  IsChecked="{Binding State}" FontSize="25" VerticalAlignment="Center" Checked="CheckBox_TaskState_Checked" Tag="{Binding IDTask}" Unchecked="CheckBox_TaskState_Unchecked" >
+                                        <CheckBox.LayoutTransform>
+                                            <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                        </CheckBox.LayoutTransform>
+                                    </CheckBox>
+
+                                    <TextBlock x:Name="txtblockNameTask"  Grid.Column="1" Text="{Binding Name}" Tag="{Binding IDTask}"
+                                           Visibility="Visible" VerticalAlignment="Center"  FontSize="15" Panel.ZIndex="0" HorizontalAlignment="Stretch" >
+                                                                                <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding State}" Value="true">
+                                                        <Setter Property="TextBlock.TextDecorations" Value="Strikethrough"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <TextBox x:Name="txtboxNameTask" Grid.Column="1" Text="{Binding Name}" Panel.ZIndex="1"
                                       Visibility="Hidden" VerticalAlignment="Center"  FontSize="15"  
                                          LostFocus="txtboxNameTask_LostFocus" Tag="{Binding IDTask}" KeyDown="txtboxNameTask_KeyDown"  HorizontalAlignment="Stretch"/>
-                                <ComboBox x:Name="cmbBoxTaskPriority" ItemsSource="{Binding PrioritiesDisplay }" SelectedItem="{Binding Priority}" Grid.Column="2" 
+
+
+                                    <ComboBox x:Name="cmbBoxTaskPriority" ItemsSource="{Binding PrioritiesDisplay }" SelectedItem="{Binding Priority}" Grid.Column="2" 
                                           Height="25" VerticalAlignment="Center" IsSynchronizedWithCurrentItem="True" 
                                           SelectionChanged="cmbBoxTaskPriority_SelectionChanged" Tag="{Binding IDTask}" >
-                                   <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Name}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                            </Grid>
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Name}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </Grid>
                             </Border>
 
 
@@ -212,10 +253,10 @@
                         </Grid.RowDefinitions>
 
                         <Label Content="Commentaire" FontWeight="Bold"/>
-                      
+
 
                         <ScrollViewer Grid.Row="1">
-                        <TextBlock x:Name="Textblock_Comment"  Margin="10,5,10,5" TextWrapping="Wrap"  Text="{Binding Path=CommentText, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" MouseDown="Textblock_Comment_MouseDown" />
+                            <TextBlock x:Name="Textblock_Comment"  Margin="10,5,10,5" TextWrapping="Wrap"  Text="{Binding Path=CommentText, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" MouseDown="Textblock_Comment_MouseDown" />
                         </ScrollViewer>
                         <TextBox x:Name="TextBox_Comment" Grid.Row="1" Visibility="Hidden" Panel.ZIndex="1"   Margin="10,5,10,5"  KeyDown="TextBox_Comment_KeyDown"  TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"  Text="{Binding Path=CommentText, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" BorderBrush="Black"  LostKeyboardFocus="TextBox_Comment_LostKeyboardFocus"  />
                     </Grid>
