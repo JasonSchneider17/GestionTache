@@ -177,9 +177,16 @@ namespace GestionTache
         /// <param name="listID"> id de la liste </param>
         /// <param name="priorities">priorité de la tâche (ne sert que pour l'affichage)</param>
         /// <returns>liste de tâches</returns>
-        public List<Task> getAllTaskByListID(int listID,List<Priority> priorities,TypeSort sort)
+        public List<Task> getAllTaskByListID(int listID,List<Priority> priorities)
         {
-            string query = string.Format( "SELECT * FROM {0} WHERE {1} = {2} ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_ID_LIST,listID);
+
+            /*typeSorts.Add(new TypeSort("Aucun", 0));
+            typeSorts.Add(new TypeSort("Priorité ASC", 1));
+            typeSorts.Add(new TypeSort("Priorité DESC", 2));
+            typeSorts.Add(new TypeSort("Réaliser ASC", 3));
+            typeSorts.Add(new TypeSort("Réaliser ASC", 4));*/
+            string query = string.Format("SELECT * FROM {0} WHERE {1} = {2} ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_ID_LIST, listID);
+
             List<Task> listTask = new List<Task>();
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
             database.OpenConnection();

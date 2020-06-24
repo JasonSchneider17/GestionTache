@@ -31,7 +31,7 @@ namespace GestionTache
         //bool listIsEdited = false;        //indique si on est en mode d'edition de tâche
         ListOfTasks selectedList;           //liste sélectionner par l'utilisateur
         string commentText;                 //Commentaire de la tâche
-        bool isTaskHiding =false;           //indique si il faut cacher les tâches 
+        bool isTaskHiding = false;           //indique si il faut cacher les tâches 
         List<TypeSort> typeSorts;
 
 
@@ -68,6 +68,9 @@ namespace GestionTache
 
 
 
+
+
+
         // Create the OnPropertyChanged method to raise the event
         // The calling member's name will be used as the parameter.
 
@@ -76,7 +79,7 @@ namespace GestionTache
         public MainWindow()
         {
             InitializeComponent();
-            SetLanguageDictionary();
+           // SetLanguageDictionary();
 
             //List<Task> tasks = new List<Task>();
 
@@ -92,7 +95,7 @@ namespace GestionTache
             }
 
             //regarde la version de la base donné et réinitilise pour la mettre à jour
-            Properties.Settings.Default.DatabaseVersionNew = 4;
+            Properties.Settings.Default.DatabaseVersionNew = 5;
 
             if (Properties.Settings.Default.DatabaseVersionNew > Properties.Settings.Default.DatabaseVersionOld)
             {
@@ -116,17 +119,18 @@ namespace GestionTache
             listBox_listOfTasks.ItemsSource = lists;
             DataContext = this;
             PopulateTypeSorts();
+            cmbBoxSortTask.SelectedIndex=0;
         }
 
 
         private void PopulateTypeSorts()
         {
-            typeSorts = new List<TypeSort>() ;
+            typeSorts = new List<TypeSort>();
             typeSorts.Add(new TypeSort("Aucun", 0));
-            typeSorts.Add(new TypeSort("Priorité ASC",1));
-            typeSorts.Add(new TypeSort("Priorité DESC", 2));
-            typeSorts.Add(new TypeSort("Réaliser ASC", 3));
-            typeSorts.Add(new TypeSort("Réaliser ASC", 4));
+            typeSorts.Add(new TypeSort("Les moins urgents", 1));
+            typeSorts.Add(new TypeSort("Les plus urgents", 2));
+            typeSorts.Add(new TypeSort("Déja réaliser ", 3));
+            typeSorts.Add(new TypeSort("Non réaliser", 4));
 
 
         }
@@ -134,23 +138,23 @@ namespace GestionTache
         /// <summary>
         /// détermine le language de l'appli
         /// </summary>
-        private void SetLanguageDictionary()
-        {
-            ResourceDictionary dict = new ResourceDictionary();
-            switch (Thread.CurrentThread.CurrentCulture.ToString())
-            {
-                /*case "en-US":
-                    dict.Source = new Uri("..\\..\\Language\\StringResourcesEN.xaml", UriKind.Relative);
-                    break;*/
-                case "fr-CH":
-                    dict.Source = new Uri("..\\..\\Language\\StringResourcesFR.xaml", UriKind.Relative);
-                    break;
-                default:
-                    dict.Source = new Uri("..\\..\\Language\\StringResourcesFR.xaml", UriKind.Relative);
-                    break;
-            }
-            this.Resources.MergedDictionaries.Add(dict);
-        }
+        //private void SetLanguageDictionary()
+        //{
+        //    ResourceDictionary dict = new ResourceDictionary();
+        //    switch (Thread.CurrentThread.CurrentCulture.ToString())
+        //    {
+        //        /*case "en-US":
+        //            dict.Source = new Uri("..\\..\\Language\\StringResourcesEN.xaml", UriKind.Relative);
+        //            break;*/
+        //        case "fr-CH":
+        //            dict.Source = new Uri("..\\..\\Language\\StringResourcesFR.xaml", UriKind.Relative);
+        //            break;
+        //        default:
+        //            dict.Source = new Uri("..\\..\\Language\\StringResourcesFR.xaml", UriKind.Relative);
+        //            break;
+        //    }
+        //    this.Resources.MergedDictionaries.Add(dict);
+        //}
 
 
         /// <summary>
@@ -201,17 +205,35 @@ namespace GestionTache
             selectedList.Tasks.Add(newTask);
             ListBox_Tasks.Items.Refresh();
 
+            int indexLastAddedTask=0;
+            for(int i = 0; i < selectedList.Tasks.Count; i++)
+            {
+                if (newTask.IDTask == selectedList.Tasks[i].IDTask)
+                {
+                    indexLastAddedTask = i;
+                    break;
+                }
+
+            }
+
             //selectionne le listboxitem ajouté et focus la vue dessus
-            ListBox_Tasks.SelectedItem = ListBox_Tasks.Items[ListBox_Tasks.Items.Count - 1];
+            ListBox_Tasks.SelectedItem = ListBox_Tasks.Items[indexLastAddedTask];
+            ListBox_Tasks.SelectedItem = ListBox_Tasks.Items;
             ListBox_Tasks.ScrollIntoView(ListBox_Tasks.SelectedItem);
+
             ListBox_Tasks.UpdateLayout();
 
-            ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromIndex(ListBox_Tasks.Items.Count - 1);
+
+
+
+            ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromIndex(indexLastAddedTask);
+
+
 
             ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(listBoxItem);
-            DataTemplate dataTemplate = contentPresenter.ContentTemplate;
-            Border grid = (Border)dataTemplate.FindName("BorderGridItemTask", contentPresenter);
-            grid.Background = GradientBackground();
+            //DataTemplate dataTemplate = contentPresenter.ContentTemplate;
+            //Border grid = (Border)dataTemplate.FindName("BorderGridItemTask", contentPresenter);
+            //grid.Background = GradientBackground();
 
             //affiche la textbox pour éditer le titre de la tâche
             TextBox target = getTextBoxFromLisboxItem("txtboxNameTask", listBoxItem);
@@ -313,7 +335,7 @@ namespace GestionTache
             //change le titre de l'affichage des tâches
             txtBox_TitleList.Text = selectedList.Name;
             //ajoute les tâches affilié à la liste  depuis la base de données dans la liste
-            selectedList.Tasks = databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, databaseHandler.PriorityDAO.getAllPriority(),null);
+            selectedList.Tasks = databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, databaseHandler.PriorityDAO.getAllPriority());
             //source de donnée de la listbox de tâche
             ListBox_Tasks.ItemsSource = selectedList.Tasks;
             Button_AddTask.IsEnabled = true;
@@ -361,8 +383,6 @@ namespace GestionTache
             }
 
         }
-
-
 
         /// <summary>
         /// action effecté lors de la pression d'une touche sur la textbox
@@ -447,7 +467,7 @@ namespace GestionTache
                 }
             }
             catch (IndexOutOfRangeException)
-            {}
+            { }
 
         }
 
@@ -463,7 +483,7 @@ namespace GestionTache
         /// <param name="e"></param>
         private void ListBoxItem_Loaded(object sender, RoutedEventArgs e)
         {
-           
+
         }
 
         /// <summary>
@@ -513,7 +533,7 @@ namespace GestionTache
                         manipulateNumberTaskToDo(true, task.ListID);
                     }
 
-                    
+
                     break;
                 }
             }
@@ -743,7 +763,7 @@ namespace GestionTache
         private void Textblock_Comment_MouseDown(object sender, MouseButtonEventArgs e)
         {
             TextBlock textBlock = e.Source as TextBlock;
-            Task taskSelect=null;
+            Task taskSelect = null;
 
             foreach (Task task in selectedList.Tasks)
             {
@@ -764,6 +784,14 @@ namespace GestionTache
         {
 
             IsTaskHiding = !IsTaskHiding;
+            if (Button_Visibility_Task.Content == FindResource("visible"))
+            {
+                Button_Visibility_Task.Content = FindResource("hidden");
+            }
+            else
+            {
+                Button_Visibility_Task.Content = FindResource("visible");
+            }
             ListBox_Tasks.Items.Refresh();
 
         }
@@ -772,8 +800,54 @@ namespace GestionTache
         {
             ComboBox combo = e.Source as ComboBox;
 
-            TypeSort sort = (TypeSort)combo.SelectedItem;
-            selectedList.Tasks = databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, databaseHandler.PriorityDAO.getAllPriority(), sort);
+            //DegreePriority = 1
+            if (selectedList != null)
+            {
+                TypeSort sort = (TypeSort)combo.SelectedItem;
+                //SortingTask(selectedList.Tasks,sort);
+               SortingTask( sort);
+                //ListBox_Tasks.ItemsSource = selectedList.Tasks;
+
+
+                //ListBox_Tasks.Items.SortDescriptions.Add(new SortDescription("Priority.DegreePriority", ListSortDirection.Ascending));
+                ListBox_Tasks.Items.Refresh();
+            }
+        }
+
+        private void SortingTask(TypeSort sort)
+        {
+            if (sort.ID == 1 || sort.ID == 2)
+            {
+                for (int j = selectedList.Tasks.Count - 1; j > 0; j--)
+                {
+                    for (int i = 0; i < j; i++)
+                    {
+                        switch (sort.ID)
+                        {
+                            case 1:
+                                if (selectedList.Tasks[i].Priority.DegreePriority > selectedList.Tasks[i + 1].Priority.DegreePriority)
+                                {
+                                    Task temporary;
+                                    temporary = selectedList.Tasks[i];
+                                    selectedList.Tasks[i] = selectedList.Tasks[i + 1];
+                                    selectedList.Tasks[i + 1] = temporary;
+                                }
+                                break;
+                            case 2:
+                                if (selectedList.Tasks[i].Priority.DegreePriority < selectedList.Tasks[i + 1].Priority.DegreePriority)
+                                {
+                                    Task temporary;
+                                    temporary = selectedList.Tasks[i];
+                                    selectedList.Tasks[i] = selectedList.Tasks[i + 1];
+                                    selectedList.Tasks[i + 1] = temporary;
+                                }
+                                break;
+                        }
+
+                    }
+                }
+            }
+
 
         }
     }

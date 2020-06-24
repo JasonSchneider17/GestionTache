@@ -3,6 +3,7 @@
                     xmlns:local="clr-namespace:GestionTache" 
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-    <system:String x:Key="FileMenu">Fichier</system:String>
+    <system:String x:Key="AddList">+ Liste</system:String>
+    
 
 </ResourceDictionary>

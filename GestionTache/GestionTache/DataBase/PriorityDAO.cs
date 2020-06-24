@@ -26,9 +26,9 @@ namespace GestionTache
         /// </summary>
         public void AddDefaultPriority()
         {
-            Priority priorityLOW = new Priority("LOW",1);
-            Priority priorityMEDIUM = new Priority("MEDIUM", 2);
-            Priority priorityHIGH = new Priority("HIGH",3);
+            Priority priorityLOW = new Priority("A faire",1);
+            Priority priorityMEDIUM = new Priority("Important", 2);
+            Priority priorityHIGH = new Priority("Urgent",3);
 
             Priority[] tablePriority = new Priority[] { priorityLOW, priorityMEDIUM, priorityHIGH };
             database.OpenConnection();
