@@ -57,7 +57,7 @@
                     <Button x:Name="Button_AddList" Content="+ Liste" FontSize="17" FontWeight="Bold"   Margin="5" Click="Button_AddList_Click">
 
                     </Button>
-                    <ListBox x:Name="listBox_listOfTasks" HorizontalContentAlignment="Stretch"  Grid.Row="1" BorderThickness="0" >
+                    <ListBox x:Name="listBox_listOfTasks" ItemsSource="{Binding Path=Lists, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" HorizontalContentAlignment="Stretch"  Grid.Row="1" BorderThickness="0" >
                         <!--SelectionChanged="listBox_listOfTasks_SelectionChanged"-->
 
                         <ListBox.Resources>
@@ -160,7 +160,7 @@
                     </ComboBox>
                 </Grid>
 
-                <ListBox x:Name="ListBox_Tasks" HorizontalContentAlignment="Stretch" Grid.Row="2" BorderThickness="0" Margin="5,10,0,10"   >
+                <ListBox x:Name="ListBox_Tasks" ItemsSource="{Binding Path=Tasks, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"   HorizontalContentAlignment="Stretch" Grid.Row="2" BorderThickness="0" Margin="5,10,0,10"   >
                     <ListBox.Background>
                         <SolidColorBrush Opacity="0"/>
                     </ListBox.Background>

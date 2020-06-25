@@ -178,9 +178,6 @@
     <Resource Include="Image\open-eye.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="AppIcon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="to-do-list.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

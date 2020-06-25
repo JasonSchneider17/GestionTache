@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Linq;
 using System.Linq;
@@ -27,12 +28,15 @@ namespace GestionTache
 
         Database databaseObject;            //base de données
         DatabaseHandler databaseHandler;    //interagir avec base de données
-        List<ListOfTasks> lists;            //liste
+        ObservableCollection<ListOfTasks> lists;            //liste
         //bool listIsEdited = false;        //indique si on est en mode d'edition de tâche
         ListOfTasks selectedList;           //liste sélectionner par l'utilisateur
         string commentText;                 //Commentaire de la tâche
         bool isTaskHiding = false;           //indique si il faut cacher les tâches 
-        List<TypeSort> typeSorts;
+        List<TypeSort> typeSorts;            //type de sort
+        ObservableCollection<Task> tasks;     //Liste de tâches
+
+
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -66,20 +70,30 @@ namespace GestionTache
             set { this.typeSorts = value; }
         }
 
+        public ObservableCollection<Task> Tasks
+        {
+            get { return this.tasks; }
+            set { this.tasks = value; }
+        }
 
+        public ObservableCollection<ListOfTasks> Lists
+        {
+            get { return this.lists; }
+            set
+            {
+                this.lists = value;
 
-
+            }
+        }
 
 
         // Create the OnPropertyChanged method to raise the event
         // The calling member's name will be used as the parameter.
 
-
-
         public MainWindow()
         {
             InitializeComponent();
-           // SetLanguageDictionary();
+            // SetLanguageDictionary();
 
             //List<Task> tasks = new List<Task>();
 
@@ -116,10 +130,10 @@ namespace GestionTache
             }
 
             //attribue la liste à la listbox
-            listBox_listOfTasks.ItemsSource = lists;
+            //listBox_listOfTasks.ItemsSource = lists;
             DataContext = this;
             PopulateTypeSorts();
-            cmbBoxSortTask.SelectedIndex=0;
+            cmbBoxSortTask.SelectedIndex = 0;
         }
 
 
@@ -170,7 +184,7 @@ namespace GestionTache
             list.ID = databaseHandler.ListDAO.getLastAddedListID();
 
             lists.Add(list);
-            listBox_listOfTasks.Items.Refresh();
+            //listBox_listOfTasks.Items.Refresh();
 
             //selectionne le listboxitem ajouté et focus la vue dessus
             listBox_listOfTasks.SelectedItem = listBox_listOfTasks.Items[listBox_listOfTasks.Items.Count - 1];
@@ -195,20 +209,22 @@ namespace GestionTache
         {
             List<Priority> listpriority = databaseHandler.PriorityDAO.getAllPriority();
             //ajoute la tâche dans la base de donnée et récupère l'id attribué par la base de donnée à la tâche ajouté
-            Task newTask = new Task("test", "comment", false, 0, selectedList.ID, listpriority, listpriority[0].IDPriority);
+            Task newTask = new Task("test2", "comment", false, 0, selectedList.ID, listpriority, listpriority[0].IDPriority);
             databaseHandler.TaskDAO.Add(newTask);
             manipulateNumberTaskToDo(true, selectedList.ID);
 
-
             newTask.IDTask = databaseHandler.TaskDAO.getLastAddedTaskID();
             //ajoute la tâche à la liste de tâche actuellement affiché
-            selectedList.Tasks.Add(newTask);
-            ListBox_Tasks.Items.Refresh();
 
-            int indexLastAddedTask=0;
-            for(int i = 0; i < selectedList.Tasks.Count; i++)
+            //selectedList.Tasks.Add(newTask);
+            Tasks.Add(newTask);
+
+            //SortingTask((TypeSort)cmbBoxSortTask.SelectedItem);
+
+            int indexLastAddedTask = 0;
+            for (int i = 0; i < Tasks.Count; i++)
             {
-                if (newTask.IDTask == selectedList.Tasks[i].IDTask)
+                if (newTask.IDTask == Tasks[i].IDTask)
                 {
                     indexLastAddedTask = i;
                     break;
@@ -223,14 +239,12 @@ namespace GestionTache
 
             ListBox_Tasks.UpdateLayout();
 
-
+            //SortingTask((TypeSort)cmbBoxSortTask.SelectedItem);
 
 
             ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromIndex(indexLastAddedTask);
 
-
-
-            ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(listBoxItem);
+            //ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(listBoxItem);
             //DataTemplate dataTemplate = contentPresenter.ContentTemplate;
             //Border grid = (Border)dataTemplate.FindName("BorderGridItemTask", contentPresenter);
             //grid.Background = GradientBackground();
@@ -335,9 +349,11 @@ namespace GestionTache
             //change le titre de l'affichage des tâches
             txtBox_TitleList.Text = selectedList.Name;
             //ajoute les tâches affilié à la liste  depuis la base de données dans la liste
-            selectedList.Tasks = databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, databaseHandler.PriorityDAO.getAllPriority());
+            Tasks = databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, databaseHandler.PriorityDAO.getAllPriority());
+            DataContext = this;
+            //ListBox_Tasks.Items.Refresh();
             //source de donnée de la listbox de tâche
-            ListBox_Tasks.ItemsSource = selectedList.Tasks;
+            ListBox_Tasks.ItemsSource = Tasks;
             Button_AddTask.IsEnabled = true;
         }
 
@@ -356,8 +372,8 @@ namespace GestionTache
                 if (list.ID == int.Parse(textBox.Tag.ToString()))
                 {
                     list.Name = textBox.Text;
+                    txtBox_TitleList.Text = list.Name;
                     databaseHandler.ListDAO.UpdateListName(list);
-                    listBox_listOfTasks.Items.Refresh();
                     break;
                 }
             }
@@ -373,7 +389,7 @@ namespace GestionTache
             textBox.Visibility = Visibility.Hidden;
 
             //recherche la tâche correspondant à la textbox et la met à jour sur la base de données
-            foreach (Task task in selectedList.Tasks)
+            foreach (Task task in Tasks)
             {
                 if (task.IDTask == int.Parse(textBox.Tag.ToString()))
                 {
@@ -450,7 +466,7 @@ namespace GestionTache
                 Priority idPriority = (Priority)e.AddedItems[0];
 
                 //recherche la tâche correspondante
-                foreach (Task task in selectedList.Tasks)
+                foreach (Task task in Tasks)
                 {
                     if (task.IDTask == int.Parse(comboBox.Tag.ToString()))
                     {
@@ -517,7 +533,7 @@ namespace GestionTache
         private void CheckboxAction(CheckBox checkBox)
         {
             //recherche la tâche affilié à la checkbox
-            foreach (Task task in selectedList.Tasks)
+            foreach (Task task in Tasks)
             {
                 if (task.IDTask == int.Parse(checkBox.Tag.ToString()))
                 {
@@ -550,11 +566,11 @@ namespace GestionTache
             for (int i = 0; i < ListBox_Tasks.Items.Count; i++)
             {
                 //supprime la tâche de la base de donnée
-                if (int.Parse(menuItem.Tag.ToString()) == selectedList.Tasks[i].IDTask)
+                if (int.Parse(menuItem.Tag.ToString()) == Tasks[i].IDTask)
                 {
 
                     //regarde si la tâche est réaliser
-                    if (!selectedList.Tasks[i].State)
+                    if (!Tasks[i].State)
                     {
                         //si la tâche n'est pas réalisé envoie un message d'alerte
                         MessageBoxResult dialog = MessageBox.Show("Cette tâche n'est pas encore réalisé voulez-vous vraiment la supprimer?", "Alerte suppresion tâche", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
@@ -563,17 +579,17 @@ namespace GestionTache
                         {
                             //supprime la tâche
                             manipulateNumberTaskToDo(false, selectedList.ID);
-                            databaseHandler.TaskDAO.DeletedTask(selectedList.Tasks[i]);
-                            selectedList.Tasks.RemoveAt(i);
+                            databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
+                            Tasks.RemoveAt(i);
                         }
                     }
                     else
                     {
                         //supprime la tâche
-                        selectedList.Tasks.RemoveAt(i);
-                        databaseHandler.TaskDAO.DeletedTask(selectedList.Tasks[i]);
+                        Tasks.RemoveAt(i);
+                        databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
                     }
-                    ListBox_Tasks.Items.Refresh();
+                    //ListBox_Tasks.Items.Refresh();
                     break;
                 }
             }
@@ -588,7 +604,7 @@ namespace GestionTache
         {
             MenuItem menuItem = e.Source as MenuItem;
 
-            foreach (Task task in selectedList.Tasks)
+            foreach (Task task in Tasks)
             {
                 if (task.IDTask == int.Parse(menuItem.Tag.ToString()))
                 {
@@ -619,32 +635,23 @@ namespace GestionTache
             {
                 if (int.Parse(menuItem.Tag.ToString()) == lists[i].ID)
                 {
-                    //regarde si la liste contient des tâches
-                    if (lists[i].Tasks.Count > 0)
-                    {
-                        MessageBoxResult dialog = MessageBox.Show("En supprimant cette liste les tâches lié seron aussi supprimer voulez-vous continuer?", "Alerte suppresion liste", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 
-                        if (dialog == MessageBoxResult.Yes)
-                        {
-                            //supprime la liste et ses tâches
-                            databaseHandler.ListDAO.DeleteList(lists[i]);
-                            databaseHandler.TaskDAO.DeletedTaksByListID(lists[i].ID);
-                            txtBox_TitleList.Text = "";
-                            ListBox_Tasks.ItemsSource = null;
-                            ListBox_Tasks.Items.Refresh();
-                            lists.RemoveAt(i);
-                            Button_AddTask.IsEnabled = false;
-                        }
-                    }
-                    else
+                    MessageBoxResult dialog = MessageBox.Show("En supprimant cette liste les tâches lié seron aussi supprimer voulez-vous continuer?", "Alerte suppresion liste", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+
+                    if (dialog == MessageBoxResult.Yes)
                     {
-                        //supprime la liste
+                        //supprime la liste et ses tâches
                         databaseHandler.ListDAO.DeleteList(lists[i]);
+                        databaseHandler.TaskDAO.DeletedTaksByListID(lists[i].ID);
                         txtBox_TitleList.Text = "";
+                        ListBox_Tasks.ItemsSource = null;
+                        //ListBox_Tasks.Items.Refresh();
                         lists.RemoveAt(i);
                         Button_AddTask.IsEnabled = false;
                     }
-                    listBox_listOfTasks.Items.Refresh();
+
+
+                    //listBox_listOfTasks.Items.Refresh();
                     break;
                 }
             }
@@ -682,7 +689,7 @@ namespace GestionTache
                     {
                         lists[i].NumberTaskToDo--;
                     }
-                    listBox_listOfTasks.Items.Refresh();
+                    //listBox_listOfTasks.Items.Refresh();
                     break;
                 }
             }
@@ -698,7 +705,7 @@ namespace GestionTache
             ListBoxItem item = e.Source as ListBoxItem;
             BorderComment.Visibility = Visibility.Visible;
 
-            foreach (Task task in selectedList.Tasks)
+            foreach (Task task in Tasks)
             {
                 if (task.IDTask == int.Parse(item.Tag.ToString()))
                 {
@@ -720,7 +727,7 @@ namespace GestionTache
             if (e.Key == Key.Escape)
             {
                 Keyboard.ClearFocus();
-                foreach (Task task in selectedList.Tasks)
+                foreach (Task task in Tasks)
                 {
                     if (task.IDTask == int.Parse(TextBox_Comment.Tag.ToString()))
                     {
@@ -765,7 +772,7 @@ namespace GestionTache
             TextBlock textBlock = e.Source as TextBlock;
             Task taskSelect = null;
 
-            foreach (Task task in selectedList.Tasks)
+            foreach (Task task in Tasks)
             {
                 if (task.IDTask == int.Parse(textBlock.Tag.ToString()))
                 {
@@ -805,12 +812,14 @@ namespace GestionTache
             {
                 TypeSort sort = (TypeSort)combo.SelectedItem;
                 //SortingTask(selectedList.Tasks,sort);
-               SortingTask( sort);
+                SortingTask(sort);
                 //ListBox_Tasks.ItemsSource = selectedList.Tasks;
+                //selectedList.Tasks.order
 
 
                 //ListBox_Tasks.Items.SortDescriptions.Add(new SortDescription("Priority.DegreePriority", ListSortDirection.Ascending));
-                ListBox_Tasks.Items.Refresh();
+
+                //ListBox_Tasks.Items.Refresh();
             }
         }
 
@@ -818,28 +827,30 @@ namespace GestionTache
         {
             if (sort.ID == 1 || sort.ID == 2)
             {
-                for (int j = selectedList.Tasks.Count - 1; j > 0; j--)
+                for (int j = Tasks.Count - 1; j > 0; j--)
                 {
                     for (int i = 0; i < j; i++)
                     {
                         switch (sort.ID)
                         {
                             case 1:
-                                if (selectedList.Tasks[i].Priority.DegreePriority > selectedList.Tasks[i + 1].Priority.DegreePriority)
+                                if (Tasks[i].Priority.DegreePriority > Tasks[i + 1].Priority.DegreePriority)
                                 {
                                     Task temporary;
-                                    temporary = selectedList.Tasks[i];
-                                    selectedList.Tasks[i] = selectedList.Tasks[i + 1];
-                                    selectedList.Tasks[i + 1] = temporary;
+                                    //temporary = selectedList.Tasks[i];
+                                    //selectedList.Tasks[i] = selectedList.Tasks[i + 1];
+                                    //selectedList.Tasks[i + 1] = temporary;
+                                    Tasks.Move(i, i + 1);
+
                                 }
                                 break;
                             case 2:
-                                if (selectedList.Tasks[i].Priority.DegreePriority < selectedList.Tasks[i + 1].Priority.DegreePriority)
+                                if (Tasks[i].Priority.DegreePriority < Tasks[i + 1].Priority.DegreePriority)
                                 {
                                     Task temporary;
-                                    temporary = selectedList.Tasks[i];
-                                    selectedList.Tasks[i] = selectedList.Tasks[i + 1];
-                                    selectedList.Tasks[i + 1] = temporary;
+                                    temporary = Tasks[i];
+                                    Tasks[i] = Tasks[i + 1];
+                                    Tasks[i + 1] = temporary;
                                 }
                                 break;
                         }

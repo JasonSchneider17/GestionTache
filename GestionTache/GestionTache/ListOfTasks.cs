@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GestionTache
 {
-    public class ListOfTasks
+    public class ListOfTasks:INotifyPropertyChanged
     {
         private string name;            //nom de la liste
-        private List<Task> tasks;       //liste de tâches
+        //private List<Task> tasks;       //liste de tâches
+        private ObservableCollection<Task> tasks;
         private int id;                 //ide de la liste sur la base de donnée
         private int numberTaskToDo;     //nombre de tache devant encore être réaliser
 
@@ -39,27 +42,46 @@ namespace GestionTache
         public string Name
         {
             get { return this.name; }
-            set { this.name = value; }
+            set { this.name = value;
+                OnPropertyChanged("Name");
+            }
         }
 
-        public List<Task> Tasks
+       /* public List<Task> Tasks
         {
             get { return this.tasks; }
             set { this.tasks = value; }
+        }*/
+
+
+        public ObservableCollection<Task> Tasks
+        {
+            get { return this.tasks; }
+            set { this.tasks = value;}
         }
 
         public int ID
         {
             get { return this.id; }
-            set { this.id = value; }
+            set { this.id = value;
+                OnPropertyChanged("ID");
+            }
         }
 
         public int NumberTaskToDo
         {
             get { return this.numberTaskToDo; }
-            set { this.numberTaskToDo = value; }
+            set { this.numberTaskToDo = value;
+                OnPropertyChanged("NumberTaskToDo");
+            }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
 
+        public void OnPropertyChanged(String propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

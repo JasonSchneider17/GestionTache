@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -68,14 +69,14 @@ namespace GestionTache
         /// obtient toutes les liste présentent sur la base de donnée
         /// </summary>
         /// <returns> liste de liste</returns>
-        public List<ListOfTasks> getAllList()
+        public ObservableCollection<ListOfTasks> getAllList()
         {
 
             string query = string.Format("SELECT * FROM {0} ", DatabaseBuild.LIST_TABLE_NAME);
             /*string query = string.Format("SELECT COUNT(*) TotalCount , {2}.{0} , {2}.{1} TotalCount,* FROM {2} JOIN {3} ON {2}.{4} = {3}.{5} "
                ,DatabaseBuild.LIST_NAME,DatabaseBuild.LIST_KEY,DatabaseBuild.LIST_TABLE_NAME,DatabaseBuild.TASK_TABLE_NAME,DatabaseBuild.LIST_KEY,DatabaseBuild.TASK_ID_LIST);
             */
-            List<ListOfTasks> lists= new List<ListOfTasks>();
+            ObservableCollection<ListOfTasks> lists= new ObservableCollection<ListOfTasks>();
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
             database.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
