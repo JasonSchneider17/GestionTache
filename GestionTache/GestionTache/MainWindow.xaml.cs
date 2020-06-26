@@ -25,78 +25,20 @@ namespace GestionTache
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-
-        Database databaseObject;            //base de données
-        DatabaseHandler databaseHandler;    //interagir avec base de données
+        Database databaseObject;                            //base de données
+        DatabaseHandler databaseHandler;                    //interagir avec base de données
         ObservableCollection<ListOfTasks> lists;            //liste
-        //bool listIsEdited = false;        //indique si on est en mode d'edition de tâche
-        ListOfTasks selectedList;           //liste sélectionner par l'utilisateur
-        string commentText;                 //Commentaire de la tâche
-        bool isTaskHiding = false;           //indique si il faut cacher les tâches 
-        List<TypeSort> typeSorts;            //type de sort
-        ObservableCollection<Task> tasks;     //Liste de tâches
-
-
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        /// <summary>
-        /// getter setter commentaire
-        /// </summary>
-        public string CommentText
-        {
-            get { return this.commentText; }
-            set
-            {
-                this.commentText = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsTaskHiding
-        {
-            get { return this.isTaskHiding; }
-            set { this.isTaskHiding = value; }
-        }
-
-        public List<TypeSort> TypeSorts
-        {
-            get { return this.typeSorts; }
-            set { this.typeSorts = value; }
-        }
-
-        public ObservableCollection<Task> Tasks
-        {
-            get { return this.tasks; }
-            set { this.tasks = value; }
-        }
-
-        public ObservableCollection<ListOfTasks> Lists
-        {
-            get { return this.lists; }
-            set
-            {
-                this.lists = value;
-
-            }
-        }
-
-
-        // Create the OnPropertyChanged method to raise the event
-        // The calling member's name will be used as the parameter.
+        //bool listIsEdited = false;                        //indique si on est en mode d'edition de tâche
+        ListOfTasks selectedList;                           //liste sélectionner par l'utilisateur
+        string commentText;                                 //Commentaire de la tâche
+        bool isTaskHiding = false;                          //indique si il faut cacher les tâches 
+        List<TypeSort> typeSorts;                           //type de sort
+        ObservableCollection<Task> tasks;                   //Liste de tâches
 
         public MainWindow()
         {
             InitializeComponent();
             // SetLanguageDictionary();
-
-            //List<Task> tasks = new List<Task>();
-
 
             //database Conf
             databaseObject = new Database();
@@ -129,14 +71,14 @@ namespace GestionTache
                 list.NumberTaskToDo = databaseHandler.TaskDAO.CountTaskToDoByList(list.ID);
             }
 
-            //attribue la liste à la listbox
-            //listBox_listOfTasks.ItemsSource = lists;
             DataContext = this;
             PopulateTypeSorts();
             cmbBoxSortTask.SelectedIndex = 0;
         }
 
-
+        /// <summary>
+        /// Rempli la liste représentant les sortes de triage
+        /// </summary>
         private void PopulateTypeSorts()
         {
             typeSorts = new List<TypeSort>();
@@ -182,9 +124,7 @@ namespace GestionTache
             //ajoute la liste dans la base de donnée et récupère l'id attribué par la base de donnée à la liste ajouté
             databaseHandler.ListDAO.Add(list);
             list.ID = databaseHandler.ListDAO.getLastAddedListID();
-
             lists.Add(list);
-            //listBox_listOfTasks.Items.Refresh();
 
             //selectionne le listboxitem ajouté et focus la vue dessus
             listBox_listOfTasks.SelectedItem = listBox_listOfTasks.Items[listBox_listOfTasks.Items.Count - 1];
@@ -219,8 +159,9 @@ namespace GestionTache
             //selectedList.Tasks.Add(newTask);
             Tasks.Add(newTask);
 
-            //SortingTask((TypeSort)cmbBoxSortTask.SelectedItem);
+            SortingTask();
 
+            //Recherche la tâche venant d'être ajouté dans la listbox
             int indexLastAddedTask = 0;
             for (int i = 0; i < Tasks.Count; i++)
             {
@@ -231,16 +172,11 @@ namespace GestionTache
                 }
 
             }
-
             //selectionne le listboxitem ajouté et focus la vue dessus
             ListBox_Tasks.SelectedItem = ListBox_Tasks.Items[indexLastAddedTask];
             ListBox_Tasks.SelectedItem = ListBox_Tasks.Items;
             ListBox_Tasks.ScrollIntoView(ListBox_Tasks.SelectedItem);
-
             ListBox_Tasks.UpdateLayout();
-
-            //SortingTask((TypeSort)cmbBoxSortTask.SelectedItem);
-
 
             ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromIndex(indexLastAddedTask);
 
@@ -254,8 +190,6 @@ namespace GestionTache
             target.Visibility = Visibility.Visible;
             target.Focus();
             target.SelectAll();
-
-
         }
 
 
@@ -282,7 +216,6 @@ namespace GestionTache
             ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(item);
             DataTemplate dataTemplate = contentPresenter.ContentTemplate;
             TextBox target = (TextBox)dataTemplate.FindName(nameTextBox, contentPresenter);
-
             return target;
         }
 
@@ -297,7 +230,6 @@ namespace GestionTache
             ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(item);
             DataTemplate dataTemplate = contentPresenter.ContentTemplate;
             TextBlock target = (TextBlock)dataTemplate.FindName(nameTextBlock, contentPresenter);
-
             return target;
         }
 
@@ -350,10 +282,11 @@ namespace GestionTache
             txtBox_TitleList.Text = selectedList.Name;
             //ajoute les tâches affilié à la liste  depuis la base de données dans la liste
             Tasks = databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, databaseHandler.PriorityDAO.getAllPriority());
+            SortingTask();
             DataContext = this;
             //ListBox_Tasks.Items.Refresh();
             //source de donnée de la listbox de tâche
-            ListBox_Tasks.ItemsSource = Tasks;
+            //ListBox_Tasks.ItemsSource = Tasks;
             Button_AddTask.IsEnabled = true;
         }
 
@@ -464,7 +397,6 @@ namespace GestionTache
             try
             {
                 Priority idPriority = (Priority)e.AddedItems[0];
-
                 //recherche la tâche correspondante
                 foreach (Task task in Tasks)
                 {
@@ -481,15 +413,16 @@ namespace GestionTache
                         }
                     }
                 }
+                //Trie à nouveau les tâche si l'une des options de trie par priorité est sélectionner
+                TypeSort sort = (TypeSort)cmbBoxSortTask.SelectedItem;
+                if (sort.ID == 1 || sort.ID == 2)
+                {
+                    SortingTask();
+                }
             }
             catch (IndexOutOfRangeException)
             { }
 
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            TextBox_Comment.Visibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -509,10 +442,15 @@ namespace GestionTache
         /// <param name="e"></param>
         private void CheckBox_TaskState_Checked(object sender, RoutedEventArgs e)
         {
-            CheckBox checkBox = e.Source as CheckBox;
+            CheckBox checkBox = e.Source as CheckBox;        
             CheckboxAction(checkBox);
+            //trie les tâches à nouveau si les options de trie par l'état de la tâche est sélectionner
+            TypeSort sort = (TypeSort)cmbBoxSortTask.SelectedItem;
+            if (sort.ID == 4 || sort.ID == 3)
+            {
+                SortingTask();
+            }
         }
-
 
         /// <summary>
         /// action effectué quand la checkbox n'est plus checké
@@ -523,8 +461,13 @@ namespace GestionTache
         {
             CheckBox checkBox = e.Source as CheckBox;
             CheckboxAction(checkBox);
+            //trie les tâches à nouveau si les options de trie par l'état de la tâche est sélectionner
+            TypeSort sort = (TypeSort)cmbBoxSortTask.SelectedItem;
+            if (sort.ID == 4 || sort.ID == 3)
+            {
+                SortingTask();
+            }
         }
-
 
         /// <summary>
         /// Change l'état de la tâche selon l'état de la checkbox
@@ -621,7 +564,6 @@ namespace GestionTache
             }
         }
 
-
         /// <summary>
         /// Suppresion d'une liste
         /// </summary>
@@ -644,7 +586,7 @@ namespace GestionTache
                         databaseHandler.ListDAO.DeleteList(lists[i]);
                         databaseHandler.TaskDAO.DeletedTaksByListID(lists[i].ID);
                         txtBox_TitleList.Text = "";
-                        ListBox_Tasks.ItemsSource = null;
+                        Tasks = null;
                         //ListBox_Tasks.Items.Refresh();
                         lists.RemoveAt(i);
                         Button_AddTask.IsEnabled = false;
@@ -705,6 +647,7 @@ namespace GestionTache
             ListBoxItem item = e.Source as ListBoxItem;
             BorderComment.Visibility = Visibility.Visible;
 
+            //recherche la tâche sélectionner et attribue son id comme tag aux contrôle du commentaire
             foreach (Task task in Tasks)
             {
                 if (task.IDTask == int.Parse(item.Tag.ToString()))
@@ -742,18 +685,9 @@ namespace GestionTache
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SaveComment_Click(object sender, RoutedEventArgs e)
-        {
-            TextBox_Comment.Visibility = Visibility.Hidden;
-        }
 
         /// <summary>
-        /// 
+        /// Quan la textbox du commentaire perd le focus du clavier elle devient caché
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -763,7 +697,7 @@ namespace GestionTache
         }
 
         /// <summary>
-        /// 
+        /// Entrer en mode édition du commentaire
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -771,7 +705,7 @@ namespace GestionTache
         {
             TextBlock textBlock = e.Source as TextBlock;
             Task taskSelect = null;
-
+            //recherche la tâche affilié au commentaire
             foreach (Task task in Tasks)
             {
                 if (task.IDTask == int.Parse(textBlock.Tag.ToString()))
@@ -781,15 +715,21 @@ namespace GestionTache
                     break;
                 }
             }
+
+            //Rentre en mode édition du commentaire
             if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2 && !taskSelect.State)
             {
                 TextBox_Comment.Visibility = Visibility.Visible;
             }
         }
 
+        /// <summary>
+        /// Permet d'alterner entre l'affichage et le masquage des tâches déja réaliser
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Visibility_Task_Click(object sender, RoutedEventArgs e)
         {
-
             IsTaskHiding = !IsTaskHiding;
             if (Button_Visibility_Task.Content == FindResource("visible"))
             {
@@ -803,63 +743,128 @@ namespace GestionTache
 
         }
 
+        /// <summary>
+        /// Sélectionne un type trie et l'applique
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cmbBoxSortTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox combo = e.Source as ComboBox;
-
-            //DegreePriority = 1
+        {          
             if (selectedList != null)
-            {
-                TypeSort sort = (TypeSort)combo.SelectedItem;
-                //SortingTask(selectedList.Tasks,sort);
-                SortingTask(sort);
-                //ListBox_Tasks.ItemsSource = selectedList.Tasks;
-                //selectedList.Tasks.order
+            {              
+                SortingTask();
 
-
-                //ListBox_Tasks.Items.SortDescriptions.Add(new SortDescription("Priority.DegreePriority", ListSortDirection.Ascending));
-
-                //ListBox_Tasks.Items.Refresh();
             }
         }
 
-        private void SortingTask(TypeSort sort)
+        /// <summary>
+        /// trie des tâches
+        /// </summary>
+        private void SortingTask()
         {
-            if (sort.ID == 1 || sort.ID == 2)
+           TypeSort sort= (TypeSort)cmbBoxSortTask.SelectedItem;
+
+            for (int j = Tasks.Count - 1; j > 0; j--)
             {
-                for (int j = Tasks.Count - 1; j > 0; j--)
+                for (int i = 0; i < j; i++)
                 {
-                    for (int i = 0; i < j; i++)
+                    switch (sort.ID)
                     {
-                        switch (sort.ID)
-                        {
-                            case 1:
-                                if (Tasks[i].Priority.DegreePriority > Tasks[i + 1].Priority.DegreePriority)
-                                {
-                                    Task temporary;
-                                    //temporary = selectedList.Tasks[i];
-                                    //selectedList.Tasks[i] = selectedList.Tasks[i + 1];
-                                    //selectedList.Tasks[i + 1] = temporary;
-                                    Tasks.Move(i, i + 1);
-
-                                }
-                                break;
-                            case 2:
-                                if (Tasks[i].Priority.DegreePriority < Tasks[i + 1].Priority.DegreePriority)
-                                {
-                                    Task temporary;
-                                    temporary = Tasks[i];
-                                    Tasks[i] = Tasks[i + 1];
-                                    Tasks[i + 1] = temporary;
-                                }
-                                break;
-                        }
-
+                        //trie par aucun type spécifique
+                        case 0:
+                            if (Tasks[i].IDTask > Tasks[i + 1].IDTask)
+                            {
+                                Tasks.Move(i, i + 1);
+                            }
+                            break;
+                            //trie des tâches par les moins urgents
+                        case 1:
+                            if (Tasks[i].Priority.DegreePriority > Tasks[i + 1].Priority.DegreePriority)
+                            {
+                                Tasks.Move(i, i + 1);
+                            }
+                            break;
+                            //trie des tâches par les plus urgents
+                        case 2:
+                            if (Tasks[i].Priority.DegreePriority < Tasks[i + 1].Priority.DegreePriority)
+                            {
+                                Tasks.Move(i, i + 1);
+                            }
+                            break;
+                            //trie des tâches par ceux non réaliser
+                        case 3:
+                            int truc = Tasks[i].State.CompareTo(Tasks[i + 1].State);
+                            if (truc < 0)
+                            {
+                                Tasks.Move(i, i + 1);
+                            }
+                            break;
+                            //trie des tâches par ceux déja réalisé
+                        case 4:
+                            int compare = Tasks[i].State.CompareTo(Tasks[i + 1].State);
+                            if (compare > 0)
+                            {
+                                Tasks.Move(i, i + 1);
+                            }
+                            break;
                     }
                 }
             }
 
-
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        //getter setter pour Binding
+
+        /// <summary>
+        /// getter setter commentaire
+        /// </summary>
+        public string CommentText
+        {
+            get { return this.commentText; }
+            set
+            {
+                this.commentText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsTaskHiding
+        {
+            get { return this.isTaskHiding; }
+            set { this.isTaskHiding = value; }
+        }
+
+        public List<TypeSort> TypeSorts
+        {
+            get { return this.typeSorts; }
+            set { this.typeSorts = value; }
+        }
+
+        public ObservableCollection<Task> Tasks
+        {
+            get { return this.tasks; }
+            set
+            {
+                this.tasks = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<ListOfTasks> Lists
+        {
+            get { return this.lists; }
+            set
+            {
+                this.lists = value;
+
+            }
+        }
+
     }
 }

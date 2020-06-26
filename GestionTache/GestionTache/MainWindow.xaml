@@ -27,7 +27,7 @@
                     <MenuItem x:Name="menuItem_addListOfTask" Header="Ajouter une liste"/>
 
                 </MenuItem>
-                <MenuItem Header="Tâche" Click="MenuItem_Click" >
+                <MenuItem Header="Tâche"  >
                     <MenuItem Header="Ajouter une Tâche"/>
                 </MenuItem>
 
@@ -160,7 +160,7 @@
                     </ComboBox>
                 </Grid>
 
-                <ListBox x:Name="ListBox_Tasks" ItemsSource="{Binding Path=Tasks, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"   HorizontalContentAlignment="Stretch" Grid.Row="2" BorderThickness="0" Margin="5,10,0,10"   >
+                <ListBox x:Name="ListBox_Tasks" ItemsSource="{Binding Path=Tasks, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"   HorizontalContentAlignment="Stretch" Grid.Row="2" BorderThickness="0"  Margin="5,10,0,10"   >
                     <ListBox.Background>
                         <SolidColorBrush Opacity="0"/>
                     </ListBox.Background>
