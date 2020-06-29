@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionTache"
         mc:Ignorable="d"
-        Title="Gestionnaire de tâche" Height="700" Width="1000" MinWidth="800" MinHeight="500">
+        Title="Gestionnaire de tâches" Height="700" Width="1000" MinWidth="800" MinHeight="500">
 
     <Window.Resources>
         <Image x:Key="visible" Source="Image/open-eye.png"  />
         <Image x:Key="hidden"  Source="Image/close-eye.png"/>
+        
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -38,7 +39,7 @@
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250" MinWidth="200" MaxWidth="300"/>
+                <ColumnDefinition Width="260" MinWidth="200" MaxWidth="300"/>
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="1*" MinWidth="300" />
                 <ColumnDefinition Width="25"/>
@@ -99,7 +100,7 @@
                                     <Image Source="Image/list.png" Height="20"  VerticalAlignment="Center" Margin="2,0,2,0"/>
                                     <TextBlock x:Name="txtBlockNameList" Grid.Column="1"  Text="{Binding Name}" Tag="{Binding ID}" Panel.ZIndex="0"
                                            FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,2,0" />
-                                    <TextBox x:Name="txtBoxNameList"   Grid.Column="1"  Text="{Binding Name}" Tag="{Binding ID}" Panel.ZIndex="1"
+                                    <TextBox x:Name="txtBoxNameList" MaxLength="25"  Grid.Column="1"   Text="{Binding Name}" Tag="{Binding ID}" Panel.ZIndex="1"
                                          FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,2,0" Visibility="Hidden" LostFocus="txtBoxNameList_LostFocus" KeyDown="txtBoxNameList_KeyDown" />
                                     <Label  Content="{Binding NumberTaskToDo}" Grid.Column="2" FontSize="12" Foreground="Gray" VerticalAlignment="Center"  />
 
@@ -138,18 +139,25 @@
 
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="70"/>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="150"/>
                         
                     </Grid.ColumnDefinitions>
 
+
                     <Button x:Name="Button_AddTask" VerticalAlignment="Center" Width="35" Height="35" HorizontalAlignment="Left" Grid.Column="0" Margin="10,0,0,0" IsEnabled="False" Content="+" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center" ToolTip="Ajouter une tâche" Click="Button_AddTask_Click"/>
-                    <Button x:Name="Button_Visibility_Task" Grid.Column="1" Margin="10,0,10,0" Width="35" Height="35"  ToolTip="Activer ou désactiver l'affichage l'affichage des tâches déja réalisés" Click="Button_Visibility_Task_Click" >
+                    <ProgressBar x:Name="progressBarTasks" Minimum="0"   Grid.Column="1" Margin="10,5,10,5" >
+                        
+                    </ProgressBar>
+                    <TextBlock x:Name="textBlockTotalTasks" Text="awda" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                    <Button x:Name="Button_Visibility_Task" Grid.Column="2" Margin="10,0,10,0" Width="35" Height="35"  ToolTip="Activer ou désactiver l'affichage l'affichage des tâches déja réalisés" Click="Button_Visibility_Task_Click" >
                         <DynamicResource ResourceKey="visible"/>
 
                     </Button>
-                    <ComboBox x:Name="cmbBoxSortTask" ItemsSource="{Binding Path=TypeSorts}"  Grid.Column="2" Margin="5" Height="25" SelectionChanged="cmbBoxSortTask_SelectionChanged" >
+                    <ComboBox x:Name="cmbBoxSortTask" ItemsSource="{Binding Path=TypeSorts}"  Grid.Column="3" Margin="5" Height="25" SelectionChanged="cmbBoxSortTask_SelectionChanged" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -178,6 +186,7 @@
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Margin" Value="0,2,0,2"/>
                             <Setter Property="Tag" Value="{Binding IDTask}"/>
+                            
                             <EventSetter Event="Loaded" Handler="ListBoxItem_Loaded"/>
                             <EventSetter Event="Selected" Handler="ListBoxItem_Selected"/>
 
@@ -202,6 +211,7 @@
                                 </MultiDataTrigger>
 
                                 
+
                             </Style.Triggers>
 
 
@@ -213,12 +223,55 @@
                         <DataTemplate>
 
                             <Border x:Name="BorderGridItemTask" BorderBrush="Black" BorderThickness="1" CornerRadius="5" >
+                                <Border.Style>
+                                    <Style TargetType="Border">
+
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Priority.DegreePriority}" Value="1">
+                                                <Setter Property="Background" >
+                                                    <Setter.Value>
+                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                            <GradientStop Color="White" Offset="0.65"/>
+                                                            <GradientStop Color="#6dd5ed" Offset="1.0"/>
+
+                                                        </LinearGradientBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Priority.DegreePriority}" Value="2">
+                                                <Setter Property="Background" >
+                                                    <Setter.Value>
+                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                            <GradientStop Color="White" Offset="0.65"/>
+                                                            <GradientStop Color="#ffaf7b" Offset="1.0"/>
+
+                                                        </LinearGradientBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Priority.DegreePriority}" Value="3">
+                                                <Setter Property="Background" >
+                                                    <Setter.Value>
+                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                            <GradientStop Color="White" Offset="0.65"/>
+                                                            <GradientStop Color="#ed4264 " Offset="1.0"/>
+
+                                                        </LinearGradientBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+
                                 <Grid x:Name="GridItemTask" Height="70" HorizontalAlignment="Stretch" Margin="5,0,5,0" >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="50"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="100"/>
                                     </Grid.ColumnDefinitions>
+                                   
 
                                     <CheckBox x:Name="CheckBox_TaskState" Grid.Column="0"  IsChecked="{Binding State}" FontSize="25" VerticalAlignment="Center" Checked="CheckBox_TaskState_Checked" Tag="{Binding IDTask}" Unchecked="CheckBox_TaskState_Unchecked" >
                                         <CheckBox.LayoutTransform>

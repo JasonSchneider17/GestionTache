@@ -66,7 +66,18 @@ namespace GestionTache
         }
 
 
-
+        public void updatePriority()
+        {
+            for (int i = 0; i < prioritiesDisplay.Count; i++)
+            {
+                if (prioritiesDisplay[i].IDPriority == this.idPriority)
+                {
+                    this.Priority = PrioritiesDisplay[i];
+                    break;
+                }
+            }
+        
+    }
 
         //getter setter
 

@@ -31,7 +31,7 @@ namespace GestionTache
         //bool listIsEdited = false;                        //indique si on est en mode d'edition de tâche
         ListOfTasks selectedList;                           //liste sélectionner par l'utilisateur
         string commentText;                                 //Commentaire de la tâche
-        bool isTaskHiding = false;                          //indique si il faut cacher les tâches 
+        bool isTaskHiding = false;                          //indique si il faut cacher les tâches déja réalisé
         List<TypeSort> typeSorts;                           //type de sort
         ObservableCollection<Task> tasks;                   //Liste de tâches
 
@@ -70,7 +70,6 @@ namespace GestionTache
             {
                 list.NumberTaskToDo = databaseHandler.TaskDAO.CountTaskToDoByList(list.ID);
             }
-
             DataContext = this;
             PopulateTypeSorts();
             cmbBoxSortTask.SelectedIndex = 0;
@@ -87,8 +86,6 @@ namespace GestionTache
             typeSorts.Add(new TypeSort("Les plus urgents", 2));
             typeSorts.Add(new TypeSort("Déja réaliser ", 3));
             typeSorts.Add(new TypeSort("Non réaliser", 4));
-
-
         }
 
         /// <summary>
@@ -160,6 +157,7 @@ namespace GestionTache
             Tasks.Add(newTask);
 
             SortingTask();
+            TotalTasksUpdate();
 
             //Recherche la tâche venant d'être ajouté dans la listbox
             int indexLastAddedTask = 0;
@@ -283,6 +281,7 @@ namespace GestionTache
             //ajoute les tâches affilié à la liste  depuis la base de données dans la liste
             Tasks = databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, databaseHandler.PriorityDAO.getAllPriority());
             SortingTask();
+            TotalTasksUpdate();
             DataContext = this;
             //ListBox_Tasks.Items.Refresh();
             //source de donnée de la listbox de tâche
@@ -408,7 +407,9 @@ namespace GestionTache
                             if (priority.IDPriority == idPriority.IDPriority)
                             {
                                 task.IdPriority = priority.IDPriority;
+
                                 databaseHandler.TaskDAO.UpdateTaskPriorityId(task);
+                                ListBox_Tasks.Items.Refresh();
                             }
                         }
                     }
@@ -450,6 +451,7 @@ namespace GestionTache
             {
                 SortingTask();
             }
+            TotalTasksUpdate();
         }
 
         /// <summary>
@@ -467,6 +469,7 @@ namespace GestionTache
             {
                 SortingTask();
             }
+            TotalTasksUpdate();
         }
 
         /// <summary>
@@ -524,13 +527,15 @@ namespace GestionTache
                             manipulateNumberTaskToDo(false, selectedList.ID);
                             databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
                             Tasks.RemoveAt(i);
+                            TotalTasksUpdate();
                         }
                     }
                     else
                     {
                         //supprime la tâche
-                        Tasks.RemoveAt(i);
                         databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
+                        Tasks.RemoveAt(i);
+                        TotalTasksUpdate();
                     }
                     //ListBox_Tasks.Items.Refresh();
                     break;
@@ -811,6 +816,24 @@ namespace GestionTache
                 }
             }
 
+        }
+
+        public void TotalTasksUpdate()
+        {
+            int totalNumberTasks = Tasks.Count;
+            int numberTaskDo = 0;
+            foreach(Task task in Tasks)
+            {
+                if (task.State)
+                {
+                    numberTaskDo++;
+                }
+            }
+
+            progressBarTasks.Maximum = totalNumberTasks;
+            progressBarTasks.Value = numberTaskDo;
+
+            textBlockTotalTasks.Text = string.Format("{0}/{1} tâches terminées",numberTaskDo,totalNumberTasks);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
