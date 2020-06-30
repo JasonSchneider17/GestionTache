@@ -27,8 +27,7 @@ namespace GestionTache
     {
         Database databaseObject;                            //base de données
         DatabaseHandler databaseHandler;                    //interagir avec base de données
-        ObservableCollection<ListOfTasks> lists;            //liste
-        //bool listIsEdited = false;                        //indique si on est en mode d'edition de tâche
+        ObservableCollection<ListOfTasks> lists;            //listes
         ListOfTasks selectedList;                           //liste sélectionner par l'utilisateur
         string commentText;                                 //Commentaire de la tâche
         bool isTaskHiding = false;                          //indique si il faut cacher les tâches déja réalisé
@@ -38,7 +37,7 @@ namespace GestionTache
         public MainWindow()
         {
             InitializeComponent();
-            // SetLanguageDictionary();
+            SetLanguageDictionary();
 
             //database Conf
             databaseObject = new Database();
@@ -81,33 +80,33 @@ namespace GestionTache
         private void PopulateTypeSorts()
         {
             typeSorts = new List<TypeSort>();
-            typeSorts.Add(new TypeSort("Aucun", 0));
-            typeSorts.Add(new TypeSort("Les moins urgents", 1));
-            typeSorts.Add(new TypeSort("Les plus urgents", 2));
-            typeSorts.Add(new TypeSort("Déja réaliser ", 3));
-            typeSorts.Add(new TypeSort("Non réaliser", 4));
+            typeSorts.Add(new TypeSort((string)this.FindResource("NothingItemSort"), 0));
+            typeSorts.Add(new TypeSort((string)this.FindResource("LessUrgentItemSort"), 1));
+            typeSorts.Add(new TypeSort((string)this.FindResource("MoreUrgentItemSort"), 2));
+            typeSorts.Add(new TypeSort((string)this.FindResource("CheckedItemSort"), 3));
+            typeSorts.Add(new TypeSort((string)this.FindResource("UncheckedItemSort"), 4));
         }
 
         /// <summary>
         /// détermine le language de l'appli
         /// </summary>
-        //private void SetLanguageDictionary()
-        //{
-        //    ResourceDictionary dict = new ResourceDictionary();
-        //    switch (Thread.CurrentThread.CurrentCulture.ToString())
-        //    {
-        //        /*case "en-US":
-        //            dict.Source = new Uri("..\\..\\Language\\StringResourcesEN.xaml", UriKind.Relative);
-        //            break;*/
-        //        case "fr-CH":
-        //            dict.Source = new Uri("..\\..\\Language\\StringResourcesFR.xaml", UriKind.Relative);
-        //            break;
-        //        default:
-        //            dict.Source = new Uri("..\\..\\Language\\StringResourcesFR.xaml", UriKind.Relative);
-        //            break;
-        //    }
-        //    this.Resources.MergedDictionaries.Add(dict);
-        //}
+        private void SetLanguageDictionary()
+        {
+            ResourceDictionary dict = new ResourceDictionary();
+            switch (Thread.CurrentThread.CurrentCulture.ToString())
+            {
+                /*case "en-US":
+                    dict.Source = new Uri("..\\..\\Language\\StringResourcesEN.xaml", UriKind.Relative);
+                    break;*/
+                case "fr-CH":
+                    dict.Source = new Uri("..\\..\\Language\\StringResourcesFR.xaml", UriKind.Relative);
+                    break;
+                default:
+                    dict.Source = new Uri("..\\..\\Language\\StringResourcesFR.xaml", UriKind.Relative);
+                    break;
+            }
+            this.Resources.MergedDictionaries.Add(dict);
+        }
 
 
         /// <summary>
@@ -190,19 +189,6 @@ namespace GestionTache
             target.SelectAll();
         }
 
-
-        private LinearGradientBrush GradientBackground()
-        {
-            LinearGradientBrush horizontalGradient = new LinearGradientBrush();
-            horizontalGradient.StartPoint = new Point(0, 0.5);
-            horizontalGradient.EndPoint = new Point(1, 0.5);
-            Color color1 = (Color)ColorConverter.ConvertFromString("#36d1dc");
-            Color color2 = (Color)ColorConverter.ConvertFromString("#5b86e5");
-            horizontalGradient.GradientStops.Add(new GradientStop(color1, 0.0));
-            horizontalGradient.GradientStops.Add(new GradientStop(color2, 1.0));
-            return horizontalGradient;
-        }
-
         /// <summary>
         /// permet d'obtenir un contrôle textbox contenue dans un listboxitem
         /// </summary>
@@ -243,8 +229,6 @@ namespace GestionTache
             DataTemplate dataTemplate = contentPresenter.ContentTemplate;
             return (ComboBox)dataTemplate.FindName(nameComboBox, contentPresenter);
         }
-
-
 
         /// <summary>
         /// Recherche le contrôle enfant
@@ -674,18 +658,28 @@ namespace GestionTache
         {
             if (e.Key == Key.Escape)
             {
-                Keyboard.ClearFocus();
-                foreach (Task task in Tasks)
+                SaveComment();
+            }
+        }
+
+        private void BtnCommentSave_Click(object sender, RoutedEventArgs e)
+        {
+            SaveComment();
+        }
+
+        private void SaveComment()
+        {
+            Keyboard.ClearFocus();
+            foreach (Task task in Tasks)
+            {
+                if (task.IDTask == int.Parse(TextBox_Comment.Tag.ToString()))
                 {
-                    if (task.IDTask == int.Parse(TextBox_Comment.Tag.ToString()))
+                    if (task.Comment != CommentText)
                     {
-                        if (task.Comment != CommentText)
-                        {
-                            task.Comment = CommentText;
-                            databaseHandler.TaskDAO.UpdateTaskComment(task);
-                        }
-                        break;
+                        task.Comment = CommentText;
+                        databaseHandler.TaskDAO.UpdateTaskComment(task);
                     }
+                    break;
                 }
             }
         }
@@ -832,8 +826,8 @@ namespace GestionTache
 
             progressBarTasks.Maximum = totalNumberTasks;
             progressBarTasks.Value = numberTaskDo;
-
-            textBlockTotalTasks.Text = string.Format("{0}/{1} tâches terminées",numberTaskDo,totalNumberTasks);
+            string text = (string)this.FindResource("TxtBlockProgressBar");
+            textBlockTotalTasks.Text = string.Format("{0}/{1} {2}",numberTaskDo,totalNumberTasks,text);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -888,6 +882,7 @@ namespace GestionTache
 
             }
         }
+
 
     }
 }

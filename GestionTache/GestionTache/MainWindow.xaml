@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionTache"
         mc:Ignorable="d"
-        Title="Gestionnaire de tâches" Height="700" Width="1000" MinWidth="800" MinHeight="500">
+        Title="{DynamicResource TitleApp}" Height="700" Width="1000" MinWidth="800" MinHeight="500">
 
     <Window.Resources>
         <Image x:Key="visible" Source="Image/open-eye.png"  />
         <Image x:Key="hidden"  Source="Image/close-eye.png"/>
         
     </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0"/>
@@ -39,7 +40,7 @@
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260" MinWidth="200" MaxWidth="300"/>
+                <ColumnDefinition Width="260" MinWidth="200" MaxWidth="320"/>
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="1*" MinWidth="300" />
                 <ColumnDefinition Width="25"/>
@@ -48,14 +49,14 @@
 
 
             <Border BorderThickness="0,0,1,0" BorderBrush="Black">
-                <Grid >
+                <Grid Margin="0,0,7,0" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50"/>
                         <RowDefinition Height="1*" />
 
                     </Grid.RowDefinitions>
 
-                    <Button x:Name="Button_AddList" Content="+ Liste" FontSize="17" FontWeight="Bold"   Margin="5" Click="Button_AddList_Click">
+                    <Button x:Name="Button_AddList" Content="{DynamicResource AddList}" ToolTip="{DynamicResource AddListToolTip}" FontSize="17" FontWeight="Bold"   Margin="5" Click="Button_AddList_Click">
 
                     </Button>
                     <ListBox x:Name="listBox_listOfTasks" ItemsSource="{Binding Path=Lists, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" HorizontalContentAlignment="Stretch"  Grid.Row="1" BorderThickness="0" >
@@ -77,8 +78,16 @@
                                 <Setter Property="ContextMenu" >
                                     <Setter.Value>
                                         <ContextMenu >
-                                            <MenuItem Header="Supprimer Liste" Tag="{Binding ID}" Style="{StaticResource DeleteListContextMenuStyle}" />
-                                            <MenuItem Header="Modifier nom liste" Tag="{Binding ID}" Style="{StaticResource UpdateListContextMenuStyle}" />
+                                            <MenuItem Header="Supprimer Liste" Tag="{Binding ID}" Style="{StaticResource DeleteListContextMenuStyle}" >
+                                                <MenuItem.Icon>
+                                                    <Image Source="Image/delete.png"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="Modifier nom liste" Tag="{Binding ID}" Style="{StaticResource UpdateListContextMenuStyle}" >
+                                                <MenuItem.Icon>
+                                                    <Image Source="Image/edit.png"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </Setter.Value>
                                 </Setter>
@@ -99,7 +108,19 @@
 
                                     <Image Source="Image/list.png" Height="20"  VerticalAlignment="Center" Margin="2,0,2,0"/>
                                     <TextBlock x:Name="txtBlockNameList" Grid.Column="1"  Text="{Binding Name}" Tag="{Binding ID}" Panel.ZIndex="0"
-                                           FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,2,0" />
+                                           FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,2,0" >
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding (ListBoxItem.IsSelected),RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="true">
+                                                        <Setter Property="FontWeight" Value="Bold"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                        
+                                    </TextBlock>
+
                                     <TextBox x:Name="txtBoxNameList" MaxLength="25"  Grid.Column="1"   Text="{Binding Name}" Tag="{Binding ID}" Panel.ZIndex="1"
                                          FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,2,0" Visibility="Hidden" LostFocus="txtBoxNameList_LostFocus" KeyDown="txtBoxNameList_KeyDown" />
                                     <Label  Content="{Binding NumberTaskToDo}" Grid.Column="2" FontSize="12" Foreground="Gray" VerticalAlignment="Center"  />
@@ -120,7 +141,7 @@
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="1*" MinHeight="400"/>
                     <RowDefinition Height="5"/>
-                    <RowDefinition Height="150" MinHeight="100" MaxHeight="200"/>
+                    <RowDefinition Height="180" MinHeight="150" MaxHeight="220"/>
                 </Grid.RowDefinitions>
 
 
@@ -147,17 +168,17 @@
                     </Grid.ColumnDefinitions>
 
 
-                    <Button x:Name="Button_AddTask" VerticalAlignment="Center" Width="35" Height="35" HorizontalAlignment="Left" Grid.Column="0" Margin="10,0,0,0" IsEnabled="False" Content="+" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center" ToolTip="Ajouter une tâche" Click="Button_AddTask_Click"/>
-                    <ProgressBar x:Name="progressBarTasks" Minimum="0"   Grid.Column="1" Margin="10,5,10,5" >
+                    <Button x:Name="Button_AddTask"  VerticalAlignment="Center" Width="35" Height="35" HorizontalAlignment="Left" Grid.Column="0" Margin="10,0,0,0" IsEnabled="False" Content="+" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center" ToolTip="Ajouter une tâche" Click="Button_AddTask_Click"/>
+                    <ProgressBar x:Name="progressBarTasks" Minimum="0" ToolTip="{DynamicResource ProgressBarToolTip}"  Grid.Column="1" Margin="10,5,10,5" >
                         
                     </ProgressBar>
-                    <TextBlock x:Name="textBlockTotalTasks" Text="awda" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="textBlockTotalTasks"  Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                    <Button x:Name="Button_Visibility_Task" Grid.Column="2" Margin="10,0,10,0" Width="35" Height="35"  ToolTip="Activer ou désactiver l'affichage l'affichage des tâches déja réalisés" Click="Button_Visibility_Task_Click" >
+                    <Button x:Name="Button_Visibility_Task" Grid.Column="2" Margin="10,0,10,0" Width="35" Height="35"  ToolTip="{DynamicResource BtnVisibilityToolTip}" Click="Button_Visibility_Task_Click" >
                         <DynamicResource ResourceKey="visible"/>
 
                     </Button>
-                    <ComboBox x:Name="cmbBoxSortTask" ItemsSource="{Binding Path=TypeSorts}"  Grid.Column="3" Margin="5" Height="25" SelectionChanged="cmbBoxSortTask_SelectionChanged" >
+                    <ComboBox x:Name="cmbBoxSortTask" ToolTip="{DynamicResource ComboBoxTaskSortToolTip}" ItemsSource="{Binding Path=TypeSorts}"  Grid.Column="3" Margin="5" Height="25" SelectionChanged="cmbBoxSortTask_SelectionChanged" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -190,13 +211,19 @@
                             <EventSetter Event="Loaded" Handler="ListBoxItem_Loaded"/>
                             <EventSetter Event="Selected" Handler="ListBoxItem_Selected"/>
 
-
-
                             <Setter Property="ContextMenu" >
                                 <Setter.Value>
                                     <ContextMenu >
-                                        <MenuItem Header="Supprimer Tâche" Tag="{Binding IDTask}" Style="{StaticResource DeleteTaskContextMenuStyle}" />
-                                        <MenuItem Header="Modifier Nom Tâche" Tag="{Binding IDTask}" Style="{StaticResource UpdateTaskContextMenuStyle}" />
+                                        <MenuItem Header="{DynamicResource ContextMenuDeleteHeader}" Tag="{Binding IDTask}" Style="{StaticResource DeleteTaskContextMenuStyle}" >
+                                            <MenuItem.Icon>
+                                                <Image Source="Image/delete.png"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="{DynamicResource ContextMenuUpdateHeader}" Tag="{Binding IDTask}" Style="{StaticResource UpdateTaskContextMenuStyle}" >
+                                            <MenuItem.Icon>
+                                                <Image Source="Image/edit.png"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>
@@ -209,12 +236,7 @@
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </MultiDataTrigger>
-
-                                
-
                             </Style.Triggers>
-
-
 
                         </Style>
                     </ListBox.ItemContainerStyle>
@@ -230,7 +252,9 @@
                                             <DataTrigger Binding="{Binding Priority.DegreePriority}" Value="1">
                                                 <Setter Property="Background" >
                                                     <Setter.Value>
-                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+
+
+                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" Opacity="0.8">
                                                             <GradientStop Color="White" Offset="0.65"/>
                                                             <GradientStop Color="#6dd5ed" Offset="1.0"/>
 
@@ -241,7 +265,7 @@
                                             <DataTrigger Binding="{Binding Priority.DegreePriority}" Value="2">
                                                 <Setter Property="Background" >
                                                     <Setter.Value>
-                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" Opacity="0.8">
                                                             <GradientStop Color="White" Offset="0.65"/>
                                                             <GradientStop Color="#ffaf7b" Offset="1.0"/>
 
@@ -252,7 +276,8 @@
                                             <DataTrigger Binding="{Binding Priority.DegreePriority}" Value="3">
                                                 <Setter Property="Background" >
                                                     <Setter.Value>
-                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                       
+                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" Opacity="0.8">
                                                             <GradientStop Color="White" Offset="0.65"/>
                                                             <GradientStop Color="#ed4264 " Offset="1.0"/>
 
@@ -273,7 +298,7 @@
                                     </Grid.ColumnDefinitions>
                                    
 
-                                    <CheckBox x:Name="CheckBox_TaskState" Grid.Column="0"  IsChecked="{Binding State}" FontSize="25" VerticalAlignment="Center" Checked="CheckBox_TaskState_Checked" Tag="{Binding IDTask}" Unchecked="CheckBox_TaskState_Unchecked" >
+                                    <CheckBox x:Name="CheckBox_TaskState" Grid.Column="0"  IsChecked="{Binding State}" ToolTip="{DynamicResource CheckBoxTaskToolTip}" FontSize="25" VerticalAlignment="Center" Checked="CheckBox_TaskState_Checked" Tag="{Binding IDTask}" Unchecked="CheckBox_TaskState_Unchecked" >
                                         <CheckBox.LayoutTransform>
                                             <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
                                         </CheckBox.LayoutTransform>
@@ -287,6 +312,9 @@
                                                     <DataTrigger Binding="{Binding State}" Value="true">
                                                         <Setter Property="TextBlock.TextDecorations" Value="Strikethrough"/>
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding (ListBoxItem.IsSelected),RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="true">
+                                                        <Setter Property="FontWeight" Value="Bold"/>
+                                                    </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </TextBlock.Style>
@@ -297,7 +325,7 @@
                                          LostFocus="txtboxNameTask_LostFocus" Tag="{Binding IDTask}" KeyDown="txtboxNameTask_KeyDown"  HorizontalAlignment="Stretch"/>
 
 
-                                    <ComboBox x:Name="cmbBoxTaskPriority" ItemsSource="{Binding PrioritiesDisplay }" SelectedItem="{Binding Priority}" Grid.Column="2" 
+                                    <ComboBox x:Name="cmbBoxTaskPriority" ItemsSource="{Binding PrioritiesDisplay }" SelectedItem="{Binding Priority}" Grid.Column="2" ToolTip="{DynamicResource ComboBoxTaskToolTip}"
                                           Height="25" VerticalAlignment="Center" IsSynchronizedWithCurrentItem="True" 
                                           SelectionChanged="cmbBoxTaskPriority_SelectionChanged" Tag="{Binding IDTask}" >
                                         <ComboBox.ItemTemplate>
@@ -321,17 +349,30 @@
                 <Border x:Name="BorderComment" BorderBrush="Black" Grid.Row="4" BorderThickness="0,1,0,0" Visibility="Hidden" >
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="30"/>
                             <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
 
-                        <Label Content="Commentaire" FontWeight="Bold"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="50"/>
+                            </Grid.ColumnDefinitions>
+
+                        <Label Content="Commentaire"  VerticalContentAlignment="Center" FontWeight="Bold"/>
+                            <Button x:Name="btnCommentSave"  HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,5,0,0" Width="40"  Grid.Column="1" ToolTip="{DynamicResource BtnSaveCommentToolTip}" Click="BtnCommentSave_Click">
+                                <Image Source="Image/save.png"/>
+                            </Button>
+                        </Grid>
+
+
 
 
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10,5,10,5" >
-                            <TextBlock x:Name="Textblock_Comment"  Margin="10,5,10,5" TextWrapping="Wrap"  Text="{Binding Path=CommentText, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" MouseDown="Textblock_Comment_MouseDown" />
+                            <TextBlock x:Name="Textblock_Comment" ToolTip="{DynamicResource TextBlockCommentToolTip}"  Margin="10,5,10,5" TextWrapping="Wrap"  Text="{Binding Path=CommentText, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" MouseDown="Textblock_Comment_MouseDown" />
                         </ScrollViewer>
                         <TextBox x:Name="TextBox_Comment" Grid.Row="1" Visibility="Hidden" Panel.ZIndex="1"   Margin="10,5,10,5"  KeyDown="TextBox_Comment_KeyDown"  TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"  Text="{Binding Path=CommentText, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" BorderBrush="Black"  LostKeyboardFocus="TextBox_Comment_LostKeyboardFocus"  />
+
                     </Grid>
                 </Border>
 
