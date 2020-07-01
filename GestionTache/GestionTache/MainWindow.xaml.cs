@@ -116,6 +116,16 @@ namespace GestionTache
         /// <param name="e"></param>
         private void Button_AddList_Click(object sender, RoutedEventArgs e)
         {
+            AddList();
+        }
+
+        private void menuItem_addListOfTask_Click(object sender, RoutedEventArgs e)
+        {
+            AddList();
+        }
+
+        private void AddList()
+        {
             ListOfTasks list = new ListOfTasks("add");
             //ajoute la liste dans la base de donnée et récupère l'id attribué par la base de donnée à la liste ajouté
             databaseHandler.ListDAO.Add(list);
@@ -133,7 +143,6 @@ namespace GestionTache
             target.Visibility = Visibility.Visible;
             target.Focus();
             target.SelectAll();
-
         }
 
         /// <summary>
@@ -143,6 +152,16 @@ namespace GestionTache
         /// <param name="e"></param>
         private void Button_AddTask_Click(object sender, RoutedEventArgs e)
         {
+            AddTask();
+        }
+
+        private void menuItem_addTask_Click(object sender, RoutedEventArgs e)
+        {
+            AddTask();
+        }
+
+        private void AddTask()
+        {
             List<Priority> listpriority = databaseHandler.PriorityDAO.getAllPriority();
             //ajoute la tâche dans la base de donnée et récupère l'id attribué par la base de donnée à la tâche ajouté
             Task newTask = new Task("test2", "comment", false, 0, selectedList.ID, listpriority, listpriority[0].IDPriority);
@@ -150,9 +169,6 @@ namespace GestionTache
             manipulateNumberTaskToDo(true, selectedList.ID);
 
             newTask.IDTask = databaseHandler.TaskDAO.getLastAddedTaskID();
-            //ajoute la tâche à la liste de tâche actuellement affiché
-
-            //selectedList.Tasks.Add(newTask);
             Tasks.Add(newTask);
 
             SortingTask();
@@ -167,7 +183,6 @@ namespace GestionTache
                     indexLastAddedTask = i;
                     break;
                 }
-
             }
             //selectionne le listboxitem ajouté et focus la vue dessus
             ListBox_Tasks.SelectedItem = ListBox_Tasks.Items[indexLastAddedTask];
@@ -176,11 +191,6 @@ namespace GestionTache
             ListBox_Tasks.UpdateLayout();
 
             ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromIndex(indexLastAddedTask);
-
-            //ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(listBoxItem);
-            //DataTemplate dataTemplate = contentPresenter.ContentTemplate;
-            //Border grid = (Border)dataTemplate.FindName("BorderGridItemTask", contentPresenter);
-            //grid.Background = GradientBackground();
 
             //affiche la textbox pour éditer le titre de la tâche
             TextBox target = getTextBoxFromLisboxItem("txtboxNameTask", listBoxItem);
@@ -257,7 +267,6 @@ namespace GestionTache
         private void ListBoxItem_Selected_1(object sender, RoutedEventArgs e)
         {
             //récupère les infos de la liste séléctionner
-            //ListBoxItem itemSelected = (ListBoxItem)listBox_listOfTasks.ItemContainerGenerator.ContainerFromItem(listBox_listOfTasks.SelectedItem);
             ListBoxItem itemSelected = e.Source as ListBoxItem;
             selectedList = (ListOfTasks)itemSelected.DataContext;
             //change le titre de l'affichage des tâches
@@ -267,10 +276,14 @@ namespace GestionTache
             SortingTask();
             TotalTasksUpdate();
             DataContext = this;
-            //ListBox_Tasks.Items.Refresh();
-            //source de donnée de la listbox de tâche
-            //ListBox_Tasks.ItemsSource = Tasks;
+
             Button_AddTask.IsEnabled = true;
+            menuItem_addTask.IsEnabled = true;
+            menuItem_DeleteListOfTask.IsEnabled = true;
+            menuItem_UpdateListOfTask.IsEnabled = true;
+            menuItem_EdiTask.IsEnabled = false;
+            menuItem_DeleteTask.IsEnabled = false;
+            BorderComment.Visibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -427,7 +440,7 @@ namespace GestionTache
         /// <param name="e"></param>
         private void CheckBox_TaskState_Checked(object sender, RoutedEventArgs e)
         {
-            CheckBox checkBox = e.Source as CheckBox;        
+            CheckBox checkBox = e.Source as CheckBox;
             CheckboxAction(checkBox);
             //trie les tâches à nouveau si les options de trie par l'état de la tâche est sélectionner
             TypeSort sort = (TypeSort)cmbBoxSortTask.SelectedItem;
@@ -493,10 +506,21 @@ namespace GestionTache
         private void MenuItem_Task_Click_Delete(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = e.Source as MenuItem;
+            DeleteTask(int.Parse(menuItem.Tag.ToString()));
+        }
+
+        private void menuItem_DeleteTask_Click(object sender, RoutedEventArgs e)
+        {
+            ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromItem(ListBox_Tasks.SelectedItem);
+            DeleteTask(int.Parse(listBoxItem.Tag.ToString()));
+        }
+
+        private void DeleteTask(int idTask)
+        {
             for (int i = 0; i < ListBox_Tasks.Items.Count; i++)
             {
                 //supprime la tâche de la base de donnée
-                if (int.Parse(menuItem.Tag.ToString()) == Tasks[i].IDTask)
+                if (idTask == Tasks[i].IDTask)
                 {
 
                     //regarde si la tâche est réaliser
@@ -512,6 +536,9 @@ namespace GestionTache
                             databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
                             Tasks.RemoveAt(i);
                             TotalTasksUpdate();
+                            menuItem_EdiTask.IsEnabled = false;
+                            menuItem_DeleteTask.IsEnabled = false;
+                            BorderComment.Visibility = Visibility.Hidden;
                         }
                     }
                     else
@@ -520,8 +547,10 @@ namespace GestionTache
                         databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
                         Tasks.RemoveAt(i);
                         TotalTasksUpdate();
+                        menuItem_EdiTask.IsEnabled = false;
+                        menuItem_DeleteTask.IsEnabled = false;
+                        BorderComment.Visibility = Visibility.Hidden;
                     }
-                    //ListBox_Tasks.Items.Refresh();
                     break;
                 }
             }
@@ -535,10 +564,21 @@ namespace GestionTache
         private void MenuItem_Task_Click_Update(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = e.Source as MenuItem;
+            EditTask(int.Parse(menuItem.Tag.ToString()));
+           
+        }
 
+        private void menuItem_EdiTask_Click(object sender, RoutedEventArgs e)
+        {
+            ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromItem(ListBox_Tasks.SelectedItem);
+            EditTask(int.Parse(listBoxItem.Tag.ToString()));
+        }
+
+        private void EditTask(int idTask)
+        {
             foreach (Task task in Tasks)
             {
-                if (task.IDTask == int.Parse(menuItem.Tag.ToString()))
+                if (task.IDTask == idTask)
                 {
                     //modifie seulement les tâche non réalisé
                     if (!task.State)
@@ -561,14 +601,22 @@ namespace GestionTache
         private void List_Click_Delete(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = e.Source as MenuItem;
+            deleteList(int.Parse(menuItem.Tag.ToString()));
+        }
 
+        private void menuItem_DeleteListOfTask_Click(object sender, RoutedEventArgs e)
+        {
+            ListBoxItem listBoxItem = (ListBoxItem)listBox_listOfTasks.ItemContainerGenerator.ContainerFromItem(listBox_listOfTasks.SelectedItem);
+            deleteList(int.Parse(listBoxItem.Tag.ToString()));
+        }
+
+        private void deleteList(int tag)
+        {            
             for (int i = 0; i < lists.Count; i++)
             {
-                if (int.Parse(menuItem.Tag.ToString()) == lists[i].ID)
+                if (tag == lists[i].ID)
                 {
-
                     MessageBoxResult dialog = MessageBox.Show("En supprimant cette liste les tâches lié seron aussi supprimer voulez-vous continuer?", "Alerte suppresion liste", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
-
                     if (dialog == MessageBoxResult.Yes)
                     {
                         //supprime la liste et ses tâches
@@ -576,13 +624,12 @@ namespace GestionTache
                         databaseHandler.TaskDAO.DeletedTaksByListID(lists[i].ID);
                         txtBox_TitleList.Text = "";
                         Tasks = null;
-                        //ListBox_Tasks.Items.Refresh();
                         lists.RemoveAt(i);
                         Button_AddTask.IsEnabled = false;
+                        menuItem_DeleteListOfTask.IsEnabled = false;
+                        menuItem_UpdateListOfTask.IsEnabled = false;
+                        BorderComment.Visibility = Visibility.Hidden;
                     }
-
-
-                    //listBox_listOfTasks.Items.Refresh();
                     break;
                 }
             }
@@ -594,6 +641,16 @@ namespace GestionTache
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void List_Click_Update(object sender, RoutedEventArgs e)
+        {
+            ListEdit();
+        }
+
+        private void menuItem_UpdateListOfTask_Click(object sender, RoutedEventArgs e)
+        {
+            ListEdit();
+        }
+
+        private void ListEdit()
         {
             ListBoxItem listBoxItem = (ListBoxItem)listBox_listOfTasks.ItemContainerGenerator.ContainerFromItem(listBox_listOfTasks.SelectedItem);
             TextBox target = getTextBoxFromLisboxItem("txtBoxNameList", listBoxItem);
@@ -647,6 +704,9 @@ namespace GestionTache
                     break;
                 }
             }
+
+            menuItem_EdiTask.IsEnabled = true;
+            menuItem_DeleteTask.IsEnabled = true;
         }
 
         /// <summary>
@@ -748,9 +808,9 @@ namespace GestionTache
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void cmbBoxSortTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {          
+        {
             if (selectedList != null)
-            {              
+            {
                 SortingTask();
 
             }
@@ -761,7 +821,7 @@ namespace GestionTache
         /// </summary>
         private void SortingTask()
         {
-           TypeSort sort= (TypeSort)cmbBoxSortTask.SelectedItem;
+            TypeSort sort = (TypeSort)cmbBoxSortTask.SelectedItem;
 
             for (int j = Tasks.Count - 1; j > 0; j--)
             {
@@ -776,21 +836,21 @@ namespace GestionTache
                                 Tasks.Move(i, i + 1);
                             }
                             break;
-                            //trie des tâches par les moins urgents
+                        //trie des tâches par les moins urgents
                         case 1:
                             if (Tasks[i].Priority.DegreePriority > Tasks[i + 1].Priority.DegreePriority)
                             {
                                 Tasks.Move(i, i + 1);
                             }
                             break;
-                            //trie des tâches par les plus urgents
+                        //trie des tâches par les plus urgents
                         case 2:
                             if (Tasks[i].Priority.DegreePriority < Tasks[i + 1].Priority.DegreePriority)
                             {
                                 Tasks.Move(i, i + 1);
                             }
                             break;
-                            //trie des tâches par ceux non réaliser
+                        //trie des tâches par ceux non réaliser
                         case 3:
                             int truc = Tasks[i].State.CompareTo(Tasks[i + 1].State);
                             if (truc < 0)
@@ -798,7 +858,7 @@ namespace GestionTache
                                 Tasks.Move(i, i + 1);
                             }
                             break;
-                            //trie des tâches par ceux déja réalisé
+                        //trie des tâches par ceux déja réalisé
                         case 4:
                             int compare = Tasks[i].State.CompareTo(Tasks[i + 1].State);
                             if (compare > 0)
@@ -809,14 +869,13 @@ namespace GestionTache
                     }
                 }
             }
-
         }
 
         public void TotalTasksUpdate()
         {
             int totalNumberTasks = Tasks.Count;
             int numberTaskDo = 0;
-            foreach(Task task in Tasks)
+            foreach (Task task in Tasks)
             {
                 if (task.State)
                 {
@@ -827,7 +886,7 @@ namespace GestionTache
             progressBarTasks.Maximum = totalNumberTasks;
             progressBarTasks.Value = numberTaskDo;
             string text = (string)this.FindResource("TxtBlockProgressBar");
-            textBlockTotalTasks.Text = string.Format("{0}/{1} {2}",numberTaskDo,totalNumberTasks,text);
+            textBlockTotalTasks.Text = string.Format("{0}/{1} {2}", numberTaskDo, totalNumberTasks, text);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -882,7 +941,6 @@ namespace GestionTache
 
             }
         }
-
 
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionTache"
         mc:Ignorable="d"
-        Title="{DynamicResource TitleApp}" Height="700" Width="1000" MinWidth="800" MinHeight="500">
+        Title="{DynamicResource TitleApp}" Height="750" Width="1000" MinWidth="800" MinHeight="500">
 
     <Window.Resources>
         <Image x:Key="visible" Source="Image/open-eye.png"  />
@@ -15,7 +15,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0"/>
+            <RowDefinition Height="25"/>
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -26,11 +26,39 @@
         <DockPanel Grid.Row="0">
             <Menu DockPanel.Dock="Top" VerticalAlignment="Stretch" >
                 <MenuItem Header="Liste" Height="25" VerticalAlignment="Stretch">
-                    <MenuItem x:Name="menuItem_addListOfTask" Header="Ajouter une liste"/>
+                    <MenuItem x:Name="menuItem_addListOfTask" Header="{DynamicResource AddListMenu}" Click="menuItem_addListOfTask_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Image/plus.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="menuItem_UpdateListOfTask" IsEnabled="False" Header="{DynamicResource EditMenuList}" Click="menuItem_UpdateListOfTask_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Image/edit.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="menuItem_DeleteListOfTask" IsEnabled="False" Header="{DynamicResource DeleteMenuList}" Click="menuItem_DeleteListOfTask_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Image/delete.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
 
                 </MenuItem>
-                <MenuItem Header="Tâche"  >
-                    <MenuItem Header="Ajouter une Tâche"/>
+                <MenuItem Header="Tâche" Height="25" VerticalAlignment="Stretch"  >
+                    <MenuItem x:Name="menuItem_addTask" Header="{DynamicResource AddMenuTask}" IsEnabled="False" Click="menuItem_addTask_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Image/plus.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="menuItem_EdiTask" IsEnabled="False" Header="{DynamicResource EditMenuTask}" Click="menuItem_EdiTask_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Image/edit.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="menuItem_DeleteTask" IsEnabled="False" Header="{DynamicResource DeleteMenuTask}" Click="menuItem_DeleteTask_Click" >
+                        <MenuItem.Icon>
+                            <Image Source="Image/delete.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
 
 

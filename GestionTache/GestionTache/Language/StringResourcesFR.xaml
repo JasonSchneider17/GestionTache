@@ -21,12 +21,12 @@
     <system:String x:Key="CheckedItemSort">Déja réaliser</system:String>
     <system:String x:Key="UncheckedItemSort">Non réaliser</system:String>
     <system:String x:Key="TxtBlockProgressBar">Tâches terminées</system:String>
-
-
-
-
-
-
+    <system:String x:Key="AddListMenu">Ajouter une liste</system:String>
+    <system:String x:Key="EditMenuList">Modifier liste sélectionner</system:String>
+    <system:String x:Key="DeleteMenuList">Supprimer la liste</system:String>
+    <system:String x:Key="AddMenuTask">Ajouter une Tâche</system:String>
+    <system:String x:Key="EditMenuTask">Modifier tâche sélectionner</system:String>
+    <system:String x:Key="DeleteMenuTask">Supprimer la tâche</system:String>
 
 
 </ResourceDictionary>
