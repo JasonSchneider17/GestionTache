@@ -131,6 +131,10 @@ namespace GestionTache
             database.CloseConnection();
         }
 
+        /// <summary>
+        /// Supprime toutes les tâche ayant un certain listID
+        /// </summary>
+        /// <param name="listID">listId des tâches à supprimer</param>
         public void DeletedTaksByListID(int listID)
         {
             string query = String.Format("DELETE FROM {0} WHERE {1} = @listID ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_ID_LIST);
@@ -180,12 +184,6 @@ namespace GestionTache
         /// <returns>liste de tâches</returns>
         public ObservableCollection<Task> getAllTaskByListID(int listID,List<Priority> priorities)
         {
-
-            /*typeSorts.Add(new TypeSort("Aucun", 0));
-            typeSorts.Add(new TypeSort("Priorité ASC", 1));
-            typeSorts.Add(new TypeSort("Priorité DESC", 2));
-            typeSorts.Add(new TypeSort("Réaliser ASC", 3));
-            typeSorts.Add(new TypeSort("Réaliser ASC", 4));*/
             string query = string.Format("SELECT * FROM {0} WHERE {1} = {2} ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_ID_LIST, listID);
 
             // List<Task> listTask = new List<Task>();
@@ -248,7 +246,11 @@ namespace GestionTache
             return id;
         }
 
-
+        /// <summary>
+        /// Compte le nombre de tâche non réaliser d'une liste
+        /// </summary>
+        /// <param name="idList"> id de la liste affilié à la tâche</param>
+        /// <returns>nombre de tâche devant encore être réaliser dans la liste</returns>
         public int CountTaskToDoByList(int idList)
         {
             string query = string.Format("SELECT COUNT(*) TotalTasks FROM {0} WHERE {1} = {2} AND {3} = 0 ",DatabaseBuild.TASK_TABLE_NAME,DatabaseBuild.TASK_ID_LIST,idList,DatabaseBuild.TASK_STATE);
@@ -256,8 +258,7 @@ namespace GestionTache
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
             database.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
-
-           
+         
             if (result.HasRows)
             {
                 while (result.Read())

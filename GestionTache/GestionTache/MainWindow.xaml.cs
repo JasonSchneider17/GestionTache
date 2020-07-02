@@ -34,6 +34,10 @@ namespace GestionTache
         List<TypeSort> typeSorts;                           //type de sort
         ObservableCollection<Task> tasks;                   //Liste de tâches
 
+
+        /// <summary>
+        /// constructeur
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -95,10 +99,11 @@ namespace GestionTache
             ResourceDictionary dict = new ResourceDictionary();
             switch (Thread.CurrentThread.CurrentCulture.ToString())
             {
-                /*case "en-US":
-                    dict.Source = new Uri("..\\..\\Language\\StringResourcesEN.xaml", UriKind.Relative);
-                    break;*/
-                case "fr-CH":
+               
+                case "de-CH":    //allemand suisse                
+                    dict.Source = new Uri("..\\..\\Language\\StringResourcesDE.xaml", UriKind.Relative);
+                    break;
+                case "fr-CH":    //français suisse
                     dict.Source = new Uri("..\\..\\Language\\StringResourcesFR.xaml", UriKind.Relative);
                     break;
                 default:
@@ -110,7 +115,7 @@ namespace GestionTache
 
 
         /// <summary>
-        /// Ajout d'une liste
+        /// Ajout d'une liste depuis le bouton
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -119,11 +124,19 @@ namespace GestionTache
             AddList();
         }
 
+        /// <summary>
+        /// Ajout d'une liste depuis le menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menuItem_addListOfTask_Click(object sender, RoutedEventArgs e)
         {
             AddList();
         }
 
+        /// <summary>
+        /// Ajoute une nouvelle liste et rentre en mode edition de son titre
+        /// </summary>
         private void AddList()
         {
             ListOfTasks list = new ListOfTasks("add");
@@ -146,7 +159,7 @@ namespace GestionTache
         }
 
         /// <summary>
-        /// ajout d'une tâche
+        /// ajout d'une tâche depuis le bouton
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -154,12 +167,19 @@ namespace GestionTache
         {
             AddTask();
         }
-
+        /// <summary>
+        /// ajoute une tâche depuis le menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menuItem_addTask_Click(object sender, RoutedEventArgs e)
         {
             AddTask();
         }
 
+        /// <summary>
+        /// Ajout d'une nouvelle tâche et rentre en mode édition du titre
+        /// </summary>
         private void AddTask()
         {
             List<Priority> listpriority = databaseHandler.PriorityDAO.getAllPriority();
@@ -167,7 +187,6 @@ namespace GestionTache
             Task newTask = new Task("test2", "comment", false, 0, selectedList.ID, listpriority, listpriority[0].IDPriority);
             databaseHandler.TaskDAO.Add(newTask);
             manipulateNumberTaskToDo(true, selectedList.ID);
-
             newTask.IDTask = databaseHandler.TaskDAO.getLastAddedTaskID();
             Tasks.Add(newTask);
 
@@ -264,6 +283,11 @@ namespace GestionTache
             return null;
         }
 
+        /// <summary>
+        /// Action lors de la sélection d'une liste
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListBoxItem_Selected_1(object sender, RoutedEventArgs e)
         {
             //récupère les infos de la liste séléctionner
@@ -277,6 +301,7 @@ namespace GestionTache
             TotalTasksUpdate();
             DataContext = this;
 
+            //active et désactive des contrôles
             Button_AddTask.IsEnabled = true;
             menuItem_addTask.IsEnabled = true;
             menuItem_DeleteListOfTask.IsEnabled = true;
@@ -491,8 +516,6 @@ namespace GestionTache
                     {
                         manipulateNumberTaskToDo(true, task.ListID);
                     }
-
-
                     break;
                 }
             }
@@ -514,7 +537,10 @@ namespace GestionTache
             ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromItem(ListBox_Tasks.SelectedItem);
             DeleteTask(int.Parse(listBoxItem.Tag.ToString()));
         }
-
+        /// <summary>
+        /// Supression d'une tâche
+        /// </summary>
+        /// <param name="idTask">id de la tâche à supprimer </param>
         private void DeleteTask(int idTask)
         {
             for (int i = 0; i < ListBox_Tasks.Items.Count; i++)
@@ -522,12 +548,11 @@ namespace GestionTache
                 //supprime la tâche de la base de donnée
                 if (idTask == Tasks[i].IDTask)
                 {
-
                     //regarde si la tâche est réaliser
                     if (!Tasks[i].State)
                     {
                         //si la tâche n'est pas réalisé envoie un message d'alerte
-                        MessageBoxResult dialog = MessageBox.Show("Cette tâche n'est pas encore réalisé voulez-vous vraiment la supprimer?", "Alerte suppresion tâche", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                        MessageBoxResult dialog = MessageBox.Show((string)this.FindResource("DeleteTaskMessageContent"), (string)this.FindResource("DeleteTaskMessageTitle"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 
                         if (dialog == MessageBoxResult.Yes)
                         {
@@ -567,13 +592,21 @@ namespace GestionTache
             EditTask(int.Parse(menuItem.Tag.ToString()));
            
         }
-
+        /// <summary>
+        /// Entrer dans la textbox pour modifier le nom de la tâche depuis le menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menuItem_EdiTask_Click(object sender, RoutedEventArgs e)
         {
             ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromItem(ListBox_Tasks.SelectedItem);
             EditTask(int.Parse(listBoxItem.Tag.ToString()));
         }
 
+        /// <summary>
+        /// Entre en mode édition du nom de la tâche
+        /// </summary>
+        /// <param name="idTask"></param>
         private void EditTask(int idTask)
         {
             foreach (Task task in Tasks)
@@ -601,22 +634,30 @@ namespace GestionTache
         private void List_Click_Delete(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = e.Source as MenuItem;
-            deleteList(int.Parse(menuItem.Tag.ToString()));
+            DeleteList(int.Parse(menuItem.Tag.ToString()));
         }
-
+        /// <summary>
+        /// Suppresision d'une liste depuis le menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menuItem_DeleteListOfTask_Click(object sender, RoutedEventArgs e)
         {
             ListBoxItem listBoxItem = (ListBoxItem)listBox_listOfTasks.ItemContainerGenerator.ContainerFromItem(listBox_listOfTasks.SelectedItem);
-            deleteList(int.Parse(listBoxItem.Tag.ToString()));
+            DeleteList(int.Parse(listBoxItem.Tag.ToString()));
         }
-
-        private void deleteList(int tag)
+        /// <summary>
+        /// Supprimer une liste et ses tâches liés
+        /// </summary>
+        /// <param name="tag"></param>
+        private void DeleteList(int tag)
         {            
             for (int i = 0; i < lists.Count; i++)
             {
                 if (tag == lists[i].ID)
                 {
-                    MessageBoxResult dialog = MessageBox.Show("En supprimant cette liste les tâches lié seron aussi supprimer voulez-vous continuer?", "Alerte suppresion liste", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                    MessageBoxResult dialog = MessageBox.Show((string)this.FindResource("DeleteListMessageContent"), (string)this.FindResource("DeleteListMessageContent"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                    
                     if (dialog == MessageBoxResult.Yes)
                     {
                         //supprime la liste et ses tâches
@@ -636,7 +677,7 @@ namespace GestionTache
         }
 
         /// <summary>
-        /// Met le nom de la liste en mode modification
+        /// Met le nom de la liste en mode édition
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -644,12 +685,19 @@ namespace GestionTache
         {
             ListEdit();
         }
-
+        /// <summary>
+        /// Met le nom de la liste en mode édition depuis le menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menuItem_UpdateListOfTask_Click(object sender, RoutedEventArgs e)
         {
             ListEdit();
         }
 
+        /// <summary>
+        /// Fais entrer la liste sélectionner en mode édition
+        /// </summary>
         private void ListEdit()
         {
             ListBoxItem listBoxItem = (ListBoxItem)listBox_listOfTasks.ItemContainerGenerator.ContainerFromItem(listBox_listOfTasks.SelectedItem);
@@ -665,22 +713,7 @@ namespace GestionTache
         /// <param name="idList">id de la liste ou faire l'ajout</param>
         private void manipulateNumberTaskToDo(bool isAdding, int idList)
         {
-            for (int i = 0; i < lists.Count; i++)
-            {
-                if (lists[i].ID == idList)
-                {
-                    if (isAdding)
-                    {
-                        lists[i].NumberTaskToDo++;
-                    }
-                    else
-                    {
-                        lists[i].NumberTaskToDo--;
-                    }
-                    //listBox_listOfTasks.Items.Refresh();
-                    break;
-                }
-            }
+            Utilities.manipulateNumberTaskToDo(isAdding, idList, lists);       
         }
 
         /// <summary>
@@ -721,21 +754,29 @@ namespace GestionTache
                 SaveComment();
             }
         }
-
+        /// <summary>
+        /// Sauvegarde le commentaire
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnCommentSave_Click(object sender, RoutedEventArgs e)
         {
             SaveComment();
         }
 
+        /// <summary>
+        /// Sauvegarde du commentaire
+        /// </summary>
         private void SaveComment()
         {
             Keyboard.ClearFocus();
             foreach (Task task in Tasks)
-            {
+            {              
                 if (task.IDTask == int.Parse(TextBox_Comment.Tag.ToString()))
                 {
                     if (task.Comment != CommentText)
                     {
+                        //modifie le commentaire
                         task.Comment = CommentText;
                         databaseHandler.TaskDAO.UpdateTaskComment(task);
                     }
@@ -812,7 +853,6 @@ namespace GestionTache
             if (selectedList != null)
             {
                 SortingTask();
-
             }
         }
 
@@ -822,59 +862,17 @@ namespace GestionTache
         private void SortingTask()
         {
             TypeSort sort = (TypeSort)cmbBoxSortTask.SelectedItem;
-
-            for (int j = Tasks.Count - 1; j > 0; j--)
-            {
-                for (int i = 0; i < j; i++)
-                {
-                    switch (sort.ID)
-                    {
-                        //trie par aucun type spécifique
-                        case 0:
-                            if (Tasks[i].IDTask > Tasks[i + 1].IDTask)
-                            {
-                                Tasks.Move(i, i + 1);
-                            }
-                            break;
-                        //trie des tâches par les moins urgents
-                        case 1:
-                            if (Tasks[i].Priority.DegreePriority > Tasks[i + 1].Priority.DegreePriority)
-                            {
-                                Tasks.Move(i, i + 1);
-                            }
-                            break;
-                        //trie des tâches par les plus urgents
-                        case 2:
-                            if (Tasks[i].Priority.DegreePriority < Tasks[i + 1].Priority.DegreePriority)
-                            {
-                                Tasks.Move(i, i + 1);
-                            }
-                            break;
-                        //trie des tâches par ceux non réaliser
-                        case 3:
-                            int truc = Tasks[i].State.CompareTo(Tasks[i + 1].State);
-                            if (truc < 0)
-                            {
-                                Tasks.Move(i, i + 1);
-                            }
-                            break;
-                        //trie des tâches par ceux déja réalisé
-                        case 4:
-                            int compare = Tasks[i].State.CompareTo(Tasks[i + 1].State);
-                            if (compare > 0)
-                            {
-                                Tasks.Move(i, i + 1);
-                            }
-                            break;
-                    }
-                }
-            }
+            Utilities.SortTasks(sort, Tasks);
         }
 
+        /// <summary>
+        /// Mets a jour la progress bar des tâches et son texte
+        /// </summary>
         public void TotalTasksUpdate()
         {
             int totalNumberTasks = Tasks.Count;
             int numberTaskDo = 0;
+            //Compte le nombre de tâche réalisé
             foreach (Task task in Tasks)
             {
                 if (task.State)
@@ -882,9 +880,10 @@ namespace GestionTache
                     numberTaskDo++;
                 }
             }
-
+            //paramètre les valeurs de la progressbar
             progressBarTasks.Maximum = totalNumberTasks;
             progressBarTasks.Value = numberTaskDo;
+            //change le texte du textblock de la progressBar
             string text = (string)this.FindResource("TxtBlockProgressBar");
             textBlockTotalTasks.Text = string.Format("{0}/{1} {2}", numberTaskDo, totalNumberTasks, text);
         }

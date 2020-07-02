@@ -10,11 +10,9 @@ namespace GestionTache
 {
     public class ListOfTasks:INotifyPropertyChanged
     {
-        private string name;            //nom de la liste
-        //private List<Task> tasks;       //liste de tâches
-        private ObservableCollection<Task> tasks;
-        private int id;                 //ide de la liste sur la base de donnée
-        private int numberTaskToDo;     //nombre de tache devant encore être réaliser
+        private string name;                        //nom de la liste
+        private int id;                             //ide de la liste sur la base de donnée
+        private int numberTaskToDo;                 //nombre de tache devant encore être réaliser
 
         /// <summary>
         /// constructeur
@@ -47,18 +45,8 @@ namespace GestionTache
             }
         }
 
-       /* public List<Task> Tasks
-        {
-            get { return this.tasks; }
-            set { this.tasks = value; }
-        }*/
 
 
-        public ObservableCollection<Task> Tasks
-        {
-            get { return this.tasks; }
-            set { this.tasks = value;}
-        }
 
         public int ID
         {

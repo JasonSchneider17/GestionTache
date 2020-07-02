@@ -25,7 +25,10 @@
 
         <DockPanel Grid.Row="0">
             <Menu DockPanel.Dock="Top" VerticalAlignment="Stretch" >
-                <MenuItem Header="Liste" Height="25" VerticalAlignment="Stretch">
+                <MenuItem Height="25" Width="50"   VerticalAlignment="Stretch" >
+                    <MenuItem.Header>
+                        <TextBlock Text="{DynamicResource ListMenu}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </MenuItem.Header>
                     <MenuItem x:Name="menuItem_addListOfTask" Header="{DynamicResource AddListMenu}" Click="menuItem_addListOfTask_Click">
                         <MenuItem.Icon>
                             <Image Source="Image/plus.png"/>
@@ -43,7 +46,10 @@
                     </MenuItem>
 
                 </MenuItem>
-                <MenuItem Header="Tâche" Height="25" VerticalAlignment="Stretch"  >
+                <MenuItem  Height="25" Width="50" VerticalAlignment="Stretch"  >
+                    <MenuItem.Header>
+                        <TextBlock Text="{DynamicResource MenuTask}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </MenuItem.Header>
                     <MenuItem x:Name="menuItem_addTask" Header="{DynamicResource AddMenuTask}" IsEnabled="False" Click="menuItem_addTask_Click">
                         <MenuItem.Icon>
                             <Image Source="Image/plus.png"/>
@@ -102,6 +108,8 @@
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
                                 <Setter Property="Tag" Value="{Binding ID}"/>
+                                <Setter Property="BorderBrush" Value="Black"/>
+                                <Setter Property="BorderThickness" Value="0,1,0,0"/>
                                 <EventSetter Event="Selected" Handler="ListBoxItem_Selected_1"/>
                                 <Setter Property="ContextMenu" >
                                     <Setter.Value>
@@ -186,6 +194,7 @@
                     </Grid>
                 </Border>
 
+               
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="70"/>
@@ -197,7 +206,7 @@
 
 
                     <Button x:Name="Button_AddTask"  VerticalAlignment="Center" Width="35" Height="35" HorizontalAlignment="Left" Grid.Column="0" Margin="10,0,0,0" IsEnabled="False" Content="+" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center" ToolTip="Ajouter une tâche" Click="Button_AddTask_Click"/>
-                    <ProgressBar x:Name="progressBarTasks" Minimum="0" ToolTip="{DynamicResource ProgressBarToolTip}"  Grid.Column="1" Margin="10,5,10,5" >
+                    <ProgressBar x:Name="progressBarTasks" Minimum="0" ToolTip="{DynamicResource ProgressBarToolTip}" Foreground="#a8e063" Grid.Column="1" Margin="10,5,10,5" >
                         
                     </ProgressBar>
                     <TextBlock x:Name="textBlockTotalTasks"  Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -396,9 +405,12 @@
 
 
 
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10,5,10,5" >
-                            <TextBlock x:Name="Textblock_Comment" ToolTip="{DynamicResource TextBlockCommentToolTip}"  Margin="10,5,10,5" TextWrapping="Wrap"  Text="{Binding Path=CommentText, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" MouseDown="Textblock_Comment_MouseDown" />
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" Margin="10,5,10,5">
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="5,0,0,0"  >
+                            <TextBlock x:Name="Textblock_Comment" ToolTip="{DynamicResource TextBlockCommentToolTip}"  TextWrapping="Wrap"  Text="{Binding Path=CommentText, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" MouseDown="Textblock_Comment_MouseDown" />
                         </ScrollViewer>
+                        </Border>
+
                         <TextBox x:Name="TextBox_Comment" Grid.Row="1" Visibility="Hidden" Panel.ZIndex="1"   Margin="10,5,10,5"  KeyDown="TextBox_Comment_KeyDown"  TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"  Text="{Binding Path=CommentText, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" BorderBrush="Black"  LostKeyboardFocus="TextBox_Comment_LostKeyboardFocus"  />
 
                     </Grid>

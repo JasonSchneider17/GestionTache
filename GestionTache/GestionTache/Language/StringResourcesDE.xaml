@@ -2,9 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:GestionTache" 
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
-
-    <!--Ce fichier contient tous les textex en français-->
-    <system:String x:Key="TitleApp">Gestionnaire de tâche</system:String>
+    <!--Ce fichier contient tous les textex en allemand-->
+    <system:String x:Key="TitleApp">Deutsch</system:String>
     <system:String x:Key="AddList">+ Liste</system:String>
     <system:String x:Key="AddListToolTip">Ajout d'une nouvelle liste</system:String>
     <system:String x:Key="ProgressBarToolTip">Indique l'avancement dans la réalisation des tâche de la liste</system:String>
@@ -22,20 +21,12 @@
     <system:String x:Key="CheckedItemSort">Déja réaliser</system:String>
     <system:String x:Key="UncheckedItemSort">Non réaliser</system:String>
     <system:String x:Key="TxtBlockProgressBar">Tâches terminées</system:String>
-    <system:String x:Key="ListMenu">Liste</system:String>
     <system:String x:Key="AddListMenu">Ajouter une liste</system:String>
     <system:String x:Key="EditMenuList">Modifier liste sélectionner</system:String>
     <system:String x:Key="DeleteMenuList">Supprimer la liste</system:String>
-    <system:String x:Key="MenuTask">Tâche</system:String>
     <system:String x:Key="AddMenuTask">Ajouter une Tâche</system:String>
     <system:String x:Key="EditMenuTask">Modifier tâche sélectionner</system:String>
     <system:String x:Key="DeleteMenuTask">Supprimer la tâche</system:String>
-    <system:String x:Key="DeleteTaskMessageContent" xml:space="preserve" >Cette tâche n'est pas encore réalisé.
-Voulez-vous vraiment la supprimer?</system:String>
-    <system:String x:Key="DeleteTaskMessageTitle">Alerte suppresion tâche</system:String>
-    <system:String x:Key="DeleteListMessageContent" xml:space="preserve">En supprimant cette liste les tâches lié seront aussi supprimées.
-Voulez-vous continuer?</system:String>
-    <system:String x:Key="DeleteListMessageTitle">Alerte suppresion liste</system:String>
 
 
 </ResourceDictionary>

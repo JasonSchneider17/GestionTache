@@ -8,15 +8,22 @@ namespace GestionTache
 {
    public class TypeSort
     {
-        private string name;
-        private int id;
+        private string name;    //Nom du type de trie
+        private int id;         //id du type de trie
         
+        /// <summary>
+        /// Constructeur
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="id"></param>
         public TypeSort(string name,int id)
         {
             this.name = name;
             this.id = id;
 
         }
+
+        //getter setter
 
         public string Name
         {

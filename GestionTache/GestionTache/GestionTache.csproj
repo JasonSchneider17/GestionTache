@@ -99,7 +99,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DatabaseBuild.cs" />
+    <Compile Include="DataBase\DatabaseBuild.cs" />
     <Compile Include="DataBase\Database.cs" />
     <Compile Include="DataBase\DatabaseHandler.cs" />
     <Compile Include="DataBase\ListDAO.cs" />
@@ -111,6 +111,11 @@
     <Compile Include="Task.cs" />
     <Compile Include="DataBase\TaskDAO.cs" />
     <Compile Include="TypeSort.cs" />
+    <Compile Include="Utilities.cs" />
+    <Page Include="Language\StringResourcesDE.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

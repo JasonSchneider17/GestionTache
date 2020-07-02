@@ -15,52 +15,6 @@ namespace GestionTache
         private PriorityDAO priorityDAO;
 
 
-        /*public static readonly String TASK_KEY= "id_task";
-        public static readonly String TASK_NAME = "name_task";
-        public static readonly String TASK_COMMENT = "comment_task";
-        public static readonly String TASK_STATE = "state_task";
-        public static readonly String TASK_ID_LIST = "id_list";
-
-        public static readonly String TASK_TABLE_NAME = "Task";
-        public static readonly String TASK_TABLE_CREATE =
-                "CREATE TABLE " + TASK_TABLE_NAME + " (" +
-                        TASK_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        TASK_NAME + " TEXT, " +
-                        TASK_COMMENT + " TEXT, " +
-                        TASK_STATE + " INTEGER,"+
-                         TASK_ID_LIST+ " INTEGER ) ";
-        public static readonly String TASK_TABLE_DROP = "DROP TABLE IF EXISTS " + TASK_TABLE_NAME + ";";
-
-
-        public static readonly String LIST_KEY = "id_list";
-        public static readonly String LIST_NAME = "name_list";
-        public static readonly String LIST_TABLE_NAME = "List";
-        public static readonly String LIST_TABLE_CREATE =
-                "CREATE TABLE " + LIST_TABLE_NAME + " (" +
-                        LIST_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        LIST_NAME + " TEXT )";
-        public static readonly String LIST_TABLE_DROP = "DROP TABLE IF EXISTS " + LIST_TABLE_NAME + ";";
-
-
-        public static readonly String PRIORITY_KEY = "id_priority";
-        public static readonly String PRIORITY_NAME = "name_priority";
-        public static readonly String PRIORITY_DEGREE = "degree_priority";
-        public static readonly String PRIORITY_TABLE_NAME = "Priority";
-        public static readonly String PRIORITY_TABLE_CREATE =
-                "CREATE TABLE " + PRIORITY_TABLE_NAME + " (" +
-                        PRIORITY_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        PRIORITY_NAME + " TEXT, "+
-                        PRIORITY_DEGREE+" INTEGER )";
-        public static readonly String PRIORITY_TABLE_DROP = "DROP TABLE IF EXISTS " + PRIORITY_TABLE_NAME + ";";*/
-
-
-
-
-
-
-
-
-
         /// <summary>
         /// constructeur
         /// </summary>

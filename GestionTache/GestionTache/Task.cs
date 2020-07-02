@@ -18,12 +18,7 @@ namespace GestionTache
         private List<Priority> prioritiesDisplay;   //Priorité pour l'affichage
         private int idPriority;                     //id de la priorité affilié 
 
-        /// <summary>
-        /// constructor
-        /// </summary>
-        /// <param name="name">nom de la </param>
-        /// <param name="comment"></param>
-        /// <param name="state"></param>
+
         public Task(string name,string comment, bool state)
         {
             this.name = name;
@@ -66,18 +61,7 @@ namespace GestionTache
         }
 
 
-        public void updatePriority()
-        {
-            for (int i = 0; i < prioritiesDisplay.Count; i++)
-            {
-                if (prioritiesDisplay[i].IDPriority == this.idPriority)
-                {
-                    this.Priority = PrioritiesDisplay[i];
-                    break;
-                }
-            }
-        
-    }
+
 
         //getter setter
 

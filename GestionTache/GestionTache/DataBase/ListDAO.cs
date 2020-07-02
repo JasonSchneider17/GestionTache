@@ -54,7 +54,10 @@ namespace GestionTache
             database.CloseConnection();
         }
 
-
+        /// <summary>
+        /// Supprime la liste de la base de données
+        /// </summary>
+        /// <param name="list"> liste à supprimer</param>
         public void DeleteList(ListOfTasks list)
         {
             string query = String.Format("DELETE FROM {0}  WHERE {1} = @listID ", DatabaseBuild.LIST_TABLE_NAME, DatabaseBuild.LIST_KEY);
