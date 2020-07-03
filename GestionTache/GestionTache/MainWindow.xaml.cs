@@ -54,16 +54,16 @@ namespace GestionTache
             }
 
             //regarde la version de la base donné et réinitilise pour la mettre à jour
-            Properties.Settings.Default.DatabaseVersionNew = 5;
+            //Properties.Settings.Default.DatabaseVersionNew = 5;
 
-            if (Properties.Settings.Default.DatabaseVersionNew > Properties.Settings.Default.DatabaseVersionOld)
+            /*if (Properties.Settings.Default.DatabaseVersionNew > Properties.Settings.Default.DatabaseVersionOld)
             {
                 databaseHandler.RemoveTables();
                 databaseHandler.CreateTables();
                 Properties.Settings.Default.DatabaseVersionOld = Properties.Settings.Default.DatabaseVersionNew;
                 Properties.Settings.Default.Save();
                 databaseHandler.PriorityDAO.AddDefaultPriority();
-            }
+            }*/
             //end database conf
 
             //charge toute les liste présent sur la base de donnée
