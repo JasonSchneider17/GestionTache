@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GuiLabs.Undo;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -31,8 +32,10 @@ namespace GestionTache
         ListOfTasks selectedList;                           //liste sélectionner par l'utilisateur
         string commentText;                                 //Commentaire de la tâche
         bool isTaskHiding = false;                          //indique si il faut cacher les tâches déja réalisé
-        List<TypeSort> typeSorts;                           //type de sort
+        List<TypeSort> typeSorts;                           //type de trie
         ObservableCollection<Task> tasks;                   //Liste de tâches
+        ActionManager actionManager = new ActionManager();
+        bool isListAdded = false;
 
 
         /// <summary>
@@ -53,18 +56,7 @@ namespace GestionTache
                 databaseHandler.PriorityDAO.AddDefaultPriority();
             }
 
-            //regarde la version de la base donné et réinitilise pour la mettre à jour
-            //Properties.Settings.Default.DatabaseVersionNew = 5;
-
-            /*if (Properties.Settings.Default.DatabaseVersionNew > Properties.Settings.Default.DatabaseVersionOld)
-            {
-                databaseHandler.RemoveTables();
-                databaseHandler.CreateTables();
-                Properties.Settings.Default.DatabaseVersionOld = Properties.Settings.Default.DatabaseVersionNew;
-                Properties.Settings.Default.Save();
-                databaseHandler.PriorityDAO.AddDefaultPriority();
-            }*/
-            //end database conf
+            
 
             //charge toute les liste présent sur la base de donnée
             lists = databaseHandler.ListDAO.getAllList();
@@ -140,10 +132,13 @@ namespace GestionTache
         private void AddList()
         {
             ListOfTasks list = new ListOfTasks("add");
+            AddListAction addListAction = new AddListAction(list,databaseHandler,lists);
+            actionManager.RecordAction(addListAction);
+            isListAdded = true;
             //ajoute la liste dans la base de donnée et récupère l'id attribué par la base de donnée à la liste ajouté
-            databaseHandler.ListDAO.Add(list);
+            /*databaseHandler.ListDAO.Add(list);
             list.ID = databaseHandler.ListDAO.getLastAddedListID();
-            lists.Add(list);
+            lists.Add(list);*/
 
             //selectionne le listboxitem ajouté et focus la vue dessus
             listBox_listOfTasks.SelectedItem = listBox_listOfTasks.Items[listBox_listOfTasks.Items.Count - 1];
@@ -325,9 +320,20 @@ namespace GestionTache
             {
                 if (list.ID == int.Parse(textBox.Tag.ToString()))
                 {
-                    list.Name = textBox.Text;
-                    txtBox_TitleList.Text = list.Name;
-                    databaseHandler.ListDAO.UpdateListName(list);
+                    if (isListAdded)
+                    {
+                       list.Name = textBox.Text;
+                        txtBox_TitleList.Text = list.Name;
+                        databaseHandler.ListDAO.UpdateListName(list);
+                        isListAdded = false;
+                    }
+                    else
+                    {
+                        RenameListAction action = new RenameListAction(databaseHandler, list, textBox.Text);
+                        actionManager.RecordAction(action);
+                        txtBox_TitleList.Text = list.Name;
+
+                    }
                     break;
                 }
             }
@@ -365,17 +371,17 @@ namespace GestionTache
             if (e.Key == Key.Enter)
             {
                 TextBox textbox = e.Source as TextBox;
-
-                ListNameEndEdition(textbox);
+                Keyboard.ClearFocus();
             }
         }
+
 
         /// <summary>
         /// si le focus de la textbox pour le nom de la liste est quitter ajoute cette liste dans la base de données
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void txtBoxNameList_LostFocus(object sender, RoutedEventArgs e)
+        private void txtBoxNameList_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             TextBox textbox = e.Source as TextBox;
             ListNameEndEdition(textbox);
@@ -661,11 +667,13 @@ namespace GestionTache
                     if (dialog == MessageBoxResult.Yes)
                     {
                         //supprime la liste et ses tâches
-                        databaseHandler.ListDAO.DeleteList(lists[i]);
+                        //databaseHandler.ListDAO.DeleteList(lists[i]);
                         databaseHandler.TaskDAO.DeletedTaksByListID(lists[i].ID);
+                        DeleteListAction action = new DeleteListAction(lists, i, databaseHandler);
+                        actionManager.RecordAction(action);
                         txtBox_TitleList.Text = "";
                         Tasks = null;
-                        lists.RemoveAt(i);
+                        //lists.RemoveAt(i);
                         Button_AddTask.IsEnabled = false;
                         menuItem_DeleteListOfTask.IsEnabled = false;
                         menuItem_UpdateListOfTask.IsEnabled = false;
@@ -941,5 +949,19 @@ namespace GestionTache
             }
         }
 
+        private void Undo_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            actionManager.Undo();
+        }
+
+        private void Redo_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            actionManager.Redo();
+        }
+
     }
+
+
+
 }
+

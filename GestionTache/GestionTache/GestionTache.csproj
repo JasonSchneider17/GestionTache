@@ -66,6 +66,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="GuiLabs.Undo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GuiLabs.Undo.1.0.2\lib\netstandard2.0\GuiLabs.Undo.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -99,6 +102,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="UndoRedoAction\DeleteListAction.cs" />
+    <Compile Include="UndoRedoAction\RenameListAction.cs" />
+    <Compile Include="UndoRedoAction\AddListAction.cs" />
     <Compile Include="DataBase\DatabaseBuild.cs" />
     <Compile Include="DataBase\Database.cs" />
     <Compile Include="DataBase\DatabaseHandler.cs" />

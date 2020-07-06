@@ -5,13 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionTache"
         mc:Ignorable="d"
-        Title="{DynamicResource TitleApp}" Height="750" Width="1000" MinWidth="800" MinHeight="500">
+        Title="{DynamicResource TitleApp}" Height="750" Width="1000" MinWidth="800" MinHeight="750">
 
     <Window.Resources>
         <Image x:Key="visible" Source="Image/open-eye.png"  />
         <Image x:Key="hidden"  Source="Image/close-eye.png"/>
         
     </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="Undo" Executed="Undo_Executed"/>
+        <CommandBinding Command="Redo" Executed="Redo_Executed"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="Z" Modifiers="Ctrl" Command="Undo"/>
+        <KeyBinding Key="Y" Modifiers="Ctrl" Command="Redo"/>
+    </Window.InputBindings>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -24,10 +32,10 @@
         </Grid.ColumnDefinitions>
 
         <DockPanel Grid.Row="0">
-            <Menu DockPanel.Dock="Top" VerticalAlignment="Stretch" >
-                <MenuItem Height="25" Width="50"   VerticalAlignment="Stretch" >
+            <Menu DockPanel.Dock="Top" VerticalAlignment="Stretch"  >
+                <MenuItem Height="25" Width="50" >
                     <MenuItem.Header>
-                        <TextBlock Text="{DynamicResource ListMenu}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource ListMenu}"   />
                     </MenuItem.Header>
                     <MenuItem x:Name="menuItem_addListOfTask" Header="{DynamicResource AddListMenu}" Click="menuItem_addListOfTask_Click">
                         <MenuItem.Icon>
@@ -158,7 +166,7 @@
                                     </TextBlock>
 
                                     <TextBox x:Name="txtBoxNameList" MaxLength="25"  Grid.Column="1"   Text="{Binding Name}" Tag="{Binding ID}" Panel.ZIndex="1"
-                                         FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,2,0" Visibility="Hidden" LostFocus="txtBoxNameList_LostFocus" KeyDown="txtBoxNameList_KeyDown" />
+                                         FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,2,0" Visibility="Hidden"  KeyDown="txtBoxNameList_KeyDown" LostKeyboardFocus="txtBoxNameList_LostKeyboardFocus" />
                                     <Label  Content="{Binding NumberTaskToDo}" Grid.Column="2" FontSize="12" Foreground="Gray" VerticalAlignment="Center"  />
 
                                 </Grid>
