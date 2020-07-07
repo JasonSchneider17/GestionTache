@@ -102,6 +102,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MyGlobals.cs" />
+    <Compile Include="UndoRedoAction\AddTaskAction.cs" />
     <Compile Include="UndoRedoAction\DeleteListAction.cs" />
     <Compile Include="UndoRedoAction\RenameListAction.cs" />
     <Compile Include="UndoRedoAction\AddListAction.cs" />

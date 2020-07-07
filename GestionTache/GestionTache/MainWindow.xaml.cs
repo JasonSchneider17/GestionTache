@@ -27,7 +27,6 @@ namespace GestionTache
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         Database databaseObject;                            //base de données
-        DatabaseHandler databaseHandler;                    //interagir avec base de données
         ObservableCollection<ListOfTasks> lists;            //listes
         ListOfTasks selectedList;                           //liste sélectionner par l'utilisateur
         string commentText;                                 //Commentaire de la tâche
@@ -46,24 +45,26 @@ namespace GestionTache
             InitializeComponent();
             SetLanguageDictionary();
 
+
             //database Conf
             databaseObject = new Database();
-            databaseHandler = new DatabaseHandler(databaseObject);
+            //MyGlobals.databaseHandler = new MyGlobals.databaseHandler(databaseObject);
+            MyGlobals.databaseHandler = new DatabaseHandler(databaseObject);
             //vérifie si un fichier de base de donnée en crée un sinon
             if (databaseObject.FileCreated)
             {
-                databaseHandler.CreateTables();
-                databaseHandler.PriorityDAO.AddDefaultPriority();
+                MyGlobals.databaseHandler.CreateTables();
+                MyGlobals.databaseHandler.PriorityDAO.AddDefaultPriority();
             }
 
             
 
             //charge toute les liste présent sur la base de donnée
-            lists = databaseHandler.ListDAO.getAllList();
+            lists = MyGlobals.databaseHandler.ListDAO.getAllList();
 
             foreach (ListOfTasks list in lists)
             {
-                list.NumberTaskToDo = databaseHandler.TaskDAO.CountTaskToDoByList(list.ID);
+                list.NumberTaskToDo = MyGlobals.databaseHandler.TaskDAO.CountTaskToDoByList(list.ID);
             }
             DataContext = this;
             PopulateTypeSorts();
@@ -132,13 +133,15 @@ namespace GestionTache
         private void AddList()
         {
             ListOfTasks list = new ListOfTasks("add");
-            AddListAction addListAction = new AddListAction(list,databaseHandler,lists);
-            actionManager.RecordAction(addListAction);
-            isListAdded = true;
+
+            /*AddListAction addListAction = new AddListAction(list,MyGlobals.databaseHandler,lists);
+            actionManager.RecordAction(addListAction);*/
+            //isListAdded = true;
+
             //ajoute la liste dans la base de donnée et récupère l'id attribué par la base de donnée à la liste ajouté
-            /*databaseHandler.ListDAO.Add(list);
-            list.ID = databaseHandler.ListDAO.getLastAddedListID();
-            lists.Add(list);*/
+            MyGlobals.databaseHandler.ListDAO.Add(list);
+            list.ID = MyGlobals.databaseHandler.ListDAO.getLastAddedListID();
+            lists.Add(list);
 
             //selectionne le listboxitem ajouté et focus la vue dessus
             listBox_listOfTasks.SelectedItem = listBox_listOfTasks.Items[listBox_listOfTasks.Items.Count - 1];
@@ -177,16 +180,20 @@ namespace GestionTache
         /// </summary>
         private void AddTask()
         {
-            List<Priority> listpriority = databaseHandler.PriorityDAO.getAllPriority();
+            List<Priority> listpriority = MyGlobals.databaseHandler.PriorityDAO.getAllPriority();
             //ajoute la tâche dans la base de donnée et récupère l'id attribué par la base de donnée à la tâche ajouté
-            Task newTask = new Task("test2", "comment", false, 0, selectedList.ID, listpriority, listpriority[0].IDPriority);
-            databaseHandler.TaskDAO.Add(newTask);
+            Task newTask = new Task("test2", "", false, 0, selectedList.ID, listpriority, listpriority[0].IDPriority);
+            MyGlobals.databaseHandler.TaskDAO.Add(newTask);
+            //AddTaskAction action = new AddTaskAction(newTask,tasks);
+            //actionManager.RecordAction(action);
+            
             manipulateNumberTaskToDo(true, selectedList.ID);
-            newTask.IDTask = databaseHandler.TaskDAO.getLastAddedTaskID();
+            newTask.IDTask = MyGlobals.databaseHandler.TaskDAO.getLastAddedTaskID();
             Tasks.Add(newTask);
 
             SortingTask();
             TotalTasksUpdate();
+            
 
             //Recherche la tâche venant d'être ajouté dans la listbox
             int indexLastAddedTask = 0;
@@ -291,7 +298,7 @@ namespace GestionTache
             //change le titre de l'affichage des tâches
             txtBox_TitleList.Text = selectedList.Name;
             //ajoute les tâches affilié à la liste  depuis la base de données dans la liste
-            Tasks = databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, databaseHandler.PriorityDAO.getAllPriority());
+            Tasks = MyGlobals.databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, MyGlobals.databaseHandler.PriorityDAO.getAllPriority());
             SortingTask();
             TotalTasksUpdate();
             DataContext = this;
@@ -320,20 +327,23 @@ namespace GestionTache
             {
                 if (list.ID == int.Parse(textBox.Tag.ToString()))
                 {
-                    if (isListAdded)
+                    /*if (isListAdded)
                     {
                        list.Name = textBox.Text;
                         txtBox_TitleList.Text = list.Name;
-                        databaseHandler.ListDAO.UpdateListName(list);
+                        MyGlobals.databaseHandler.ListDAO.UpdateListName(list);
                         isListAdded = false;
                     }
                     else
                     {
-                        RenameListAction action = new RenameListAction(databaseHandler, list, textBox.Text);
+                        RenameListAction action = new RenameListAction(MyGlobals.databaseHandler, list, textBox.Text);
                         actionManager.RecordAction(action);
                         txtBox_TitleList.Text = list.Name;
+                    }*/
+                    list.Name = textBox.Text;
+                    txtBox_TitleList.Text = list.Name;
+                    MyGlobals.databaseHandler.ListDAO.UpdateListName(list);
 
-                    }
                     break;
                 }
             }
@@ -353,7 +363,7 @@ namespace GestionTache
             {
                 if (task.IDTask == int.Parse(textBox.Tag.ToString()))
                 {
-                    databaseHandler.TaskDAO.UpdateTaskName(task);
+                    MyGlobals.databaseHandler.TaskDAO.UpdateTaskName(task);
                     break;
                 }
             }
@@ -375,6 +385,16 @@ namespace GestionTache
             }
         }
 
+        private void ListBoxItem_KeyDown(object sender, KeyEventArgs e)
+        {
+            ListBoxItem listBoxItem = e.Source as ListBoxItem;
+
+            if (e.Key == Key.Delete)
+            {
+                DeleteList(int.Parse(listBoxItem.Tag.ToString()));
+            }
+
+        }
 
         /// <summary>
         /// si le focus de la textbox pour le nom de la liste est quitter ajoute cette liste dans la base de données
@@ -399,6 +419,16 @@ namespace GestionTache
             {
                 TextBox textBox = e.Source as TextBox;
                 TaskNameEndEdition(textBox);
+            }
+        }
+
+        private void ListBoxItemTaskDelete(object sender, KeyEventArgs e)
+        {
+            ListBoxItem listBoxItem = e.Source as ListBoxItem;
+
+            if (e.Key == Key.Delete)
+            {
+                DeleteTask(int.Parse(listBoxItem.Tag.ToString()));
             }
         }
 
@@ -436,7 +466,7 @@ namespace GestionTache
                             {
                                 task.IdPriority = priority.IDPriority;
 
-                                databaseHandler.TaskDAO.UpdateTaskPriorityId(task);
+                                MyGlobals.databaseHandler.TaskDAO.UpdateTaskPriorityId(task);
                                 ListBox_Tasks.Items.Refresh();
                             }
                         }
@@ -512,7 +542,7 @@ namespace GestionTache
                 if (task.IDTask == int.Parse(checkBox.Tag.ToString()))
                 {
                     //change l'état de la tâche sur la base de donné d'après l'état de la checkbox
-                    databaseHandler.TaskDAO.UpdateTaskState(task);
+                    MyGlobals.databaseHandler.TaskDAO.UpdateTaskState(task);
 
                     if (task.State)
                     {
@@ -564,7 +594,7 @@ namespace GestionTache
                         {
                             //supprime la tâche
                             manipulateNumberTaskToDo(false, selectedList.ID);
-                            databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
+                            MyGlobals.databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
                             Tasks.RemoveAt(i);
                             TotalTasksUpdate();
                             menuItem_EdiTask.IsEnabled = false;
@@ -575,7 +605,7 @@ namespace GestionTache
                     else
                     {
                         //supprime la tâche
-                        databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
+                        MyGlobals.databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
                         Tasks.RemoveAt(i);
                         TotalTasksUpdate();
                         menuItem_EdiTask.IsEnabled = false;
@@ -667,13 +697,13 @@ namespace GestionTache
                     if (dialog == MessageBoxResult.Yes)
                     {
                         //supprime la liste et ses tâches
-                        //databaseHandler.ListDAO.DeleteList(lists[i]);
-                        databaseHandler.TaskDAO.DeletedTaksByListID(lists[i].ID);
-                        DeleteListAction action = new DeleteListAction(lists, i, databaseHandler);
-                        actionManager.RecordAction(action);
+                        MyGlobals.databaseHandler.ListDAO.DeleteList(lists[i]);
+                        MyGlobals.databaseHandler.TaskDAO.DeletedTaksByListID(lists[i].ID);
+                        //DeleteListAction action = new DeleteListAction(lists, i, MyGlobals.databaseHandler);
+                        //actionManager.RecordAction(action);
                         txtBox_TitleList.Text = "";
                         Tasks = null;
-                        //lists.RemoveAt(i);
+                        lists.RemoveAt(i);
                         Button_AddTask.IsEnabled = false;
                         menuItem_DeleteListOfTask.IsEnabled = false;
                         menuItem_UpdateListOfTask.IsEnabled = false;
@@ -786,7 +816,7 @@ namespace GestionTache
                     {
                         //modifie le commentaire
                         task.Comment = CommentText;
-                        databaseHandler.TaskDAO.UpdateTaskComment(task);
+                        MyGlobals.databaseHandler.TaskDAO.UpdateTaskComment(task);
                     }
                     break;
                 }
@@ -953,11 +983,11 @@ namespace GestionTache
         {
             actionManager.Undo();
         }
-
         private void Redo_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             actionManager.Redo();
         }
+
 
     }
 

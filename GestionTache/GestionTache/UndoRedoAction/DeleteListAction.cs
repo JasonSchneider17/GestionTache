@@ -32,6 +32,7 @@ namespace GestionTache
 
         protected override void UnExecuteCore()
         {
+           //faire un add qui met la liste met pas avec un nouveau id il faut conserver le même
             databaseHandler.ListDAO.Add(deletedList);
             lists.Insert(indexList,deletedList);
         }

@@ -33,7 +33,7 @@
 
         <DockPanel Grid.Row="0">
             <Menu DockPanel.Dock="Top" VerticalAlignment="Stretch"  >
-                <MenuItem Height="25" Width="50" >
+                <MenuItem Height="25"  >
                     <MenuItem.Header>
                         <TextBlock Text="{DynamicResource ListMenu}"   />
                     </MenuItem.Header>
@@ -54,7 +54,7 @@
                     </MenuItem>
 
                 </MenuItem>
-                <MenuItem  Height="25" Width="50" VerticalAlignment="Stretch"  >
+                <MenuItem  Height="25" VerticalAlignment="Stretch"  >
                     <MenuItem.Header>
                         <TextBlock Text="{DynamicResource MenuTask}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Header>
@@ -119,6 +119,7 @@
                                 <Setter Property="BorderBrush" Value="Black"/>
                                 <Setter Property="BorderThickness" Value="0,1,0,0"/>
                                 <EventSetter Event="Selected" Handler="ListBoxItem_Selected_1"/>
+                                <EventSetter Event="KeyDown" Handler="ListBoxItem_KeyDown"/>
                                 <Setter Property="ContextMenu" >
                                     <Setter.Value>
                                         <ContextMenu >
@@ -255,6 +256,7 @@
                             
                             <EventSetter Event="Loaded" Handler="ListBoxItem_Loaded"/>
                             <EventSetter Event="Selected" Handler="ListBoxItem_Selected"/>
+                            <EventSetter Event="KeyDown" Handler="ListBoxItemTaskDelete"/>
 
                             <Setter Property="ContextMenu" >
                                 <Setter.Value>

@@ -3,30 +3,38 @@
                     xmlns:local="clr-namespace:GestionTache" 
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     <!--Ce fichier contient tous les textex en allemand-->
-    <system:String x:Key="TitleApp">Deutsch</system:String>
-    <system:String x:Key="AddList">+ Liste</system:String>
-    <system:String x:Key="AddListToolTip">Ajout d'une nouvelle liste</system:String>
-    <system:String x:Key="ProgressBarToolTip">Indique l'avancement dans la réalisation des tâche de la liste</system:String>
-    <system:String x:Key="BtnVisibilityToolTip">Affiche/Masque les tâches déja réalisées</system:String>
-    <system:String x:Key="ComboBoxTaskSortToolTip">Trie les tâches selon l'option sélectionner</system:String>
-    <system:String x:Key="ContextMenuUpdateHeader">Modifier Nom Tâche</system:String>
-    <system:String x:Key="ContextMenuDeleteHeader">Supprimer Tâche</system:String>
-    <system:String x:Key="CheckBoxTaskToolTip">Indique si la tâche est réalisé</system:String>
-    <system:String x:Key="ComboBoxTaskToolTip">Sélectionner le degré d'urgence</system:String>
-    <system:String x:Key="BtnSaveCommentToolTip">Sauvegarde le nouveau commentaire</system:String>
-    <system:String x:Key="TextBlockCommentToolTip">Doube clique pour éditer</system:String>
-    <system:String x:Key="NothingItemSort">Aucun</system:String>
-    <system:String x:Key="LessUrgentItemSort">Les moins urgents</system:String>
-    <system:String x:Key="MoreUrgentItemSort">Les plus urgents</system:String>
-    <system:String x:Key="CheckedItemSort">Déja réaliser</system:String>
-    <system:String x:Key="UncheckedItemSort">Non réaliser</system:String>
-    <system:String x:Key="TxtBlockProgressBar">Tâches terminées</system:String>
-    <system:String x:Key="AddListMenu">Ajouter une liste</system:String>
-    <system:String x:Key="EditMenuList">Modifier liste sélectionner</system:String>
-    <system:String x:Key="DeleteMenuList">Supprimer la liste</system:String>
-    <system:String x:Key="AddMenuTask">Ajouter une Tâche</system:String>
-    <system:String x:Key="EditMenuTask">Modifier tâche sélectionner</system:String>
-    <system:String x:Key="DeleteMenuTask">Supprimer la tâche</system:String>
+    <system:String x:Key="TitleApp">Aufgabenmanagement</system:String>
+    <system:String x:Key="AddList">+ Auflistung</system:String>
+    <system:String x:Key="AddListToolTip">Neue Liste hinzufügen</system:String>
+    <system:String x:Key="ProgressBarToolTip">Zeigt den Fortschritt bei der Ausführung der Aufgaben in der Liste an</system:String>
+    <system:String x:Key="BtnVisibilityToolTip">Vorher erledigte Aufgaben ein- / ausblenden</system:String>
+    <system:String x:Key="ComboBoxTaskSortToolTip">Sortieren Sie Aufgaben nach Auswahloption</system:String>
+    <system:String x:Key="ContextMenuUpdateHeader">Aufgabennamen bearbeiten</system:String>
+    <system:String x:Key="ContextMenuDeleteHeader">Aufgabe löschen</system:String>
+    <system:String x:Key="CheckBoxTaskToolTip">Zeigt an, ob die Aufgabe abgeschlossen ist</system:String>
+    <system:String x:Key="ComboBoxTaskToolTip">Wählen Sie den Dringlichkeitsgrad</system:String>
+    <system:String x:Key="BtnSaveCommentToolTip">Neuen Kommentar speichern</system:String>
+    <system:String x:Key="TextBlockCommentToolTip">Doppelklick zum bearbeiten</system:String>
+    <system:String x:Key="NothingItemSort">Nein</system:String>
+    <system:String x:Key="LessUrgentItemSort">Am wenigsten dringend</system:String>
+    <system:String x:Key="MoreUrgentItemSort">Am dringendsten</system:String>
+    <system:String x:Key="CheckedItemSort">Schon erledigt</system:String>
+    <system:String x:Key="UncheckedItemSort">Nicht realisiert</system:String>
+    <system:String x:Key="TxtBlockProgressBar">Erledigte Aufgaben</system:String>
+    <system:String x:Key="ListMenu">Auflistung</system:String>
+    <system:String x:Key="AddListMenu">Fügen Sie eine Liste hinzu</system:String>
+    <system:String x:Key="EditMenuList">Auswahlliste bearbeiten</system:String>
+    <system:String x:Key="DeleteMenuList">Liste löschen</system:String>
+    <system:String x:Key="MenuTask">Aufgabe</system:String>
+    <system:String x:Key="AddMenuTask">Fügen Sie eine Aufgabe hinzu</system:String>
+    <system:String x:Key="EditMenuTask">Aufgabenauswahl bearbeiten</system:String>
+    <system:String x:Key="DeleteMenuTask">Aufgabe löschen</system:String>
+    <system:String x:Key="DeleteTaskMessageContent" xml:space="preserve" >Diese Aufgabe wurde noch nicht abgeschlossen.
+Möchten Sie es wirklich löschen?</system:String>
+    <system:String x:Key="DeleteTaskMessageTitle">Alarm zum Löschen von Aufgaben</system:String>
+    <system:String x:Key="DeleteListMessageContent" xml:space="preserve">Durch Löschen dieser Liste werden auch die verknüpften Aufgaben gelöscht.
+Wollen Sie fortfahren?</system:String>
+    <system:String x:Key="DeleteListMessageTitle">Löschalarm auflisten</system:String>
 
 
 </ResourceDictionary>
