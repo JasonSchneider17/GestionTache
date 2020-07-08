@@ -15,12 +15,15 @@
     <Window.CommandBindings>
         <CommandBinding Command="Undo" Executed="Undo_Executed"/>
         <CommandBinding Command="Redo" Executed="Redo_Executed"/>
+        <!--<CommandBinding Command="Help" Executed="Help_Executed"/>-->
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Key="Z" Modifiers="Ctrl" Command="Undo"/>
         <KeyBinding Key="Y" Modifiers="Ctrl" Command="Redo"/>
+        <!--<KeyBinding Key="F1"  Command="Help"/>-->
     </Window.InputBindings>
 
+   <!--Grid principale-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -31,8 +34,10 @@
 
         </Grid.ColumnDefinitions>
 
+        <!--Barre de menu-->
         <DockPanel Grid.Row="0">
             <Menu DockPanel.Dock="Top" VerticalAlignment="Stretch"  >
+                <!--Menu Liste-->
                 <MenuItem Height="25"  >
                     <MenuItem.Header>
                         <TextBlock Text="{DynamicResource ListMenu}"   />
@@ -54,6 +59,7 @@
                     </MenuItem>
 
                 </MenuItem>
+                <!--Menu tâche-->
                 <MenuItem  Height="25" VerticalAlignment="Stretch"  >
                     <MenuItem.Header>
                         <TextBlock Text="{DynamicResource MenuTask}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -74,12 +80,11 @@
                         </MenuItem.Icon>
                     </MenuItem>
                 </MenuItem>
-
-
-
+                <!--<MenuItem x:Name="MenuHelp" Header="Aide" Click="MenuHelp_Click"/>-->
             </Menu>
         </DockPanel>
 
+        <!--Grid corp du programme-->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260" MinWidth="200" MaxWidth="320"/>
@@ -91,6 +96,7 @@
 
 
             <Border BorderThickness="0,0,1,0" BorderBrush="Black">
+                <!--Grid liste-->
                 <Grid Margin="0,0,7,0" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50"/>

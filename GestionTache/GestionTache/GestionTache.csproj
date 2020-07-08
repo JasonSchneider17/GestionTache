@@ -84,6 +84,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -102,6 +103,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helps\HelpProvider.cs" />
     <Compile Include="MyGlobals.cs" />
     <Compile Include="UndoRedoAction\AddTaskAction.cs" />
     <Compile Include="UndoRedoAction\DeleteListAction.cs" />
@@ -159,6 +161,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Helps\HelpFile\Table of Contents.hhc" />
+    <None Include="Helps\HelpFile\TaskGestion.chm" />
+    <None Include="Helps\HelpFile\TaskGestion.hhp" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -206,6 +211,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Image\plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Helps\HelpFile\autre.htm" />
+    <Content Include="Helps\HelpFile\directory.htm" />
+    <Content Include="Helps\HelpFile\HTML\Liste.htm" />
+    <Resource Include="Helps\HelpFile\Image\liste.PNG" />
+    <Content Include="Helps\HelpFile\test.htm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterResolveReferences">

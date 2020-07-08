@@ -13,11 +13,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 
 namespace GestionTache
 {
@@ -33,8 +35,8 @@ namespace GestionTache
         bool isTaskHiding = false;                          //indique si il faut cacher les tâches déja réalisé
         List<TypeSort> typeSorts;                           //type de trie
         ObservableCollection<Task> tasks;                   //Liste de tâches
-        ActionManager actionManager = new ActionManager();
-        bool isListAdded = false;
+        //ActionManager actionManager = new ActionManager();
+        //bool isListAdded = false;
 
 
         /// <summary>
@@ -44,7 +46,6 @@ namespace GestionTache
         {
             InitializeComponent();
             SetLanguageDictionary();
-
 
             //database Conf
             databaseObject = new Database();
@@ -56,9 +57,7 @@ namespace GestionTache
                 MyGlobals.databaseHandler.CreateTables();
                 MyGlobals.databaseHandler.PriorityDAO.AddDefaultPriority();
             }
-
-            
-
+         
             //charge toute les liste présent sur la base de donnée
             lists = MyGlobals.databaseHandler.ListDAO.getAllList();
 
@@ -332,7 +331,7 @@ namespace GestionTache
                        list.Name = textBox.Text;
                         txtBox_TitleList.Text = list.Name;
                         MyGlobals.databaseHandler.ListDAO.UpdateListName(list);
-                        isListAdded = false;
+                        isListAdded = false;   
                     }
                     else
                     {
@@ -981,14 +980,22 @@ namespace GestionTache
 
         private void Undo_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            actionManager.Undo();
+            //actionManager.Undo();
         }
         private void Redo_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            actionManager.Redo();
+            //actionManager.Redo();
         }
 
+        private void MenuHelp_Click(object sender, RoutedEventArgs e)
+        {
+            Helps.HelpProvider.ShowHelpTableOfContents();
+        }
 
+        private void Help_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Helps.HelpProvider.ShowHelpTableOfContents();
+        }
     }
 
 
