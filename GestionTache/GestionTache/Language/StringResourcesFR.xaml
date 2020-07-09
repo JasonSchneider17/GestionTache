@@ -4,7 +4,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <!--Ce fichier contient tous les textex en français-->
-    <system:String x:Key="TitleApp">Gestionnaire de tâche</system:String>
+    <system:String x:Key="TitleApp">Gestion de tâches</system:String>
     <system:String x:Key="AddList">+ Liste</system:String>
     <system:String x:Key="AddListToolTip">Ajout d'une nouvelle liste</system:String>
     <system:String x:Key="ProgressBarToolTip">Indique l'avancement dans la réalisation des tâche de la liste</system:String>

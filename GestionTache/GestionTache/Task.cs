@@ -25,7 +25,7 @@ namespace GestionTache
             this.comment = comment;
             this.state = state;
         }
-        public Task(string name, string comment, bool state,int listID)
+        /*public Task(string name, string comment, bool state,int listID)
         {
             this.name = name;
             this.comment = comment;
@@ -39,7 +39,7 @@ namespace GestionTache
             this.state = state;
             this.listID = listID;
             this.prioritiesDisplay = priorities;
-        }
+        }*/
         public Task(string name, string comment, bool state,int idTask, int listID, List<Priority> priorities,int idPriority)
         {
             this.name = name;

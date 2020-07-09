@@ -72,7 +72,7 @@ namespace GestionTache
         /// obtient toutes les liste présentent sur la base de donnée
         /// </summary>
         /// <returns> liste de liste</returns>
-        public ObservableCollection<ListOfTasks> getAllList()
+        public ObservableCollection<ListOfTasks> GetAllList()
         {
 
             string query = string.Format("SELECT * FROM {0} ", DatabaseBuild.LIST_TABLE_NAME);

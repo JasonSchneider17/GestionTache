@@ -29,7 +29,7 @@ namespace GestionTache
             }
 
             MyGlobals.databaseHandler.TaskDAO.Add(taskAdded);
-            taskAdded.IDTask = MyGlobals.databaseHandler.TaskDAO.getLastAddedTaskID();
+            taskAdded.IDTask = MyGlobals.databaseHandler.TaskDAO.GetLastAddedTaskID();
             tasks.Add(taskAdded);
         }
 

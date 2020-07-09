@@ -52,7 +52,7 @@ namespace GestionTache
         /// obtient toutes les priorité présentent sur la base de donnée
         /// </summary>
         /// <returns>liste de priorité</returns>
-        public List<Priority> getAllPriority()
+        public List<Priority> GetAllPriority()
         {
 
             string query = "SELECT * FROM " + DatabaseBuild.PRIORITY_TABLE_NAME;

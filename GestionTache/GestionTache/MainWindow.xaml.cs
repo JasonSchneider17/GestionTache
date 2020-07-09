@@ -59,7 +59,7 @@ namespace GestionTache
             }
          
             //charge toute les liste présent sur la base de donnée
-            lists = MyGlobals.databaseHandler.ListDAO.getAllList();
+            lists = MyGlobals.databaseHandler.ListDAO.GetAllList();
 
             foreach (ListOfTasks list in lists)
             {
@@ -179,7 +179,7 @@ namespace GestionTache
         /// </summary>
         private void AddTask()
         {
-            List<Priority> listpriority = MyGlobals.databaseHandler.PriorityDAO.getAllPriority();
+            List<Priority> listpriority = MyGlobals.databaseHandler.PriorityDAO.GetAllPriority();
             //ajoute la tâche dans la base de donnée et récupère l'id attribué par la base de donnée à la tâche ajouté
             Task newTask = new Task("test2", "", false, 0, selectedList.ID, listpriority, listpriority[0].IDPriority);
             MyGlobals.databaseHandler.TaskDAO.Add(newTask);
@@ -187,7 +187,7 @@ namespace GestionTache
             //actionManager.RecordAction(action);
             
             manipulateNumberTaskToDo(true, selectedList.ID);
-            newTask.IDTask = MyGlobals.databaseHandler.TaskDAO.getLastAddedTaskID();
+            newTask.IDTask = MyGlobals.databaseHandler.TaskDAO.GetLastAddedTaskID();
             Tasks.Add(newTask);
 
             SortingTask();
@@ -297,7 +297,7 @@ namespace GestionTache
             //change le titre de l'affichage des tâches
             txtBox_TitleList.Text = selectedList.Name;
             //ajoute les tâches affilié à la liste  depuis la base de données dans la liste
-            Tasks = MyGlobals.databaseHandler.TaskDAO.getAllTaskByListID(selectedList.ID, MyGlobals.databaseHandler.PriorityDAO.getAllPriority());
+            Tasks = MyGlobals.databaseHandler.TaskDAO.GetAllTaskByListID(selectedList.ID, MyGlobals.databaseHandler.PriorityDAO.GetAllPriority());
             SortingTask();
             TotalTasksUpdate();
             DataContext = this;
@@ -593,7 +593,7 @@ namespace GestionTache
                         {
                             //supprime la tâche
                             manipulateNumberTaskToDo(false, selectedList.ID);
-                            MyGlobals.databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
+                            MyGlobals.databaseHandler.TaskDAO.DeleteTask(Tasks[i]);
                             Tasks.RemoveAt(i);
                             TotalTasksUpdate();
                             menuItem_EdiTask.IsEnabled = false;
@@ -604,7 +604,7 @@ namespace GestionTache
                     else
                     {
                         //supprime la tâche
-                        MyGlobals.databaseHandler.TaskDAO.DeletedTask(Tasks[i]);
+                        MyGlobals.databaseHandler.TaskDAO.DeleteTask(Tasks[i]);
                         Tasks.RemoveAt(i);
                         TotalTasksUpdate();
                         menuItem_EdiTask.IsEnabled = false;
@@ -691,13 +691,13 @@ namespace GestionTache
             {
                 if (tag == lists[i].ID)
                 {
-                    MessageBoxResult dialog = MessageBox.Show((string)this.FindResource("DeleteListMessageContent"), (string)this.FindResource("DeleteListMessageContent"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                    MessageBoxResult dialog = MessageBox.Show((string)this.FindResource("DeleteListMessageContent"), (string)this.FindResource("DeleteListMessageTitle"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
                     
                     if (dialog == MessageBoxResult.Yes)
                     {
                         //supprime la liste et ses tâches
                         MyGlobals.databaseHandler.ListDAO.DeleteList(lists[i]);
-                        MyGlobals.databaseHandler.TaskDAO.DeletedTaksByListID(lists[i].ID);
+                        MyGlobals.databaseHandler.TaskDAO.DeleteTasksByListID(lists[i].ID);
                         //DeleteListAction action = new DeleteListAction(lists, i, MyGlobals.databaseHandler);
                         //actionManager.RecordAction(action);
                         txtBox_TitleList.Text = "";

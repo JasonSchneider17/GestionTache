@@ -10,7 +10,7 @@ namespace GestionTache
     public class DatabaseHandler
     {
         private Database databaseObject;
-        private TaskDAO taskDAO;
+        private TaskDAO taskDAO;            //accès table tâc
         private ListDAO listDAO;
         private PriorityDAO priorityDAO;
 

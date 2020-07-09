@@ -121,7 +121,7 @@ namespace GestionTache
         /// Supprime la tâche
         /// </summary>
         /// <param name="task">Tâche à supprimer</param>
-        public void DeletedTask(Task task)
+        public void DeleteTask(Task task)
         {
             string query = String.Format("DELETE FROM {0} WHERE {1} = @taskID ", DatabaseBuild.TASK_TABLE_NAME,DatabaseBuild.TASK_KEY);
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
@@ -135,7 +135,7 @@ namespace GestionTache
         /// Supprime toutes les tâche ayant un certain listID
         /// </summary>
         /// <param name="listID">listId des tâches à supprimer</param>
-        public void DeletedTaksByListID(int listID)
+        public void DeleteTasksByListID(int listID)
         {
             string query = String.Format("DELETE FROM {0} WHERE {1} = @listID ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_ID_LIST);
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
@@ -145,44 +145,13 @@ namespace GestionTache
             database.CloseConnection();
         }
 
-
-        /// <summary>
-        /// Obtient toutes les tâche sur la base de donnée
-        /// </summary>
-        /// <returns> liste de tâche</returns>
-        public List<Task> getAllTask()
-        {
-
-            string query = "SELECT * FROM "+ DatabaseBuild.TASK_TABLE_NAME;
-            List<Task> listTask = new List<Task>();
-            SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
-            database.OpenConnection();
-            SQLiteDataReader result = myCommand.ExecuteReader();
-            if (result.HasRows)
-            {
-                while (result.Read())
-                {
-                    //listClient.Add(result[CLIENT_NAME].ToString());
-                    listTask.Add(new Task(result[DatabaseBuild.TASK_NAME].ToString(),"test comment",true));
-                }
-            }
-            database.CloseConnection();
-
-
-
-            return listTask;
-        }
-
-
-
-
         /// <summary>
         /// Obtient toute les tâche se lon l'id de la liste
         /// </summary>
         /// <param name="listID"> id de la liste </param>
         /// <param name="priorities">priorité de la tâche (ne sert que pour l'affichage)</param>
         /// <returns>liste de tâches</returns>
-        public ObservableCollection<Task> getAllTaskByListID(int listID,List<Priority> priorities)
+        public ObservableCollection<Task> GetAllTaskByListID(int listID,List<Priority> priorities)
         {
             string query = string.Format("SELECT * FROM {0} WHERE {1} = {2} ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_ID_LIST, listID);
 
@@ -228,7 +197,7 @@ namespace GestionTache
         /// Obtient l'id de la tâche dernièrement ajouté
         /// </summary>
         /// <returns> id tâche</returns>
-        public int getLastAddedTaskID()
+        public int GetLastAddedTaskID()
         {
             string query = string.Format("SELECT * FROM {0} ORDER BY {1} DESC LIMIT 1", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_KEY);
             int id = -1;
