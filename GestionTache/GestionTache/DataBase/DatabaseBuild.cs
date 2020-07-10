@@ -38,10 +38,12 @@ namespace GestionTache
         public const String LIST_KEY = "id_list";
         public const String LIST_NAME = "name_list";
         public const String LIST_TABLE_NAME = "List";
+        public const String LIST_INDEX = "index_list";
         public const String LIST_TABLE_CREATE =
                 "CREATE TABLE " + LIST_TABLE_NAME + " (" +
                         LIST_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        LIST_NAME + " TEXT )";
+                        LIST_NAME + " TEXT, "+
+                        LIST_INDEX+" INTEGER )";
         public const String LIST_TABLE_DROP = "DROP TABLE IF EXISTS " + LIST_TABLE_NAME + ";";
 
         //table priority

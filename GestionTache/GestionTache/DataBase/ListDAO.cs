@@ -28,12 +28,12 @@ namespace GestionTache
         /// <param name="list">liste à ajouté</param>
         public void Add(ListOfTasks list)
         {
-            string query = String.Format("INSERT INTO {0} ( {1} ) VALUES (@name)", DatabaseBuild.LIST_TABLE_NAME, DatabaseBuild.LIST_NAME);
+            string query = String.Format("INSERT INTO {0} ( {1} , {2} ) VALUES (@name , @index)", DatabaseBuild.LIST_TABLE_NAME, DatabaseBuild.LIST_NAME,DatabaseBuild.LIST_INDEX);
 
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
             database.OpenConnection();
             myCommand.Parameters.AddWithValue("@name", list.Name);
-
+            myCommand.Parameters.AddWithValue("@index", list.IndexArray);
             myCommand.ExecuteNonQuery();
             database.CloseConnection();
         }
@@ -54,6 +54,23 @@ namespace GestionTache
             database.CloseConnection();
         }
 
+        public void UpdateListsIndex(ObservableCollection<ListOfTasks> lists)
+        {
+            database.OpenConnection();
+            foreach (ListOfTasks list in lists)
+            {
+                string query = String.Format("UPDATE {0} SET {1} = @indexList WHERE {2} = @listID ", DatabaseBuild.LIST_TABLE_NAME, DatabaseBuild.LIST_INDEX, DatabaseBuild.LIST_KEY);
+                SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+                myCommand.Parameters.AddWithValue("@indexList", list.IndexArray);
+                myCommand.Parameters.AddWithValue("@listID", list.ID);
+                myCommand.ExecuteNonQuery();
+
+            }
+            database.CloseConnection();
+
+
+        }
+
         /// <summary>
         /// Supprime la liste de la base de données
         /// </summary>
@@ -67,6 +84,8 @@ namespace GestionTache
             myCommand.ExecuteNonQuery();
             database.CloseConnection();
         }
+
+
 
         /// <summary>
         /// obtient toutes les liste présentent sur la base de donnée
@@ -89,14 +108,25 @@ namespace GestionTache
                 {
                     //listClient.Add(result[CLIENT_NAME].ToString());
                     //Console.WriteLine(result["TotalCount"]);
-                    lists.Add(new ListOfTasks(result[DatabaseBuild.LIST_NAME].ToString(),Int32.Parse(result[DatabaseBuild.LIST_KEY].ToString())));
+                    lists.Add(new ListOfTasks(result[DatabaseBuild.LIST_NAME].ToString(),Int32.Parse(result[DatabaseBuild.LIST_KEY].ToString()),Int32.Parse(result[DatabaseBuild.LIST_INDEX].ToString())));
                 }
             }
             database.CloseConnection();
 
+            for (int j =lists.Count - 1; j > 0; j--)
+            {
+                for (int i = 0; i < j; i++)
+                {
+
+                    if (lists[i].IndexArray > lists[i + 1].IndexArray)
+                    {
+                        lists.Move(i, i + 1);
+                    }
+                }
+            }
 
 
-            return lists;
+                    return lists;
         }
 
         

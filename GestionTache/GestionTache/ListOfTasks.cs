@@ -13,25 +13,36 @@ namespace GestionTache
         private string name;                        //nom de la liste
         private int id;                             //ide de la liste sur la base de donnée
         private int numberTaskToDo;                 //nombre de tache devant encore être réaliser
+        private int indexArray;                     //indique le numéro d'index de sa liste
 
         /// <summary>
         /// constructeur
         /// </summary>
         /// <param name="name"></param>
-        public ListOfTasks(string name)
+        public ListOfTasks(string name,int indexArray)
         {
             this.name = name;
+            this.indexArray = indexArray;
         }
+
 
         /// <summary>
         /// constructeur
         /// </summary>
         /// <param name="name"></param>
         /// <param name="id"></param>
-        public ListOfTasks(string name,int id)
+        /*public ListOfTasks(string name,int id)
         {
             this.name = name;
             this.id = id;
+        }*/
+
+        public ListOfTasks(string name,int id,int indexArray)
+        {
+            this.name = name;
+            this.id = id;
+            this.indexArray = indexArray;
+
         }
 
         //getter setter
@@ -61,6 +72,16 @@ namespace GestionTache
             get { return this.numberTaskToDo; }
             set { this.numberTaskToDo = value;
                 OnPropertyChanged("NumberTaskToDo");
+            }
+        }
+
+        public int IndexArray
+        {
+            get { return this.indexArray; }
+            set
+            {
+                this.indexArray = value;
+                
             }
         }
 

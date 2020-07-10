@@ -131,7 +131,7 @@ namespace GestionTache
         /// </summary>
         private void AddList()
         {
-            ListOfTasks list = new ListOfTasks("add");
+            ListOfTasks list = new ListOfTasks("add",lists.Count);
 
             /*AddListAction addListAction = new AddListAction(list,MyGlobals.databaseHandler,lists);
             actionManager.RecordAction(addListAction);*/
@@ -186,7 +186,7 @@ namespace GestionTache
             //AddTaskAction action = new AddTaskAction(newTask,tasks);
             //actionManager.RecordAction(action);
             
-            manipulateNumberTaskToDo(true, selectedList.ID);
+            ManipulateNumberTaskToDo(true, selectedList.ID);
             newTask.IDTask = MyGlobals.databaseHandler.TaskDAO.GetLastAddedTaskID();
             Tasks.Add(newTask);
 
@@ -209,6 +209,7 @@ namespace GestionTache
             ListBox_Tasks.SelectedItem = ListBox_Tasks.Items;
             ListBox_Tasks.ScrollIntoView(ListBox_Tasks.SelectedItem);
             ListBox_Tasks.UpdateLayout();
+
 
             ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromIndex(indexLastAddedTask);
 
@@ -545,11 +546,11 @@ namespace GestionTache
 
                     if (task.State)
                     {
-                        manipulateNumberTaskToDo(false, task.ListID);
+                        ManipulateNumberTaskToDo(false, task.ListID);
                     }
                     else
                     {
-                        manipulateNumberTaskToDo(true, task.ListID);
+                        ManipulateNumberTaskToDo(true, task.ListID);
                     }
                     break;
                 }
@@ -592,7 +593,7 @@ namespace GestionTache
                         if (dialog == MessageBoxResult.Yes)
                         {
                             //supprime la tâche
-                            manipulateNumberTaskToDo(false, selectedList.ID);
+                            ManipulateNumberTaskToDo(false, selectedList.ID);
                             MyGlobals.databaseHandler.TaskDAO.DeleteTask(Tasks[i]);
                             Tasks.RemoveAt(i);
                             TotalTasksUpdate();
@@ -748,7 +749,7 @@ namespace GestionTache
         /// </summary>
         /// <param name="isAdding"> indique si il faut incrémenter</param>
         /// <param name="idList">id de la liste ou faire l'ajout</param>
-        private void manipulateNumberTaskToDo(bool isAdding, int idList)
+        private void ManipulateNumberTaskToDo(bool isAdding, int idList)
         {
             Utilities.manipulateNumberTaskToDo(isAdding, idList, lists);       
         }
@@ -995,6 +996,17 @@ namespace GestionTache
         private void Help_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Helps.HelpProvider.ShowHelpTableOfContents();
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            for(int i=0; i < lists.Count; i++)
+            {
+                lists[i].IndexArray = i;
+
+
+            }
+            MyGlobals.databaseHandler.ListDAO.UpdateListsIndex(lists);
         }
     }
 
