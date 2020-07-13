@@ -27,7 +27,7 @@ namespace GestionTache
                     {
                         //trie par aucun type spécifique
                         case 0:
-                            if (Tasks[i].IDTask > Tasks[i + 1].IDTask)
+                            if (Tasks[i].Index > Tasks[i + 1].Index)
                             {
                                 Tasks.Move(i, i + 1);
                             }

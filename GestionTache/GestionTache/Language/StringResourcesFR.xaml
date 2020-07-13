@@ -16,7 +16,7 @@
     <system:String x:Key="ComboBoxTaskToolTip">Sélectionner le degré d'urgence</system:String>
     <system:String x:Key="BtnSaveCommentToolTip">Sauvegarder commentaire</system:String>
     <system:String x:Key="TextBlockCommentToolTip">Doube cliquer pour éditer</system:String>
-    <system:String x:Key="NothingItemSort">Aucun</system:String>
+    <system:String x:Key="NothingItemSort">Aucun trie</system:String>
     <system:String x:Key="LessUrgentItemSort">Les moins urgents</system:String>
     <system:String x:Key="MoreUrgentItemSort">Les plus urgents</system:String>
     <system:String x:Key="CheckedItemSort">Déja réaliser</system:String>

@@ -12,7 +12,6 @@ namespace GestionTache
     {
         private Database database; //base de données
 
-
         /// <summary>
         /// constructeur
         /// </summary>
@@ -54,6 +53,10 @@ namespace GestionTache
             database.CloseConnection();
         }
 
+        /// <summary>
+        /// Met à jour sur la base de données la positions des liste dans l'affichage
+        /// </summary>
+        /// <param name="lists"></param>
         public void UpdateListsIndex(ObservableCollection<ListOfTasks> lists)
         {
             database.OpenConnection();
@@ -67,8 +70,6 @@ namespace GestionTache
 
             }
             database.CloseConnection();
-
-
         }
 
         /// <summary>
@@ -113,6 +114,7 @@ namespace GestionTache
             }
             database.CloseConnection();
 
+            //trie les liste par leur index 
             for (int j =lists.Count - 1; j > 0; j--)
             {
                 for (int i = 0; i < j; i++)
@@ -124,13 +126,9 @@ namespace GestionTache
                     }
                 }
             }
-
-
                     return lists;
         }
-
-        
-
+       
         /// <summary>
         /// Obtient l'id de la liste récemment ajouté 
         /// </summary>

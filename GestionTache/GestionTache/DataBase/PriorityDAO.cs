@@ -72,8 +72,6 @@ namespace GestionTache
             }
             database.CloseConnection();
 
-
-
             return priorities;
         }
     }

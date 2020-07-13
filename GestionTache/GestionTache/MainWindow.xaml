@@ -243,7 +243,7 @@
                     </ComboBox>
                 </Grid>
 
-                <ListBox x:Name="ListBox_Tasks"   ItemsSource="{Binding Path=Tasks, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"   HorizontalContentAlignment="Stretch" Grid.Row="2" BorderThickness="0"  Margin="5,10,0,10"   >
+                <ListBox x:Name="ListBox_Tasks"   ItemsSource="{Binding Path=Tasks, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"   HorizontalContentAlignment="Stretch" Grid.Row="2" BorderThickness="0" Margin="5,10,0,10"   >
                     <ListBox.Background>
                         <SolidColorBrush Opacity="0"/>
                     </ListBox.Background>
@@ -251,10 +251,14 @@
                     <ListBox.Style>
                         <Style TargetType="ListBox">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedIndex,ElementName=cmbBoxSortTask}" Value="0">
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding SelectedIndex,ElementName=cmbBoxSortTask}" Value="0"/>
+                                        <Condition Binding="{Binding Path=IsTaskHiding}" Value="false" />
+                                    </MultiDataTrigger.Conditions>
                                     <Setter Property="dd:DragDrop.IsDragSource" Value="True"/>
                                     <Setter Property="dd:DragDrop.IsDropTarget" Value="True"/>
-                                </DataTrigger>
+                                </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </ListBox.Style>
@@ -275,7 +279,6 @@
                             <Setter Property="Margin" Value="0,2,0,2"/>
                             <Setter Property="Tag" Value="{Binding IDTask}"/>
                             
-                            <EventSetter Event="Loaded" Handler="ListBoxItem_Loaded"/>
                             <EventSetter Event="Selected" Handler="ListBoxItem_Selected"/>
                             <EventSetter Event="KeyDown" Handler="ListBoxItemTaskDelete"/>
 

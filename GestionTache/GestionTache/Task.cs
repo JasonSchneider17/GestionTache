@@ -17,30 +17,11 @@ namespace GestionTache
         private int idTask;                         //id de la tâche sur la base de données
         private List<Priority> prioritiesDisplay;   //Priorité pour l'affichage
         private int idPriority;                     //id de la priorité affilié 
+        private int index;                          //index indiquant la position de la tâche dans la liste
 
 
-        public Task(string name,string comment, bool state)
-        {
-            this.name = name;
-            this.comment = comment;
-            this.state = state;
-        }
-        /*public Task(string name, string comment, bool state,int listID)
-        {
-            this.name = name;
-            this.comment = comment;
-            this.state = state;
-            this.listID = listID;
-        }
-        public Task(string name, string comment, bool state, int listID,List<Priority> priorities)
-        {
-            this.name = name;
-            this.comment = comment;
-            this.state = state;
-            this.listID = listID;
-            this.prioritiesDisplay = priorities;
-        }*/
-        public Task(string name, string comment, bool state,int idTask, int listID, List<Priority> priorities,int idPriority)
+
+        public Task(string name, string comment, bool state,int idTask, int listID, List<Priority> priorities,int idPriority,int index)
         {
             this.name = name;
             this.comment = comment;
@@ -49,6 +30,7 @@ namespace GestionTache
             this.listID = listID;
             this.prioritiesDisplay = priorities;
             this.idPriority = idPriority;
+            this.index = index;
             
             foreach(Priority priority in prioritiesDisplay)
             {
@@ -59,9 +41,6 @@ namespace GestionTache
             }
 
         }
-
-
-
 
         //getter setter
 
@@ -122,6 +101,12 @@ namespace GestionTache
         {
             get { return this.idPriority; }
             set { this.idPriority=value;}
+        }
+
+        public int Index
+        {
+            get { return this.index;}
+            set { this.index = value; }
         }
 
     }

@@ -30,9 +30,9 @@ namespace GestionTache
         /// <param name="task">Tâche à ajouter</param>
         public void Add(Task task)
         {
-            string query = String.Format("INSERT INTO {0} ( {1} , {2} , {3}, {4}, {5} ) VALUES (@name,@comment,@state,@listID, @priorityID)", 
+            string query = String.Format("INSERT INTO {0} ( {1} , {2} , {3}, {4}, {5}, {6} ) VALUES (@name, @comment, @state , @listID , @priorityID , @index)", 
                 DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_NAME, DatabaseBuild.TASK_COMMENT, 
-                DatabaseBuild.TASK_STATE, DatabaseBuild.TASK_ID_LIST,DatabaseBuild.TASK_ID_PRIORITY);
+                DatabaseBuild.TASK_STATE, DatabaseBuild.TASK_ID_LIST,DatabaseBuild.TASK_ID_PRIORITY,DatabaseBuild.TASK_INDEX);
 
             SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
             database.OpenConnection();
@@ -41,6 +41,7 @@ namespace GestionTache
             myCommand.Parameters.AddWithValue("@state", task.State);
             myCommand.Parameters.AddWithValue("@listID", task.ListID);
             myCommand.Parameters.AddWithValue("@priorityID", task.Priority.IDPriority);
+            myCommand.Parameters.AddWithValue("@index", task.Index);
 
 
 
@@ -117,6 +118,26 @@ namespace GestionTache
             database.CloseConnection();
         }
 
+
+        /// <summary>
+        /// met a jour le numéro des tâches contenu dans une liste de tâche
+        /// </summary>
+        /// <param name="tasks">Tâches à mettre à jour</param>
+        public void UpdateTasksIndex(ObservableCollection<Task> tasks)
+        {
+            database.OpenConnection();
+            foreach (Task task in tasks)
+            {
+                string query = String.Format("UPDATE {0} SET {1} = @indexTask WHERE {2} = @taskID ", DatabaseBuild.TASK_TABLE_NAME, DatabaseBuild.TASK_INDEX, DatabaseBuild.TASK_KEY);
+                SQLiteCommand myCommand = new SQLiteCommand(query, database.myConnection);
+                myCommand.Parameters.AddWithValue("@indexTask", task.Index);
+                myCommand.Parameters.AddWithValue("@taskID", task.IDTask);
+                myCommand.ExecuteNonQuery();
+
+            }
+            database.CloseConnection();
+        }
+
         /// <summary>
         /// Supprime la tâche
         /// </summary>
@@ -170,17 +191,14 @@ namespace GestionTache
                     int idList = int.Parse(result[DatabaseBuild.TASK_ID_LIST].ToString());
                     int idPriority = int.Parse(result[DatabaseBuild.TASK_ID_PRIORITY].ToString());
                     int idTask = int.Parse(result[DatabaseBuild.TASK_KEY].ToString());
+                    int index = int.Parse(result[DatabaseBuild.TASK_INDEX].ToString());
+                   
                     List<Priority> priorities1 = new List<Priority>();
                     foreach ( Priority priority in priorities)
-                    {
-                       
-                        priorities1.Add(priority);
-                        
-
+                    {                      
+                        priorities1.Add(priority);                       
                     }
-
-
-                    listTask.Add(new Task(name, comment, state,idTask,idList,priorities1,idPriority));
+                    listTask.Add(new Task(name, comment, state,idTask,idList,priorities1,idPriority,index));
                 }
             }
             database.CloseConnection();
@@ -235,17 +253,9 @@ namespace GestionTache
                     numberTask = int.Parse(result["TotalTasks"].ToString());
                 }
             }
-
             database.CloseConnection();
-
             return numberTask;
-
-
         }
-
-
-
-
 
 
     }

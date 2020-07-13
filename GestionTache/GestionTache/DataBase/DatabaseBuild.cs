@@ -19,6 +19,7 @@ namespace GestionTache
         public const String TASK_NAME = "name_task";
         public const String TASK_COMMENT = "comment_task";
         public const String TASK_STATE = "state_task";
+        public const String TASK_INDEX = "index_task";
         public const String TASK_ID_LIST = "id_list";
         public const String TASK_ID_PRIORITY = "id_priority";
 
@@ -30,7 +31,8 @@ namespace GestionTache
                         TASK_COMMENT + " TEXT, " +
                         TASK_STATE + " INTEGER," +
                          TASK_ID_LIST + " INTEGER, "+
-                         TASK_ID_PRIORITY+" INTEGER ) ";
+                         TASK_ID_PRIORITY+" INTEGER, "+
+                          TASK_INDEX +     " INTEGER ) ";
         public const String TASK_TABLE_DROP = "DROP TABLE IF EXISTS " + TASK_TABLE_NAME + ";";
 
 

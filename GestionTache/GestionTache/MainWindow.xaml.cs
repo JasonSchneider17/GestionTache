@@ -35,6 +35,7 @@ namespace GestionTache
         bool isTaskHiding = false;                          //indique si il faut cacher les tâches déja réalisé
         List<TypeSort> typeSorts;                           //type de trie
         ObservableCollection<Task> tasks;                   //Liste de tâches
+        int selectedIndexSortTask=0;                        //index indiquant le trie de sélectionner
         //ActionManager actionManager = new ActionManager();
         //bool isListAdded = false;
 
@@ -181,7 +182,7 @@ namespace GestionTache
         {
             List<Priority> listpriority = MyGlobals.databaseHandler.PriorityDAO.GetAllPriority();
             //ajoute la tâche dans la base de donnée et récupère l'id attribué par la base de donnée à la tâche ajouté
-            Task newTask = new Task("test2", "", false, 0, selectedList.ID, listpriority, listpriority[0].IDPriority);
+            Task newTask = new Task("newTask", "", false, 0, selectedList.ID, listpriority, listpriority[0].IDPriority,Tasks.Count);
             MyGlobals.databaseHandler.TaskDAO.Add(newTask);
             //AddTaskAction action = new AddTaskAction(newTask,tasks);
             //actionManager.RecordAction(action);
@@ -297,6 +298,12 @@ namespace GestionTache
             selectedList = (ListOfTasks)itemSelected.DataContext;
             //change le titre de l'affichage des tâches
             txtBox_TitleList.Text = selectedList.Name;
+
+            if (Tasks != null && cmbBoxSortTask.SelectedIndex==0)
+            {
+                UpdateTasksIndex();
+            }
+
             //ajoute les tâches affilié à la liste  depuis la base de données dans la liste
             Tasks = MyGlobals.databaseHandler.TaskDAO.GetAllTaskByListID(selectedList.ID, MyGlobals.databaseHandler.PriorityDAO.GetAllPriority());
             SortingTask();
@@ -312,6 +319,8 @@ namespace GestionTache
             menuItem_DeleteTask.IsEnabled = false;
             BorderComment.Visibility = Visibility.Hidden;
         }
+
+       
 
         /// <summary>
         /// Sauvegarde le nouveau nom de la liste dans la base de donnée et masque la textbox d'édition
@@ -385,10 +394,15 @@ namespace GestionTache
             }
         }
 
+        /// <summary>
+        /// Actions effectué lors de l'appuie d'une touche du clavier sur listItem de liste
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListBoxItem_KeyDown(object sender, KeyEventArgs e)
         {
             ListBoxItem listBoxItem = e.Source as ListBoxItem;
-
+            //Suppression liste
             if (e.Key == Key.Delete)
             {
                 DeleteList(int.Parse(listBoxItem.Tag.ToString()));
@@ -422,6 +436,11 @@ namespace GestionTache
             }
         }
 
+        /// <summary>
+        /// Suppression tâche avec touche delete
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListBoxItemTaskDelete(object sender, KeyEventArgs e)
         {
             ListBoxItem listBoxItem = e.Source as ListBoxItem;
@@ -481,16 +500,6 @@ namespace GestionTache
             }
             catch (IndexOutOfRangeException)
             { }
-
-        }
-
-        /// <summary>
-        /// action effectué quand la listbox est chargé
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ListBoxItem_Loaded(object sender, RoutedEventArgs e)
-        {
 
         }
 
@@ -568,6 +577,11 @@ namespace GestionTache
             DeleteTask(int.Parse(menuItem.Tag.ToString()));
         }
 
+        /// <summary>
+        /// Suppression liste sélectionner depuis le menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menuItem_DeleteTask_Click(object sender, RoutedEventArgs e)
         {
             ListBoxItem listBoxItem = (ListBoxItem)ListBox_Tasks.ItemContainerGenerator.ContainerFromItem(ListBox_Tasks.SelectedItem);
@@ -888,6 +902,12 @@ namespace GestionTache
         /// <param name="e"></param>
         private void cmbBoxSortTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            
+            if (Tasks != null && selectedIndexSortTask == 0)
+            {
+                UpdateTasksIndex();
+            }
+            selectedIndexSortTask = cmbBoxSortTask.SelectedIndex;
             if (selectedList != null)
             {
                 SortingTask();
@@ -924,6 +944,19 @@ namespace GestionTache
             //change le texte du textblock de la progressBar
             string text = (string)this.FindResource("TxtBlockProgressBar");
             textBlockTotalTasks.Text = string.Format("{0}/{1} {2}", numberTaskDo, totalNumberTasks, text);
+        }
+
+        /// <summary>
+        /// Mets à jour la position des tâches dans la liste sur la base de données
+        /// </summary>
+        private void UpdateTasksIndex()
+        {
+            //changing
+            for (int i = 0; i < Tasks.Count; i++)
+            {
+                Tasks[i].Index = i;
+            }
+            MyGlobals.databaseHandler.TaskDAO.UpdateTasksIndex(Tasks);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
