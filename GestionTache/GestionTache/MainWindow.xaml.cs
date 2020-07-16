@@ -50,7 +50,6 @@ namespace GestionTache
 
             //database Conf
             databaseObject = new Database();
-            //MyGlobals.databaseHandler = new MyGlobals.databaseHandler(databaseObject);
             MyGlobals.databaseHandler = new DatabaseHandler(databaseObject);
             //vérifie si un fichier de base de donnée en crée un sinon
             if (databaseObject.FileCreated)
@@ -132,7 +131,7 @@ namespace GestionTache
         /// </summary>
         private void AddList()
         {
-            ListOfTasks list = new ListOfTasks("add",lists.Count);
+            ListOfTasks list = new ListOfTasks("NewList",lists.Count);
 
             /*AddListAction addListAction = new AddListAction(list,MyGlobals.databaseHandler,lists);
             actionManager.RecordAction(addListAction);*/
