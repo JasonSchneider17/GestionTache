@@ -10,6 +10,7 @@ namespace GestionTache
     public static class MyGlobals 
     {
         public static DatabaseHandler databaseHandler { get; set; }
+        public static string pathDatabase { get; set; }
 
     }
 }

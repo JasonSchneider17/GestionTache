@@ -19,6 +19,7 @@ namespace GestionTache
         public Database()
         {
             pathDB = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), fileDBname);
+            MyGlobals.pathDatabase = pathDB;
 
             myConnection = new SQLiteConnection("Data Source="+pathDB);
 
@@ -29,9 +30,12 @@ namespace GestionTache
                 fileCreated = true;
             }
 
+        }
 
-
-
+        public void CreateFile()
+        {
+            SQLiteConnection.CreateFile(pathDB);
+            fileCreated = true;
         }
 
         public void OpenConnection()

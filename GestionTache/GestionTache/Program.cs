@@ -18,7 +18,6 @@ namespace GestionTache
             App.Main();
 
     }
-
         private static Assembly OnResolveAssembly(object sender, ResolveEventArgs args)
         {
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
@@ -30,12 +29,10 @@ namespace GestionTache
             using (Stream stream = executingAssembly.GetManifestResourceStream(path))
             {
                 if (stream == null) return null;
-
                 var assemblyRawBytes = new byte[stream.Length];
                 stream.Read(assemblyRawBytes, 0, assemblyRawBytes.Length);
                 return Assembly.Load(assemblyRawBytes);
             }
         }
-
     }
 }

@@ -1,9 +1,11 @@
 ﻿using GuiLabs.Undo;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Linq;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -164,6 +166,7 @@ namespace GestionTache
         {
             AddTask();
         }
+
         /// <summary>
         /// ajoute une tâche depuis le menu
         /// </summary>
@@ -1007,7 +1010,7 @@ namespace GestionTache
             set
             {
                 this.lists = value;
-
+                OnPropertyChanged();
             }
         }
 
@@ -1039,6 +1042,95 @@ namespace GestionTache
 
             }
             MyGlobals.databaseHandler.ListDAO.UpdateListsIndex(lists);
+        }
+
+        /// <summary>
+        /// Permet d'exporter la base de donnée actuelle
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItem_export_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = (string)this.FindResource("DataBaseFilter") + " (*.db)|*.db";
+            saveFileDialog.Title = (string)this.FindResource("ExportDataTitle");
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                File.Copy(MyGlobals.pathDatabase, saveFileDialog.FileName, true);
+            }
+
+        }
+
+        /// <summary>
+        /// Permet de remplacer la base de donnée actuelle par une autre à partir d'un fichier .db choisi
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItem_import_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = (string)this.FindResource("DataBaseFilter") + " (*.db)|*.db";
+            openFileDialog.Title = (string)this.FindResource("ImportDataTitle");
+            if (openFileDialog.ShowDialog() == true)
+            {
+                MessageBoxResult dialog = MessageBox.Show((string)this.FindResource("ImportMessageContent"), (string)this.FindResource("ImportMessageTitle"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+
+                if (dialog == MessageBoxResult.Yes)
+                {
+                    File.Copy(openFileDialog.FileName, MyGlobals.pathDatabase, true);
+                    Lists = MyGlobals.databaseHandler.ListDAO.GetAllList();
+                    
+
+                    foreach (ListOfTasks list in lists)
+                    {
+                        list.NumberTaskToDo = MyGlobals.databaseHandler.TaskDAO.CountTaskToDoByList(list.ID);
+                    }
+                    cmbBoxSortTask.SelectedIndex = 0;
+                    DesactivateDisplayTask();
+                }
+
+
+            }
+
+        }
+
+        /// <summary>
+        /// Remplace le fichier de base de données actuelle par un cichier vide
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItem_clearData_Click(object sender, RoutedEventArgs e)
+        {
+
+            MessageBoxResult dialog = MessageBox.Show((string)this.FindResource("ClearMessageContent"), (string)this.FindResource("ClearMessageTitle"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+            if (dialog == MessageBoxResult.Yes)
+            {
+                databaseObject = new Database();
+                MyGlobals.databaseHandler = new DatabaseHandler(databaseObject);
+                databaseObject.CreateFile();
+                if (databaseObject.FileCreated)
+                {
+                    MyGlobals.databaseHandler.CreateTables();
+                    MyGlobals.databaseHandler.PriorityDAO.AddDefaultPriority();
+                }
+                cmbBoxSortTask.SelectedIndex = 0;
+                DesactivateDisplayTask();
+                Lists.Clear();
+            }
+        }
+
+
+
+        private void DesactivateDisplayTask()
+        {
+            txtBox_TitleList.Text = "";
+            Button_AddTask.IsEnabled = false;
+            progressBarTasks.Value = 0;
+            cmbBoxSortTask.SelectedIndex = 0;
+            textBlockTotalTasks.Text = "";
+            if (Tasks != null)
+            Tasks.Clear();
+            BorderComment.Visibility = Visibility.Hidden;
         }
     }
 

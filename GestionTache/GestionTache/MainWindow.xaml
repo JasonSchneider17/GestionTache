@@ -83,6 +83,24 @@
                     </MenuItem>
                 </MenuItem>
                 <!--<MenuItem x:Name="MenuHelp" Header="Aide" Click="MenuHelp_Click"/>-->
+                <MenuItem x:Name="MenuOption" Header="Options">
+                    <MenuItem x:Name="menuItem_export" Header="{DynamicResource ExportMenu}" Click="MenuItem_export_Click"  >
+                        <MenuItem.Icon>
+                            <Image Source="Image/export.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="menuItem_import" Header="{DynamicResource ImportMenu}" Click="MenuItem_import_Click"  >
+                        <MenuItem.Icon>
+                            <Image Source="Image/import.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="menuItem_clearData" Header="{DynamicResource ClearDataMenu}" Click="MenuItem_clearData_Click"  >
+                        <MenuItem.Icon>
+                            <Image Source="Image/plus.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+
             </Menu>
         </DockPanel>
 

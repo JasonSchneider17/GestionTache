@@ -36,6 +36,22 @@ Voulez-vous vraiment la supprimer?</system:String>
     <system:String x:Key="DeleteListMessageContent" xml:space="preserve">En supprimant cette liste les tâches lié seront aussi supprimées.
 Voulez-vous continuer?</system:String>
     <system:String x:Key="DeleteListMessageTitle">Alerte suppresion liste</system:String>
+    <system:String x:Key="OptionMenu">Options</system:String>
+    <system:String x:Key="ExportMenu">Exporter données</system:String>
+    <system:String x:Key="ImportMenu">Importer données</system:String>
+    <system:String x:Key="ClearDataMenu">formater données</system:String>
+    <system:String x:Key="DataBaseFilter">Base de données</system:String>
+    <system:String x:Key="ExportDataTitle">Exporter sous</system:String>
+    <system:String x:Key="ImportDataTitle">Importer depuis</system:String>
+    <system:String x:Key="ImportMessageContent" xml:space="preserve" >En imporant la liste de tâches choisis elle remplacera la liste actuelle.
+Voulez-vous vraiment importer ces nouvelles liste?</system:String>
+    <system:String x:Key="ImportMessageTitle">Alerte suppresion tâche</system:String>
+    <system:String x:Key="ClearMessageContent" xml:space="preserve" >Formatage des données,toutes les liste et tâches seront supprimer,il est conseiller de faire une exportation des données avant de continuer
+Voulez-vous vraiment supprimer toutes les données?</system:String>
+    <system:String x:Key="ClearMessageTitle">Formatage données</system:String>
+    
+
+
 
 
 </ResourceDictionary>
