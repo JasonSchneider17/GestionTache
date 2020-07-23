@@ -11,10 +11,10 @@ namespace GestionTache
     public class Database
     {
 
-        public SQLiteConnection myConnection;
-        private bool fileCreated = false;
-        private static readonly string fileDBname="managementTaskDataBase.db";
-        private string pathDB;
+        public SQLiteConnection myConnection;                                       //Connexion base de données
+        private bool fileCreated = false;                                           //indique si le fichier à été créé
+        private static readonly string fileDBname="managementTaskDataBase.db";      //nom du fichier de la base de données
+        private string pathDB;                                                      //Chemin qui permet d'accéder à la base de données
 
         public Database()
         {
@@ -38,6 +38,9 @@ namespace GestionTache
             fileCreated = true;
         }
 
+        /// <summary>
+        /// Ouvre la connection à la base de donnée pour effectué des traitements
+        /// </summary>
         public void OpenConnection()
         {
             if (myConnection.State != System.Data.ConnectionState.Open)
@@ -46,6 +49,9 @@ namespace GestionTache
             }
         }
 
+        /// <summary>
+        /// Ferme la base de données
+        /// </summary>
         public void CloseConnection()
         {
             if (myConnection.State != System.Data.ConnectionState.Closed)

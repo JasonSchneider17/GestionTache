@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Data.Linq;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -948,6 +949,7 @@ namespace GestionTache
             textBlockTotalTasks.Text = string.Format("{0}/{1} {2}", numberTaskDo, totalNumberTasks, text);
         }
 
+      
         /// <summary>
         /// Mets à jour la position des tâches dans la liste sur la base de données
         /// </summary>
@@ -1120,7 +1122,9 @@ namespace GestionTache
         }
 
 
-
+        /// <summary>
+        /// Masque l'affichage des tâches
+        /// </summary>
         private void DesactivateDisplayTask()
         {
             txtBox_TitleList.Text = "";

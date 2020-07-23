@@ -219,6 +219,7 @@
     <Content Include="Helps\HelpFile\autre.htm" />
     <Content Include="Helps\HelpFile\directory.htm" />
     <Content Include="Helps\HelpFile\HTML\Liste.htm" />
+    <Resource Include="Image\deleteAll.png" />
     <Resource Include="Image\export.png" />
     <Resource Include="Image\import.png" />
     <Resource Include="Image\open-menu.png" />

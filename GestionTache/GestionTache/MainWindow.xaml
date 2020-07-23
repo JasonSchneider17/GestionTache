@@ -96,7 +96,7 @@
                     </MenuItem>
                     <MenuItem x:Name="menuItem_clearData" Header="{DynamicResource ClearDataMenu}" Click="MenuItem_clearData_Click"  >
                         <MenuItem.Icon>
-                            <Image Source="Image/plus.png"/>
+                            <Image Source="Image/deleteAll.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
                 </MenuItem>
