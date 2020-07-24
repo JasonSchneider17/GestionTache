@@ -15,7 +15,7 @@ namespace GestionTache
         private bool fileCreated = false;                                           //indique si le fichier à été créé
         private static readonly string fileDBname="managementTaskDataBase.db";      //nom du fichier de la base de données
         private string pathDB;                                                      //Chemin qui permet d'accéder à la base de données
-
+        
         public Database()
         {
             pathDB = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), fileDBname);

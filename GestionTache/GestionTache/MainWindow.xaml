@@ -42,7 +42,7 @@
                 <!--Menu Liste-->
                 <MenuItem Height="25"  >
                     <MenuItem.Header>
-                        <TextBlock Text="{DynamicResource ListMenu}"   />
+                        <TextBlock Text="{DynamicResource ListMenu}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,5,0"   />
                     </MenuItem.Header>
                     <MenuItem x:Name="menuItem_addListOfTask" Header="{DynamicResource AddListMenu}" Click="menuItem_addListOfTask_Click">
                         <MenuItem.Icon>
@@ -64,7 +64,7 @@
                 <!--Menu tâche-->
                 <MenuItem  Height="25" VerticalAlignment="Stretch"  >
                     <MenuItem.Header>
-                        <TextBlock Text="{DynamicResource MenuTask}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource MenuTask}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,5,0"/>
                     </MenuItem.Header>
                     <MenuItem x:Name="menuItem_addTask" Header="{DynamicResource AddMenuTask}" IsEnabled="False" Click="menuItem_addTask_Click">
                         <MenuItem.Icon>
@@ -83,7 +83,10 @@
                     </MenuItem>
                 </MenuItem>
                 <!--<MenuItem x:Name="MenuHelp" Header="Aide" Click="MenuHelp_Click"/>-->
-                <MenuItem x:Name="MenuOption" Header="Options">
+                <MenuItem x:Name="MenuOption" >
+                    <MenuItem.Header>
+                        <TextBlock Text="{DynamicResource OptionMenu}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                    </MenuItem.Header>
                     <MenuItem x:Name="menuItem_export" Header="{DynamicResource ExportMenu}" Click="MenuItem_export_Click"  >
                         <MenuItem.Icon>
                             <Image Source="Image/export.png"/>
@@ -240,7 +243,7 @@
                     </Grid.ColumnDefinitions>
 
 
-                    <Button x:Name="Button_AddTask"  VerticalAlignment="Center" Width="35" Height="35" HorizontalAlignment="Left" Grid.Column="0" Margin="10,0,0,0" IsEnabled="False" Content="+" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center" ToolTip="Ajouter une tâche" Click="Button_AddTask_Click"/>
+                    <Button x:Name="Button_AddTask"  VerticalAlignment="Center" Width="35" Height="35" HorizontalAlignment="Left" Grid.Column="0" Margin="10,0,0,0" IsEnabled="False" Content="+" FontSize="22" FontWeight="Bold" VerticalContentAlignment="Center" ToolTip="Ajouter une tâche" Click="Button_AddTask_Click"/>
                     <ProgressBar x:Name="progressBarTasks" Minimum="0" ToolTip="{DynamicResource ProgressBarToolTip}" Foreground="#a8e063" Grid.Column="1" Margin="10,5,10,5" >
                         
                     </ProgressBar>
