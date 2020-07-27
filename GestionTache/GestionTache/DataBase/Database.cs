@@ -60,10 +60,6 @@ namespace GestionTache
             }
         }
 
-
-
-
-
         public bool FileCreated
         {
             get { return this.fileCreated; }

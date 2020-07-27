@@ -175,6 +175,7 @@
                                         <ColumnDefinition Width="25"/>
                                         <ColumnDefinition Width="1*"/>
                                         <ColumnDefinition Width="25"/>
+                                        <!--<ColumnDefinition Width="60"/>-->
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="40"/>
@@ -198,6 +199,26 @@
                                     <TextBox x:Name="txtBoxNameList" MaxLength="25"  Grid.Column="1"   Text="{Binding Name}" Tag="{Binding ID}" Panel.ZIndex="1"
                                          FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,2,0" Visibility="Hidden"  KeyDown="txtBoxNameList_KeyDown" LostKeyboardFocus="txtBoxNameList_LostKeyboardFocus" />
                                     <Label  Content="{Binding NumberTaskToDo}" Grid.Column="2" FontSize="12" Foreground="Gray" VerticalAlignment="Center"  />
+                                    <!--<Grid Grid.Column="2" VerticalAlignment="Center">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="10"/>
+                                            <RowDefinition Height="10"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition Width="10"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="125" Grid.Row="0" Grid.Column="0" FontSize="9" Foreground="Gray"/>
+                                        <Label Content="12" Grid.Row="1" Grid.Column="0" FontSize="8" Foreground="Gray"/>
+                                        <Label Content="12" Grid.Row="2" Grid.Column="0" FontSize="8" Foreground="Gray"/>
+
+                                        --><!--<Rectangle Grid.Row="0" Grid.Column="1" Fill="Red"/>
+                                        <Rectangle Grid.Row="1" Grid.Column="1" Fill="Orange"/>
+                                        <Rectangle Grid.Row="2" Grid.Column="1" Fill="Blue"/>--><!--
+
+
+                                    </Grid>-->
 
                                 </Grid>
 
